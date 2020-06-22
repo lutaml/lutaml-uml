@@ -6,9 +6,7 @@
 
 module Lutaml
   module Uml
-    module Representers
-      class Region < TopElement
-      end
+    class Event < TopElement
     end
   end
 end

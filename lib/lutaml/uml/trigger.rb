@@ -5,10 +5,8 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class Constraint < TopElement
-        attr_accessor :body
-      end
+    class Trigger < TopElement
+      attr_accessor :event
     end
   end
 end

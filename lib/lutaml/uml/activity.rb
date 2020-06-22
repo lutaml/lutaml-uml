@@ -5,9 +5,7 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class Vertex < TopElement
-      end
+    class Activity < Behavior
     end
   end
 end

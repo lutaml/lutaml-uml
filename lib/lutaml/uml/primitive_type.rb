@@ -2,9 +2,7 @@
 
 module Lutaml
   module Uml
-    module Representers
-      class DataType < Class
-      end
+    class PrimitiveType < DataType
     end
   end
 end

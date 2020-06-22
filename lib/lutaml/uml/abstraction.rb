@@ -5,9 +5,7 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class Realization < Abstraction
-      end
+    class Abstraction < Dependency
     end
   end
 end

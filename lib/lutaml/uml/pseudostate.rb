@@ -5,9 +5,7 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class Pseudostate < Vertex
-      end
+    class Pseudostate < Vertex
     end
   end
 end
