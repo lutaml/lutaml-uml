@@ -9,7 +9,8 @@ RSpec.describe Lutaml::Uml::Parsers::Yaml do
     end
 
     it 'creates Lutaml::Uml::Node::Document object from yaml' do
-      expect(parse).to be_instance_of(Lutaml::Uml::Node::Document)
+      expect(parse).to be_instance_of(Array)
+      expect(parse.first).to be_instance_of(Lutaml::Uml::Class)
     end
   end
 end

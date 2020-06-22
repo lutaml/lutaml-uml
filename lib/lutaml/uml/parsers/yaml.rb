@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'lutaml/uml/class'
 require 'lutaml/uml/node/document'
+require 'lutaml/uml/serializers/yaml_view'
 
 module Lutaml
   module Uml
@@ -12,19 +14,18 @@ module Lutaml
         end
 
         def parse(io, _options = {})
-          Node::Document.new(yaml_parse(io))
+          yaml_parse(io)
         end
 
         def yaml_parse(io)
           yaml_content = YAML.safe_load(io)
-          import_models = yaml_content['imports'].map do |name|
-            { name: name, members: [] }
+          serialized_yaml = Lutaml::Uml::Serializers::YamlView
+                              .new(yaml_content)
+          serialized_yaml.classes.map do |klass|
+            instance = Lutaml::Uml::Class.new
+            instance.name = klass.name
+            instance
           end
-          {
-            classes: [
-              { name: yaml_content['title'], members: [] }
-            ].push(*import_models)
-          }
         end
       end
     end

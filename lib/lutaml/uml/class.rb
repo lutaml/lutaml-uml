@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'lutaml/uml/classifier'
+
 module Lutaml
   module Uml
     class Class < Classifier
