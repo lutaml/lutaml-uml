@@ -18,8 +18,8 @@ module Lutaml
         def yaml_parse(io)
           yaml_content = YAML.safe_load(io)
           import_models = yaml_content['imports'].map do |name|
-                            { name: name, members: [] }
-                          end
+            { name: name, members: [] }
+          end
           {
             classes: [
               { name: yaml_content['title'], members: [] }

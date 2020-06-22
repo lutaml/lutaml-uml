@@ -15,6 +15,6 @@ class Gem::Specification
   def this; self; end
 end
 
-# start up the CLI
-require "reeper"
-Reeper::Cli.start(ARGV)
+require "lutaml/uml/interface/command_line"
+
+Lutaml::Uml::Interface::CommandLine.run

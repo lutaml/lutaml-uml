@@ -3,12 +3,9 @@
 ##
 ## Behaviour metamodel
 ##
-
 module Lutaml
   module Uml
-    module Representers
-      class Event < TopElement
-      end
+    class Vertex < TopElement
     end
   end
 end

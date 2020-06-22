@@ -5,9 +5,7 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class Activity < Behavior
-      end
+    class Realization < Abstraction
     end
   end
 end

@@ -24,9 +24,11 @@ module Lutaml
 
         include HasAttributes
 
+        # rubocop:disable Rails/ActiveRecordAliases
         def initialize(attributes = {})
-          update(attributes)
+          update_attributes(attributes)
         end
+        # rubocop:enable Rails/ActiveRecordAliases
 
         def name
           self.class.name

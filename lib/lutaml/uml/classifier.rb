@@ -2,9 +2,8 @@
 
 module Lutaml
   module Uml
-    module Representers
-      class Port < Property
-      end
+    class Classifier < TopElement
+      attr_accessor :generalization
     end
   end
 end

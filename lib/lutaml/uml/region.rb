@@ -3,12 +3,10 @@
 ##
 ## Behaviour metamodel
 ##
+
 module Lutaml
   module Uml
-    module Representers
-      class Trigger < TopElement
-        attr_accessor :event
-      end
+    class Region < TopElement
     end
   end
 end

@@ -5,9 +5,8 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class Behavior < Class
-      end
+    class Transition < TopElement
+      attr_accessor :source, :target, :guard, :effect
     end
   end
 end

@@ -3,11 +3,10 @@
 ##
 ## Behaviour metamodel
 ##
+
 module Lutaml
   module Uml
-    module Representers
-      class OpaqueBehavior < Behavior
-      end
+    class StateMachine < Behavior
     end
   end
 end

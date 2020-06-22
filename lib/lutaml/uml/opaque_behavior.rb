@@ -5,9 +5,7 @@
 ##
 module Lutaml
   module Uml
-    module Representers
-      class FinalState < State
-      end
+    class OpaqueBehavior < Behavior
     end
   end
 end

@@ -3,12 +3,10 @@
 ##
 ## Behaviour metamodel
 ##
-
 module Lutaml
   module Uml
-    module Representers
-      class StateMachine < Behavior
-      end
+    class State < Vertex
+      attr_accessor :exit, :entry, :do_activity
     end
   end
 end
