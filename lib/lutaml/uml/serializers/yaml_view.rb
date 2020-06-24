@@ -11,18 +11,21 @@ module Lutaml
         property :name
         property :title
         property :caption
-        property :groups,
-                 transform_with: (lambda do |names_groups|
-                   names_groups.map do |names|
-                     names.map {|name| Class.new({ name: name }) }
-                   end
-                 end)
-        property :classes,
-                 coerce: Array[Class],
-                 from: :imports,
-                 transform_with: ->(entry) { entry.keys.map {|name| { name: name } } }
-        property :relations,
-                 coerce: Array[Class]
+        # TODO: implement support
+        # property :groups,
+        #          transform_with: (lambda do |names_groups|
+        #            names_groups.map do |names|
+        #              names.map {|name| { name: name }) }
+        #            end
+        #          end)
+        property :imports
+        # TODO: implement view relations
+        # property :relations,
+        #          transform_with: (lambda do |entry|
+        #                             entry
+        #                               .keys
+        #                               .map {|name| { type: "association", name: name } }
+        #                           end)
         property :fidelity
       end
     end

@@ -54,9 +54,9 @@ module Lutaml
         end
 
         def format_field(node)
-          symbol = ACCESS_SYMBOLS[node.access]
+          symbol = ACCESS_SYMBOLS[node.visibility]
           result = "#{symbol} #{node.name}"
-          result << " : #{node.type}" if node.type
+          result += " : #{node.type}" if node.type
           result = "<U>#{result}</U>" if node.static
 
           result
@@ -122,7 +122,7 @@ module Lutaml
           name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == 'abstract'
           name = "«interface»<BR/>#{name}" if node.modifier == 'interface'
 
-          unless node.fields.empty?
+          unless node.fields.nil? || node.fields.empty?
             field_rows  = node.fields.map { |field| %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>} }
             field_table = <<~HEREDOC.chomp
 
@@ -133,7 +133,7 @@ module Lutaml
             field_table << "\n" << ' ' * 6
           end
 
-          unless node.methods.empty?
+          unless node.methods.nil? || node.methods.empty?
             method_rows  = node.methods.map { |method| %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>} }
             method_table = <<~HEREDOC.chomp
 

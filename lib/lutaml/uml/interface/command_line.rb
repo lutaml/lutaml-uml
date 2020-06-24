@@ -14,6 +14,10 @@ module Lutaml
       class CommandLine < Base
         class Error < StandardError; end
         class FileError < Error; end
+        class NotSupportedInputFormat < Error; end
+
+        SUPPORTED_FORMATS = %w[yaml dsl]
+        DEFAULT_INPUT_FORMAT = 'dsl'
 
         def initialize(attributes = {})
           @formatter     = Formatter::Graphviz.new
@@ -41,6 +45,16 @@ module Lutaml
           @formatter = value
         end
 
+        def input_format=(value)
+          if value.nil?
+            @input_format = DEFAULT_INPUT_FORMAT
+            return
+          end
+
+          @input_format = SUPPORTED_FORMATS.find { |n| n == value }
+          raise(NotSupportedInputFormat, value) if @input_format.nil?
+        end
+
         def run
           args = ARGV.dup # TODO: This is hacky
           begin
@@ -59,9 +73,13 @@ module Lutaml
           @paths.each do |input_path|
             raise FileError, "File does not exist: #{input_path}" unless input_path.exist?
 
-            data     = input_path.read
-            document = Parsers::Dsl.parse(data)
-            result   = @formatter.format(document)
+            document = if @input_format == 'yaml'
+                         Parsers::Yaml.parse(input_path)
+                       else
+                         data = input_path.read
+                         Parsers::Dsl.parse(data)
+                       end
+            result = @formatter.format(document)
 
             if @output_path
               output_path = @output_path
@@ -108,6 +126,7 @@ module Lutaml
           @option_parser.on('-f', '--formatter VALUE', "The output formatter (Default: '#{@formatter.name}')") { |value| self.formatter = value }
           @option_parser.on('-t', '--type VALUE',      'The output format type') { |value| @type = value }
           @option_parser.on('-o', '--output VALUE',    'The output path') { |value| self.output_path = value }
+          @option_parser.on('-i', '--input-format VALUE', 'The input format') { |value| self.input_format = value }
           @option_parser.on('-h', '--help',            'Prints this help') do
             print_help
 

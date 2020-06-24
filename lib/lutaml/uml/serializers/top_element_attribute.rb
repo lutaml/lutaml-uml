@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 require 'lutaml/uml/serializers/base'
-require 'lutaml/uml/serializers/class'
 
 module Lutaml
   module Uml
     module Serializers
-      class Relation < Base
-        property :target
-        property :direction
+      class TopElementAttribute < Base
+        property :cardinality
+        property :type
       end
     end
   end

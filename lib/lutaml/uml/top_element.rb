@@ -3,16 +3,16 @@
 module Lutaml
   module Uml
     class TopElement
+      include HasAttributes
+
       attr_accessor :name, :xmi_id, :xmi_uuid, :namespace, :stereotype, :href, :visibility
 
-      def initialize
-        @name = nil
-        @xmi_id = nil
-        @xmi_uuid = nil
-        @namespace = nil
-        @href = nil
+      # rubocop:disable Rails/ActiveRecordAliases
+      def initialize(attributes = {})
         @visibility = 'public'
+        update_attributes(attributes)
       end
+      # rubocop:enable Rails/ActiveRecordAliases
 
       def full_name
         if name == nil
