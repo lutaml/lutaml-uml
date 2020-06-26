@@ -16,6 +16,21 @@ module Lutaml
                       attributes.merge(name: name)
                     end
                  end)
+        property :associations,
+                 from: :relations,
+                 transform_with: (lambda do |entry|
+                   entry
+                    .to_a
+                    .map do |attributes|
+                      # TODO: attribute association
+                      next if attributes['source']
+                      {
+                        member_end: attributes['target'],
+                        type: attributes.dig('relationship', 'target', 'type')
+                      }
+                    end
+                    .compact
+                 end)
         property :name
         # property :type, from: :modelType
         # property :relations,

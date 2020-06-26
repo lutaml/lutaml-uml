@@ -16,7 +16,7 @@ module Lutaml
         class FileError < Error; end
         class NotSupportedInputFormat < Error; end
 
-        SUPPORTED_FORMATS = %w[yaml dsl]
+        SUPPORTED_FORMATS = %w[yaml dsl].freeze
         DEFAULT_INPUT_FORMAT = 'dsl'
 
         def initialize(attributes = {})
@@ -51,7 +51,7 @@ module Lutaml
             return
           end
 
-          @input_format = SUPPORTED_FORMATS.find { |n| n == value }
+          @input_format = SUPPORTED_FORMATS.detect { |n| n == value }
           raise(NotSupportedInputFormat, value) if @input_format.nil?
         end
 

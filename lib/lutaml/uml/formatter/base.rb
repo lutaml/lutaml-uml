@@ -45,8 +45,8 @@ module Lutaml
           when Node::Method then format_method(node)
           when Node::Relationship then format_relationship(node)
           when Node::ClassRelationship then format_class_relationship(node)
-          when Node::ClassNode  then format_class(node)
-          when Lutaml::Uml::Document  then format_document(node)
+          when Node::ClassNode then format_class(node)
+          when Lutaml::Uml::Document then format_document(node)
           end
         end
 

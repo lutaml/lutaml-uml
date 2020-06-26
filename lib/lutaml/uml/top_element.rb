@@ -5,7 +5,13 @@ module Lutaml
     class TopElement
       include HasAttributes
 
-      attr_accessor :name, :xmi_id, :xmi_uuid, :namespace, :stereotype, :href, :visibility
+      attr_accessor :name,
+                    :xmi_id,
+                    :xmi_uuid,
+                    :namespace,
+                    :stereotype,
+                    :href,
+                    :visibility
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})

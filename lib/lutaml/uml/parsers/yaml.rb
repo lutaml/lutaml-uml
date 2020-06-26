@@ -21,7 +21,7 @@ module Lutaml
           yaml_content = YAML.safe_load(File.read(yaml_path))
           models_path = File.join(File.dirname(yaml_path), '..', 'models')
           serialized_yaml = Lutaml::Uml::Serializers::YamlView
-                              .new(yaml_content)
+                            .new(yaml_content)
           klasses = serialized_yaml.imports.map do |(klass_name, _)|
             klass_attrs = YAML.safe_load(File.read(File.join(models_path, "#{klass_name}.yml")))
             Lutaml::Uml::Serializers::Class.new(klass_attrs)

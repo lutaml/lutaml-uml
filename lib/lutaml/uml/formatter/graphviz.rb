@@ -107,13 +107,10 @@ module Lutaml
 
         def format_class_relationship(node)
           attributes = Attributes.new
-
           attributes['arrowhead'] = 'onormal'
           attributes['style'] = 'dashed' if node.type == 'realizes'
-
-          graph_parent_name = generate_graph_name(node.parent.name)
-          graph_node_name = generate_graph_name(node.name)
-
+          graph_parent_name = generate_graph_name(node.owned_end)
+          graph_node_name = generate_graph_name(node.member_end)
           %{Class#{graph_parent_name} -> Class#{graph_node_name} [#{attributes}]}
         end
 
@@ -122,14 +119,14 @@ module Lutaml
           name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == 'abstract'
           name = "«interface»<BR/>#{name}" if node.modifier == 'interface'
 
-          unless node.fields.nil? || node.fields.empty?
-            field_rows  = node.fields.map { |field| %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>} }
+          unless node.attributes.nil? || node.attributes.empty?
+            field_rows  = node.attributes.map { |field| %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>} }
             field_table = <<~HEREDOC.chomp
 
                       <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
               #{field_rows.map { |row| ' ' * 10 + row }.join("\n")}
                       </TABLE>
-  HEREDOC
+            HEREDOC
             field_table << "\n" << ' ' * 6
           end
 
@@ -140,7 +137,7 @@ module Lutaml
                       <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
               #{method_rows.map { |row| ' ' * 10 + row }.join("\n")}
                       </TABLE>
-  HEREDOC
+            HEREDOC
             method_table << "\n" << ' ' * 6
           end
 
@@ -156,7 +153,7 @@ module Lutaml
                   <TD>#{method_table}</TD>
                 </TR>
               </TABLE>
-  HEREDOC
+          HEREDOC
         end
 
         def format_document(node)
@@ -169,8 +166,8 @@ module Lutaml
               >]
             HEREDOC
           end.join("\n")
-          class_relationships = node.classes.map(&:class_relationships).flatten.map { |node| format_class_relationship(node) }.join("\n")
-          relationships = node.classes.map(&:relationships).flatten.map { |node| format_relationship(node) }.join("\n")
+          class_relationships = node.classes.map(&:associations).compact.flatten.map { |node| format_class_relationship(node) }.join("\n")
+          relationships = node.classes.map(&:relationships).compact.flatten.map { |node| format_relationship(node) }.join("\n")
 
           classes = classes.lines.map { |line| "  #{line}" }.join.chomp
           class_relationships = class_relationships.lines.map { |line| "  #{line}" }.join.chomp
@@ -188,7 +185,7 @@ module Lutaml
 
             #{relationships}
             }
-  HEREDOC
+          HEREDOC
         end
 
         protected
