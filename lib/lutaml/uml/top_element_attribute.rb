@@ -10,7 +10,8 @@ module Lutaml
                     :type,
                     :definition,
                     :contain,
-                    :static
+                    :static,
+                    :cardinality
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})

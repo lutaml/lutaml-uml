@@ -5,7 +5,7 @@ RSpec.describe Lutaml::Uml::Parsers::Yaml do
     subject(:parse) { described_class.parse(yaml_conent) }
 
     let(:yaml_conent) do
-      fixtures_path('datamodel/views/CommonModels.yml')
+      fixtures_path('datamodel/views/TopDown.yml')
     end
 
     it 'creates Lutaml::Uml::Document object from yaml' do

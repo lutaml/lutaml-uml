@@ -2,7 +2,7 @@
 
 require 'lutaml/uml/serializers/base'
 require 'lutaml/uml/serializers/top_element_attribute'
-require 'lutaml/uml/serializers/relation'
+require 'lutaml/uml/serializers/association'
 
 module Lutaml
   module Uml
@@ -18,19 +18,7 @@ module Lutaml
                  end)
         property :associations,
                  from: :relations,
-                 transform_with: (lambda do |entry|
-                   entry
-                    .to_a
-                    .map do |attributes|
-                      # TODO: attribute association
-                      next if attributes['source']
-                      {
-                        member_end: attributes['target'],
-                        type: attributes.dig('relationship', 'target', 'type')
-                      }
-                    end
-                    .compact
-                 end)
+                 coerce: Array[::Lutaml::Uml::Serializers::Association]
         property :name
         # property :type, from: :modelType
         # property :relations,

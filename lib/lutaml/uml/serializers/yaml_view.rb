@@ -2,7 +2,6 @@
 
 require 'lutaml/uml/serializers/base'
 require 'lutaml/uml/serializers/class'
-require 'lutaml/uml/serializers/relation'
 
 module Lutaml
   module Uml

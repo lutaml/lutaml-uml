@@ -80,39 +80,55 @@ module Lutaml
         end
 
         def format_relationship(node)
-          dir       = 'back' if %w[aggregation composition].include?(node.type)
+          dir = 'back' if %w[aggregation composition].include?(node.member_end_type)
           arrow_key = dir == 'back' ? 'arrowtail' : 'arrowhead'
-          from_key  = dir == 'back' ? 'taillabel' : 'headlabel'
-          to_key    = dir == 'back' ? 'headlabel' : 'taillabel'
-
+          from_key = dir == 'back' ? 'taillabel' : 'headlabel'
+          to_key = dir == 'back' ? 'headlabel' : 'taillabel'
           attributes = Attributes.new
+          attributes['style'] = 'dashed' if %w[dependency realizes].include?(node.member_end_type)
+          attributes['dir'] = dir if dir
+          if node.owned_end_attribute_name
+            attributes[from_key] = format_label(node.owned_end_attribute_name, node.owned_end_cardinality)
+          end
+          if node.member_end_attribute_name
+            attributes[to_key] = format_label(node.member_end_attribute_name, node.member_end_cardinality)
+          end
 
-          attributes['style']   = 'dashed'  if node.type == 'dependency'
-          attributes['dir']     = dir       if dir
-          attributes[from_key]  = node.from if node.from
-          attributes[to_key]    = node.to   if node.to
-
-          if %w[aggregation composition].include?(node.type)
-            arrow     = 'diamond'  if node.type == 'composition'
-            arrow     = 'odiamond' if node.type == 'aggregation'
+          if %w[aggregation composition].include?(node.member_end_type)
+            arrow = case node.member_end_type
+                    when 'composition'
+                      'diamond'
+                    when 'aggregation'
+                      'odiamond'
+                    else
+                      'onormal'
+                    end
             attributes[arrow_key] = arrow
           end
 
-          graph_parent_name = generate_graph_name(node.parent.name)
-          graph_node_name   = generate_graph_name(node.name)
-          graph_attributes  = " [#{attributes}]" unless attributes.empty?
+          graph_parent_name = generate_graph_name(node.owned_end)
+          graph_node_name = generate_graph_name(node.member_end)
+          graph_attributes = " [#{attributes}]" unless attributes.empty?
 
           %{Class#{graph_parent_name} -> Class#{graph_node_name}#{graph_attributes}}
         end
 
-        def format_class_relationship(node)
-          attributes = Attributes.new
-          attributes['arrowhead'] = 'onormal'
-          attributes['style'] = 'dashed' if node.type == 'realizes'
-          graph_parent_name = generate_graph_name(node.owned_end)
-          graph_node_name = generate_graph_name(node.member_end)
-          %{Class#{graph_parent_name} -> Class#{graph_node_name} [#{attributes}]}
+        def format_label(name, cardinality={})
+          res = "+#{name}"
+          return res if cardinality['min'].nil? || cardinality['max'].nil?
+
+          "#{res} #{cardinality['min']}..#{cardinality['max']}"
         end
+
+        # TODO: delete
+        # def format_class_relationship(node)
+        #   attributes = Attributes.new
+        #   attributes['arrowhead'] = 'onormal'
+        #   attributes['style'] = 'dashed' if node.type == 'realizes'
+        #   graph_parent_name = generate_graph_name(node.owned_end)
+        #   graph_node_name = generate_graph_name(node.member_end)
+        #   %{Class#{graph_parent_name} -> Class#{graph_node_name} [#{attributes}]}
+        # end
 
         def format_class(node)
           name = "<B>#{node.name}</B>"
@@ -166,14 +182,12 @@ module Lutaml
               >]
             HEREDOC
           end.join("\n")
-          class_relationships = node.classes.map(&:associations).compact.flatten.map { |node| format_class_relationship(node) }.join("\n")
-          relationships = node.classes.map(&:relationships).compact.flatten.map { |node| format_relationship(node) }.join("\n")
+          associations = node.classes.map(&:associations).compact.flatten.map { |node| format_relationship(node) }.join("\n")
 
           classes = classes.lines.map { |line| "  #{line}" }.join.chomp
-          class_relationships = class_relationships.lines.map { |line| "  #{line}" }.join.chomp
-          relationships = relationships.lines.map { |line| "  #{line}" }.join.chomp
+          associations = associations.lines.map { |line| "  #{line}" }.join.chomp
 
-          <<~HEREDOC
+          res = <<~HEREDOC
             digraph G {
               graph [#{@graph}]
               edge [#{@edge}]
@@ -181,11 +195,10 @@ module Lutaml
 
             #{classes}
 
-            #{class_relationships}
-
-            #{relationships}
+            #{associations}
             }
           HEREDOC
+          res
         end
 
         protected
