@@ -10,14 +10,7 @@ module Lutaml
         property :name
         property :title
         property :caption
-        # TODO: implement support
-        # property :groups,
-        #          transform_with: (lambda do |names_groups|
-        #            names_groups.map do |names|
-        #              names.map {|name| { name: name }) }
-        #            end
-        #          end)
-        property :imports
+        property :groups
         # TODO: implement view relations
         # property :relations,
         #          transform_with: (lambda do |entry|

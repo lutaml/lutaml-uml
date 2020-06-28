@@ -7,7 +7,12 @@ module Lutaml
     class Document
       include HasAttributes
 
-      attr_reader :classes
+      attr_accessor :name,
+                    :title,
+                    :caption,
+                    :classes,
+                    :groups,
+                    :fidelity
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})

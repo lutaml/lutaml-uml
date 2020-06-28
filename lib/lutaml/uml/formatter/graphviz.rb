@@ -26,13 +26,14 @@ module Lutaml
 
           @graph = Attributes.new
           @graph['splines'] = 'ortho'
-          @graph['rankdir'] = 'BT'
+          # TODO: set rankdir
+          # @graph['rankdir'] = 'BT'
 
           @edge = Attributes.new
           @edge['color'] = 'gray50'
 
           @node = Attributes.new
-          @node['shape'] = 'plain'
+          @node['shape'] = 'box'
 
           @type = :dot
         end
@@ -80,31 +81,41 @@ module Lutaml
         end
 
         def format_relationship(node)
-          dir = 'back' if %w[aggregation composition].include?(node.member_end_type)
-          arrow_key = dir == 'back' ? 'arrowtail' : 'arrowhead'
-          from_key = dir == 'back' ? 'taillabel' : 'headlabel'
-          to_key = dir == 'back' ? 'headlabel' : 'taillabel'
+          #  double edged line - dir == "both"
+          # dir = 'back' if %w[aggregation composition].include?(node.member_end_type)
+          # arrow_key = dir == 'back' ? 'arrowtail' : 'arrowhead'
+          # from_key = dir == 'back' ? 'taillabel' : 'headlabel'
+          # to_key = dir == 'back' ? 'headlabel' : 'taillabel'
           attributes = Attributes.new
           attributes['style'] = 'dashed' if %w[dependency realizes].include?(node.member_end_type)
-          attributes['dir'] = dir if dir
+          attributes['dir'] = "both" if node.owned_end_type
+          attributes['label'] = node.action if node.action
           if node.owned_end_attribute_name
-            attributes[from_key] = format_label(node.owned_end_attribute_name, node.owned_end_cardinality)
+            attributes['taillabel'] = format_label(node.owned_end_attribute_name, node.owned_end_cardinality)
           end
           if node.member_end_attribute_name
-            attributes[to_key] = format_label(node.member_end_attribute_name, node.member_end_cardinality)
+            attributes['headlabel'] = format_label(node.member_end_attribute_name, node.member_end_cardinality)
           end
 
-          if %w[aggregation composition].include?(node.member_end_type)
-            arrow = case node.member_end_type
-                    when 'composition'
-                      'diamond'
-                    when 'aggregation'
-                      'odiamond'
-                    else
-                      'onormal'
-                    end
-            attributes[arrow_key] = arrow
-          end
+          arrowhead = case node.owned_end_type
+                      when 'composition'
+                        'diamond'
+                      when 'aggregation'
+                        'odiamond'
+                      else
+                        'onormal'
+                      end
+          attributes['arrowhead'] = arrowhead
+
+          arrowtail = case node.member_end_type
+                      when 'composition'
+                        'diamond'
+                      when 'aggregation'
+                        'odiamond'
+                      else
+                        'onormal'
+                      end
+          attributes['arrowtail'] = arrowtail
 
           graph_parent_name = generate_graph_name(node.owned_end)
           graph_node_name = generate_graph_name(node.member_end)
@@ -115,7 +126,7 @@ module Lutaml
 
         def format_label(name, cardinality={})
           res = "+#{name}"
-          return res if cardinality['min'].nil? || cardinality['max'].nil?
+          return res if cardinality.nil? || (cardinality['min'].nil? || cardinality['max'].nil?)
 
           "#{res} #{cardinality['min']}..#{cardinality['max']}"
         end
@@ -177,12 +188,14 @@ module Lutaml
             graph_node_name = generate_graph_name(node.name)
 
             <<~HEREDOC
-              Class#{graph_node_name} [label=<
+              Class#{graph_node_name} [shape="plain" label=<
                 #{format_class(node)}
               >]
             HEREDOC
           end.join("\n")
-          associations = node.classes.map(&:associations).compact.flatten.map { |node| format_relationship(node) }.join("\n")
+          associations = node.classes.map(&:associations).compact.flatten
+          associations = sort_by_document_groupping(node.groups, associations)
+          associations = associations.map { |node| format_relationship(node) }.join("\n")
 
           classes = classes.lines.map { |line| "  #{line}" }.join.chomp
           associations = associations.lines.map { |line| "  #{line}" }.join.chomp
@@ -202,6 +215,23 @@ module Lutaml
         end
 
         protected
+
+        def sort_by_document_groupping(groups, associations)
+          result = []
+          groups.each do |batch|
+            batch.each do |group_name|
+              associations
+                .find_all { |assc| assc.owned_end == group_name }
+                .each do |association|
+                  result.push(association) unless result.include?(association)
+                end
+            end
+          end
+          associations.each do |association|
+            result.push(association) unless result.include?(association)
+          end
+          result
+        end
 
         def generate_from_dot(dot)
           return dot if @type == :dot

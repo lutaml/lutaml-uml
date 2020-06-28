@@ -11,12 +11,14 @@ module Lutaml
         property :member_end_attribute_name,
                  from: 'relationship',
                  transform_with: (lambda do |val|
-                   val.dig('target', 'attributes')&.keys&.first
+                   val.dig('target', 'attributes')&.keys&.first ||
+                    val.dig('target', 'attribute')&.keys&.first
                  end)
         property :member_end_cardinality,
                  from: 'relationship',
                  transform_with: (lambda do |val|
-                   res = val.dig('source', 'attributes')&.values&.first
+                   res = val.dig('source', 'attributes')&.values&.first ||
+                          val.dig('source', 'attribute')&.values&.first
                    res['cardinality'] if res
                  end)
         property :member_end_type,
@@ -27,18 +29,28 @@ module Lutaml
         property :owned_end_attribute_name,
                  from: 'relationship',
                  transform_with: (lambda do |val|
-                   val.dig('source', 'attributes')&.keys&.first
+                   val.dig('source', 'attributes')&.keys&.first ||
+                     val.dig('source', 'attribute')&.keys&.first
                  end)
         property :owned_end_cardinality,
                  from: 'relationship',
                  transform_with: (lambda do |val|
-                   res = val.dig('source', 'attributes')&.values&.first
+                   res = val.dig('source', 'attributes')&.values&.first ||
+                           val.dig('source', 'attribute')&.values&.first
                    res['cardinality'] if res
                  end)
         property :owned_end_type,
                  from: 'relationship',
                  transform_with: (lambda do |val|
                    val.dig('source', 'type')
+                 end)
+        property :action,
+                 transform_with: (lambda do |val|
+                   if val['direction'] == 'target'
+                     "#{val['verb']} ▶"
+                   else
+                     "◀ #{val['verb']}"
+                   end
                  end)
       end
     end

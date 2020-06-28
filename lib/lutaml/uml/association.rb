@@ -11,7 +11,8 @@ module Lutaml
                     :member_end_attribute_name,
                     :member_end_cardinality,
                     :member_end_type,
-                    :static
+                    :static,
+                    :action
     end
   end
 end
