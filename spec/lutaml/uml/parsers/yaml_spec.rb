@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Lutaml::Uml::Parsers::Yaml do
@@ -5,11 +7,18 @@ RSpec.describe Lutaml::Uml::Parsers::Yaml do
     subject(:parse) { described_class.parse(yaml_conent) }
 
     let(:yaml_conent) do
-      File.read(fixtures_path('datamodel/views/CommonModels.yml'))
+      fixtures_path('datamodel/views/TopDown.yml')
     end
 
-    it 'creates Lutaml::Uml::Node::Document object from yaml' do
-      expect(parse).to be_instance_of(Lutaml::Uml::Node::Document)
+    it 'creates Lutaml::Uml::Document object from yaml' do
+      expect(parse).to be_instance_of(Lutaml::Uml::Document)
+      expect(parse.classes.first).to be_instance_of(Lutaml::Uml::Class)
+    end
+
+    it 'Lutaml::Uml::Formatter::Graphviz understands the format of document' do
+      expect do
+        Lutaml::Uml::Formatter::Graphviz.new.format(parse)
+      end.to_not(raise_error)
     end
   end
 end

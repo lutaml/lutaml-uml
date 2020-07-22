@@ -1,0 +1,25 @@
+digraph G {
+  graph [splines="ortho"]
+  edge [color="gray50"]
+  node [shape="box"]
+
+  AddressProfile [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>AddressProfile</B></TD>
+  </TR>
+  
+  <TR>
+    <TD>
+          <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+            <TR><TD ALIGN="LEFT">+ country : iso3166Code</TD></TR>
+          </TABLE>
+        </TD>
+  </TR>
+  
+  </TABLE>
+  >]
+
+  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" headlabel=nil arrowhead="onormal" arrowtail="odiamond" taillabel="+componentProfile 0..*"]
+  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" headlabel=nil arrowhead="onormal" arrowtail="odiamond" taillabel="+addressProfile 0..*"]
+}

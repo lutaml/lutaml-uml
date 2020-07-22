@@ -14,6 +14,10 @@ module Lutaml
       class CommandLine < Base
         class Error < StandardError; end
         class FileError < Error; end
+        class NotSupportedInputFormat < Error; end
+
+        SUPPORTED_FORMATS = %w[yaml dsl].freeze
+        DEFAULT_INPUT_FORMAT = 'dsl'
 
         def initialize(attributes = {})
           @formatter     = Formatter::Graphviz.new
@@ -26,7 +30,15 @@ module Lutaml
         end
 
         def output_path=(value)
-          @output_path = value.is_a?(Pathname) ? value : Pathname.new(value.to_s) unless value.nil?
+          @output_path = determine_output_path_value(value)
+        end
+
+        def determine_output_path_value(value)
+          unless value.nil? || @output_path = value.is_a?(Pathname)
+            return Pathname.new(value.to_s)
+          end
+
+          value
         end
 
         def paths=(values)
@@ -39,6 +51,16 @@ module Lutaml
           raise Error, "Formatter not found: #{value}" if value.nil?
 
           @formatter = value
+        end
+
+        def input_format=(value)
+          if value.nil?
+            @input_format = DEFAULT_INPUT_FORMAT
+            return
+          end
+
+          @input_format = SUPPORTED_FORMATS.detect { |n| n == value }
+          raise(NotSupportedInputFormat, value) if @input_format.nil?
         end
 
         def run
@@ -54,18 +76,32 @@ module Lutaml
           self.paths      = ARGV
           @formatter.type = @type
 
-          raise Error, 'Output path must be a directory if multiple input files are given' if @output_path&.file? && @paths.length > 1
+          if @output_path&.file? && @paths.length > 1
+            raise Error,
+                  'Output path must be a directory \
+                  if multiple input files are given'
+          end
 
           @paths.each do |input_path|
-            raise FileError, "File does not exist: #{input_path}" unless input_path.exist?
+            unless input_path.exist?
+              raise FileError, "File does not exist: #{input_path}"
+            end
 
-            data     = input_path.read
-            document = Parsers::Dsl.parse(data)
-            result   = @formatter.format(document)
+            document = if @input_format == 'yaml'
+                         Parsers::Yaml.parse(input_path)
+                       else
+                         data = input_path.read
+                         Parsers::Dsl.parse(data)
+                       end
+            result = @formatter.format(document)
 
             if @output_path
               output_path = @output_path
-              output_path = output_path.join(input_path.basename('.*').to_s + ".#{@formatter.type}") if output_path.directory?
+              if output_path.directory?
+                output_path = output_path.join(input_path
+                                                .basename('.*').to_s +
+                                              ".#{@formatter.type}")
+              end
 
               output_path.open('w+') { |file| file.write(result) }
             else
@@ -105,12 +141,28 @@ module Lutaml
 
         def setup_parser_options
           @option_parser.banner = ''
-          @option_parser.on('-f', '--formatter VALUE', "The output formatter (Default: '#{@formatter.name}')") { |value| self.formatter = value }
-          @option_parser.on('-t', '--type VALUE',      'The output format type') { |value| @type = value }
-          @option_parser.on('-o', '--output VALUE',    'The output path') { |value| self.output_path = value }
-          @option_parser.on('-h', '--help',            'Prints this help') do
+          format_desc = "The output formatter (Default: '#{@formatter.name}')"
+          @option_parser
+            .on('-f',
+                '--formatter VALUE',
+                format_desc) do |value|
+            self.formatter = value
+          end
+          @option_parser
+            .on('-t', '--type VALUE', 'The output format type') do |value|
+              @type = value
+            end
+          @option_parser
+            .on('-o', '--output VALUE', 'The output path') do |value|
+              self.output_path = value
+            end
+          @option_parser
+            .on('-i', '--input-format VALUE', 'The input format') do |value|
+              self.input_format = value
+            end
+          @option_parser
+            .on('-h', '--help', 'Prints this help') do
             print_help
-
             exit
           end
         end
@@ -119,22 +171,28 @@ module Lutaml
           case @formatter.name
           when :graphviz
             @option_parser.on('-g', '--graph VALUE') do |value|
-              Parsers::Attribute.parse(value).each { |key, value| @formatter.graph[key] = value }
+              Parsers::Attribute.parse(value).each do |key, attr_value|
+                @formatter.graph[key] = attr_value
+              end
             end
 
             @option_parser.on('-e', '--edge VALUE') do |value|
-              Parsers::Attribute.parse(value).each { |key, value| @formatter.edge[key] = value }
+              Parsers::Attribute.parse(value).each do |key, attr_value|
+                @formatter.edge[key] = attr_value
+              end
             end
 
             @option_parser.on('-n', '--node VALUE') do |value|
-              Parsers::Attribute.parse(value).each { |key, value| @formatter.node[key] = value }
+              Parsers::Attribute.parse(value).each do |key, attr_value|
+                @formatter.node[key] = attr_value
+              end
             end
 
             @option_parser.on('-a', '--all VALUE') do |value|
-              Parsers::Attribute.parse(value).each do |key, value|
-                @formatter.graph[key] = value
-                @formatter.edge[key] = value
-                @formatter.node[key] = value
+              Parsers::Attribute.parse(value).each do |key, attr_value|
+                @formatter.graph[key] = attr_value
+                @formatter.edge[key] = attr_value
+                @formatter.node[key] = attr_value
               end
             end
           end
