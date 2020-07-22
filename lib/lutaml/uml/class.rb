@@ -9,10 +9,11 @@ module Lutaml
     class Class < Classifier
       class UknownMemberTypeError < StandardError; end
       attr_accessor :nested_classifier,
-                    :is_abstract,
-                    :attributes,
-                    :associations
-      attr_reader :members,
+                    :is_abstract
+
+      attr_reader :associations,
+                  :attributes,
+                  :members,
                   :modifier
 
       def initialize(attributes = {})

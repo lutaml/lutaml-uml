@@ -10,9 +10,9 @@ module Lutaml
       attr_accessor :name,
                     :title,
                     :caption,
-                    :classes,
                     :groups,
                     :fidelity
+      attr_reader :classes
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})

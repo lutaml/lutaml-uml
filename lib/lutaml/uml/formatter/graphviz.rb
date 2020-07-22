@@ -19,7 +19,22 @@ module Lutaml
           'private'   => '-'
         }.freeze
 
-        VALID_TYPES = %i[dot xdot ps pdf svg svgz fig png gif jpg jpeg json imap cmapx].freeze
+        VALID_TYPES = %i[
+          dot
+          xdot
+          ps
+          pdf
+          svg
+          svgz
+          fig
+          png
+          gif
+          jpg
+          jpeg
+          json
+          imap
+          cmapx
+        ].freeze
 
         def initialize(attributes = {})
           super
@@ -81,73 +96,84 @@ module Lutaml
         end
 
         def format_relationship(node)
-          #  double edged line - dir == "both"
-          # dir = 'back' if %w[aggregation composition].include?(node.member_end_type)
-          # arrow_key = dir == 'back' ? 'arrowtail' : 'arrowhead'
-          # from_key = dir == 'back' ? 'taillabel' : 'headlabel'
-          # to_key = dir == 'back' ? 'headlabel' : 'taillabel'
-          attributes = Attributes.new
-          attributes['style'] = 'dashed' if %w[dependency realizes].include?(node.member_end_type)
-          attributes['dir'] = "both" if node.owned_end_type
-          attributes['label'] = node.action if node.action
-          if node.owned_end_attribute_name
-            attributes['taillabel'] = format_label(node.owned_end_attribute_name, node.owned_end_cardinality)
-          end
-          if node.member_end_attribute_name
-            attributes['headlabel'] = format_label(node.member_end_attribute_name, node.member_end_cardinality)
-          end
-
-          arrowhead = case node.owned_end_type
-                      when 'composition'
-                        'diamond'
-                      when 'aggregation'
-                        'odiamond'
-                      else
-                        'onormal'
-                      end
-          attributes['arrowhead'] = arrowhead
-
-          arrowtail = case node.member_end_type
-                      when 'composition'
-                        'diamond'
-                      when 'aggregation'
-                        'odiamond'
-                      else
-                        'onormal'
-                      end
-          attributes['arrowtail'] = arrowtail
-
           graph_parent_name = generate_graph_name(node.owned_end)
           graph_node_name = generate_graph_name(node.member_end)
+          attributes = generate_graph_relationship_attributes(node)
           graph_attributes = " [#{attributes}]" unless attributes.empty?
 
-          %{Class#{graph_parent_name} -> Class#{graph_node_name}#{graph_attributes}}
+          %{#{graph_parent_name} -> #{graph_node_name}#{graph_attributes}}
         end
 
-        def format_label(name, cardinality={})
+        def generate_graph_relationship_attributes(node)
+          attributes = Attributes.new
+          if %w[dependency realizes].include?(node.member_end_type)
+            attributes['style'] = 'dashed'
+          end
+          attributes['dir'] = if node.owned_end_type && node.member_end_type
+                                'both'
+                              elsif node.owned_end_type
+                                'back'
+                              else
+                                'direct'
+                              end
+          attributes['label'] = node.action if node.action
+          if node.owned_end_attribute_name
+            attributes['headlabel'] = format_label(
+              node.owned_end_attribute_name,
+              node.owned_end_cardinality
+            )
+          end
+          if node.member_end_attribute_name
+            attributes['taillabel'] = format_label(
+              node.member_end_attribute_name,
+              node.member_end_cardinality
+            )
+          end
+
+          attributes['arrowhead'] = case node.owned_end_type
+                                    when 'composition'
+                                      'diamond'
+                                    when 'aggregation'
+                                      'odiamond'
+                                    else
+                                      'onormal'
+                                    end
+
+          attributes['arrowtail'] = case node.member_end_type
+                                    when 'composition'
+                                      'diamond'
+                                    when 'aggregation'
+                                      'odiamond'
+                                    else
+                                      'onormal'
+                                    end
+          # swap labels and arrows if `dir` eq to `back`
+          if attributes['dir'] == 'back'
+            attributes['arrowhead'], attributes['arrowtail'] = [attributes['arrowtail'], attributes['arrowhead']]
+            attributes['headlabel'], attributes['taillabel'] = [attributes['taillabel'], attributes['headlabel']]
+          end
+          attributes
+        end
+
+        def format_label(name, cardinality = {})
           res = "+#{name}"
-          return res if cardinality.nil? || (cardinality['min'].nil? || cardinality['max'].nil?)
+          if cardinality.nil? ||
+             (cardinality['min'].nil? || cardinality['max'].nil?)
+            return res
+          end
 
           "#{res} #{cardinality['min']}..#{cardinality['max']}"
         end
 
-        # TODO: delete
-        # def format_class_relationship(node)
-        #   attributes = Attributes.new
-        #   attributes['arrowhead'] = 'onormal'
-        #   attributes['style'] = 'dashed' if node.type == 'realizes'
-        #   graph_parent_name = generate_graph_name(node.owned_end)
-        #   graph_node_name = generate_graph_name(node.member_end)
-        #   %{Class#{graph_parent_name} -> Class#{graph_node_name} [#{attributes}]}
-        # end
-
-        def format_class(node)
+        def format_class(node, hide_members)
           name = "<B>#{node.name}</B>"
           name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == 'abstract'
           name = "«interface»<BR/>#{name}" if node.modifier == 'interface'
 
-          unless node.attributes.nil? || node.attributes.empty?
-            field_rows  = node.attributes.map { |field| %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>} }
+          unless node.attributes.nil? || node.attributes.empty? || hide_members
+            field_rows = node.attributes.map do |field|
+              %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>}
+            end
             field_table = <<~HEREDOC.chomp
 
                       <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
@@ -157,8 +183,10 @@ module Lutaml
             field_table << "\n" << ' ' * 6
           end
 
-          unless node.methods.nil? || node.methods.empty?
-            method_rows  = node.methods.map { |method| %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>} }
+          unless node.methods.nil? || node.methods.empty? || hide_members
+            method_rows = node.methods.map do |method|
+              %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>}
+            end
             method_table = <<~HEREDOC.chomp
 
                       <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
@@ -168,39 +196,56 @@ module Lutaml
             method_table << "\n" << ' ' * 6
           end
 
+          table_body = [name, field_table, method_table].map do |type|
+            next if type.nil?
+
+            <<~TEXT
+              <TR>
+                <TD>#{type}</TD>
+              </TR>
+                         TEXT
+          end
+
           <<~HEREDOC.chomp
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-                <TR>
-                  <TD>#{name}</TD>
-                </TR>
-                <TR>
-                  <TD>#{field_table}</TD>
-                </TR>
-                <TR>
-                  <TD>#{method_table}</TD>
-                </TR>
-              </TABLE>
+              #{table_body.compact.join("\n")}
+            </TABLE>
           HEREDOC
         end
 
         def format_document(node)
-          classes = node.classes.map do |node|
-            graph_node_name = generate_graph_name(node.name)
+          if node.fidelity
+            hide_members = node.fidelity['hideMembers']
+            hide_other_classes = node.fidelity['hideOtherClasses']
+          end
+          classes = node.classes.map do |class_node|
+            graph_node_name = generate_graph_name(class_node.name)
 
             <<~HEREDOC
-              Class#{graph_node_name} [shape="plain" label=<
-                #{format_class(node)}
+              #{graph_node_name} [shape="plain" label=<
+                #{format_class(class_node, hide_members)}
               >]
             HEREDOC
           end.join("\n")
           associations = node.classes.map(&:associations).compact.flatten
-          associations = sort_by_document_groupping(node.groups, associations)
-          associations = associations.map { |node| format_relationship(node) }.join("\n")
+          if node.groups
+            associations = sort_by_document_groupping(node.groups, associations)
+          end
+          classes_names = node.classes.map(&:name)
+          associations = associations.map do |assoc_node|
+            if hide_other_classes &&
+               !classes_names.include?(assoc_node.member_end)
+              next
+            end
+
+            format_relationship(assoc_node)
+          end.join("\n")
 
           classes = classes.lines.map { |line| "  #{line}" }.join.chomp
-          associations = associations.lines.map { |line| "  #{line}" }.join.chomp
+          associations = associations
+                         .lines.map { |line| "  #{line}" }.join.chomp
 
-          res = <<~HEREDOC
+          <<~HEREDOC
             digraph G {
               graph [#{@graph}]
               edge [#{@edge}]
@@ -211,7 +256,6 @@ module Lutaml
             #{associations}
             }
           HEREDOC
-          res
         end
 
         protected
@@ -221,7 +265,7 @@ module Lutaml
           groups.each do |batch|
             batch.each do |group_name|
               associations
-                .find_all { |assc| assc.owned_end == group_name }
+                .select { |assc| assc.owned_end == group_name }
                 .each do |association|
                   result.push(association) unless result.include?(association)
                 end

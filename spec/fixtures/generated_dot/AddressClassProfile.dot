@@ -1,0 +1,74 @@
+digraph G {
+  graph [splines="ortho"]
+  edge [color="gray50"]
+  node [shape="box"]
+
+  AddressProfile [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>AddressProfile</B></TD>
+  </TR>
+  
+  </TABLE>
+  >]
+  
+  AddressClassProfile [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>AddressClassProfile</B></TD>
+  </TR>
+  
+  </TABLE>
+  >]
+  
+  AddressComponentProfile [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>AddressComponentProfile</B></TD>
+  </TR>
+  
+  </TABLE>
+  >]
+  
+  AttributeProfile [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>AttributeProfile</B></TD>
+  </TR>
+  
+  </TABLE>
+  >]
+  
+  ProfileCompliantAddress [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>ProfileCompliantAddress</B></TD>
+  </TR>
+  
+  </TABLE>
+  >]
+  
+  InterchangeAddressClassProfile [shape="plain" label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TR>
+    <TD><B>InterchangeAddressClassProfile</B></TD>
+  </TR>
+  
+  </TABLE>
+  >]
+
+  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" headlabel=nil arrowhead="onormal" arrowtail="odiamond" taillabel="+componentProfile 0..*"]
+  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" headlabel=nil arrowhead="onormal" arrowtail="odiamond" taillabel="+addressProfile 0..*"]
+  AddressClassProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowhead="odiamond" arrowtail="onormal"]
+  AddressClassProfile -> ProfileCompliantAddress [dir="direct" label="◀ compliesWith" headlabel="+profile 1..1" arrowhead="onormal" arrowtail="onormal"]
+  AddressComponentProfile -> AddressClassProfile [dir="direct" label="◀ uses" taillabel="+componentProfile" arrowhead="onormal" arrowtail="odiamond"]
+  AddressComponentProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowhead="odiamond" arrowtail="onormal"]
+  
+  
+  
+  InterchangeAddressClassProfile -> AddressClassProfile [dir="direct" arrowhead="onormal" arrowtail="onormal"]
+  
+  
+  
+  
+}

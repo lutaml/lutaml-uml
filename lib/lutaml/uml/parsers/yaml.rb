@@ -19,17 +19,26 @@ module Lutaml
 
         def yaml_parse(yaml_path)
           yaml_content = YAML.safe_load(File.read(yaml_path))
-          models_path = File.join(File.dirname(yaml_path), '..', 'models')
           serialized_yaml = Lutaml::Uml::Serializers::YamlView
                             .new(yaml_content)
-          klasses = yaml_content['imports'].map do |(klass_name, _)|
-            klass_attrs = YAML.safe_load(File.read(File.join(models_path, "#{klass_name}.yml")))
+          result = Lutaml::Uml::Document.new(serialized_yaml)
+          result.classes = imports_to_classes(yaml_content, yaml_path)
+          result
+        end
+
+        private
+
+        def imports_to_classes(yaml_content, yaml_path)
+          models_path = File.join(File.dirname(yaml_path), '..', 'models')
+          yaml_content['imports'].map do |(klass_name, _)|
+            klass_attrs = YAML.safe_load(
+              File.read(
+                File.join(models_path, "#{klass_name}.yml")
+              )
+            )
             klass_attrs['name'] = klass_name if klass_attrs['name'].nil?
             Lutaml::Uml::Serializers::Class.new(klass_attrs)
           end
-          result = Lutaml::Uml::Document.new(serialized_yaml)
-          result.classes = klasses
-          result
         end
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Lutaml::Uml::Parsers::Yaml do
@@ -14,9 +16,9 @@ RSpec.describe Lutaml::Uml::Parsers::Yaml do
     end
 
     it 'Lutaml::Uml::Formatter::Graphviz understands the format of document' do
-      expect {
+      expect do
         Lutaml::Uml::Formatter::Graphviz.new.format(parse)
-      }.to_not(raise_error)
+      end.to_not(raise_error)
     end
   end
 end
