@@ -18,6 +18,8 @@ diagram MyView {
 
 The simplest way to define relationship between two classes is to use `generalize` keyword:
 
+(TODO: RT: a generalization is already a directional relationship, isn't it?)
+
 ```java
 class Pet {}
 class Cat {
@@ -38,9 +40,9 @@ class Element {}
 
 ## Attribute definition
 
-One can use explicit or implicit syntax for attribute definition
+One can use "explicit" or "implicit" syntax for attribute definitions.
 
-explicit syntax:
+Explicit syntax:
 
 ```java
 class A {
@@ -65,9 +67,9 @@ enum A {
 ```
 
 
-## import files
+## Import files for parser
 
-Use `include` special word:
+Use the keyword `include`:
 
 ```java
 include path/to/file
@@ -76,12 +78,15 @@ include path/to/file
 ## Package syntax
 
 Namespaces
-Def.-A named element is an element that can have a name and a defined visibility (public, private, protected, package):
 
-+ => public
-- => private
-# => protected
-~ => package
+A named element is an element that can have a name and a defined visibility (public, private, protected, package).
+
+The visibility may be expressed explicitly or via a shorthand:
+
+* `+` => `public`
+* `-` => `private`
+* `#` => `protected`
+* `~` => `package`
 
 The name of the element and its visibility are optional.
 
@@ -89,7 +94,9 @@ The name of the element and its visibility are optional.
 package Customers {
   class Insurance {}
   - class PrivateInsurance {}
+  private class PrivateInsurance {}
   # class ProtectedInsurance {}
+  protected class ProtectedInsurance {}
 }
 ```
 
@@ -98,7 +105,7 @@ package Customers {
 Use `//` notation for LutaML comments skipped by parser, example:
 
 ```java
-// TODO: implement
+// TODO: implement. This is not read by the LutaML parser.
 abstract class Pet {}
 ```
 
@@ -113,6 +120,9 @@ enum A as enum_a {
   foo
   bar
 }
+
+# enum A, this is a comment to "enum A"
+
 comment MyComment {
   My comment
 }
