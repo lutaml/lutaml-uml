@@ -9,7 +9,7 @@ module Lutaml
       class Graphviz < Base
         class Attributes < Hash
           def to_s
-            to_a.map { |(a, b)| "#{a}=#{b.inspect}" }.join(' ')
+            to_a.reject {|(_k, val)| val.nil? }.map { |(a, b)| "#{a}=#{b.inspect}" }.join(' ')
           end
         end
 
@@ -40,7 +40,14 @@ module Lutaml
           super
 
           @graph = Attributes.new
-          @graph['splines'] = 'ortho'
+          # Associations lines style
+          @graph['splines'] = 'true'
+          # Padding between outside of picture and nodes
+          @graph['pad'] = 0.5
+          # Padding between levels
+          @graph['ranksep'] = "1.2.equally"
+          # Padding between nodes
+          @graph['nodesep'] = "1.2.equally"
           # TODO: set rankdir
           # @graph['rankdir'] = 'BT'
 
@@ -207,7 +214,7 @@ module Lutaml
           end
 
           <<~HEREDOC.chomp
-            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
               #{table_body.compact.join("\n")}
             </TABLE>
           HEREDOC
