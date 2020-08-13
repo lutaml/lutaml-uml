@@ -1,0 +1,4 @@
+diagram MyView {
+  title "my diagram"
+  class Foo {}
+}

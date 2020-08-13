@@ -9,7 +9,8 @@ module Lutaml
     class Class < Classifier
       class UknownMemberTypeError < StandardError; end
       attr_accessor :nested_classifier,
-                    :is_abstract
+                    :is_abstract,
+                    :type
 
       attr_reader :associations,
                   :attributes,
@@ -38,6 +39,10 @@ module Lutaml
         @associations = value.to_a.map do |attr|
           Association.new(attr.to_h.merge(owned_end: name))
         end
+      end
+
+      def members=(value)
+        []
       end
 
       def methods
