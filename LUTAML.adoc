@@ -184,13 +184,13 @@ abstract class Pet {}
 
 == Comment objects diagram
 
-Use `#` to create comment object for diagram entry or use `comment` notation to create object explicitly.
+Use `%` to create comment object for diagram entry or use `comment` notation to create object explicitly.
 
 [source,java]
 ----
 class A as class_a
 enum A as enum_a {
-  # attribute foo, represents - attribute comment
+  % attribute foo, represents - attribute comment
   foo
   bar
 }
