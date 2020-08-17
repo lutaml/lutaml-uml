@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/class'
+require "lutaml/uml/class"
 
 module Lutaml
   module Uml
     class Document
-      class UknownMemberTypeError < StandardError; end
+      class UnknownMemberTypeError < StandardError; end
       include HasAttributes
 
       attr_accessor :name,
@@ -37,9 +37,9 @@ module Lutaml
       private
 
       def associtaion_type(type)
-        return 'classes' if type == 'class'
+        return "classes" if type == "class"
 
-        raise(UknownMemberTypeError, "Unknown member type: #{type}")
+        raise(UnknownMemberTypeError, "Unknown member type: #{type}")
       end
     end
   end

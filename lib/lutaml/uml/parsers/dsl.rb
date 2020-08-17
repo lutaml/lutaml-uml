@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'parslet'
-require 'lutaml/uml/node/document'
+require "parslet"
+require "lutaml/uml/node/document"
 
 module Lutaml
   module Uml
@@ -39,14 +39,14 @@ module Lutaml
 
         rule(:spaces) { match("\s").repeat(1) }
         rule(:spaces?) { spaces.maybe }
-        rule(:whitespace) { (match("\s") | match("\n") | str(';')).repeat(1) }
+        rule(:whitespace) { (match("\s") | match("\n") | str(";")).repeat(1) }
         rule(:whitespace?) { whitespace.maybe }
 
-        rule(:name) { match['a-zA-Z0-9_-'].repeat(1) }
+        rule(:name) { match["a-zA-Z0-9_-"].repeat(1) }
 
         rule(:class_name_chars) { match('(?:[a-zA-Z0-9_-]|\:|\.)').repeat(1) }
         rule(:class_name) do
-          class_name_chars >> (str('(') >> class_name_chars >> str(')')).maybe
+          class_name_chars >> (str("(") >> class_name_chars >> str(")")).maybe
         end
 
         # -- Field/Method
@@ -60,7 +60,7 @@ module Lutaml
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
         rule(:member_type) do
-          (spaces >> str(':') >> spaces >> class_name.as(:type)).maybe
+          (spaces >> str(":") >> spaces >> class_name.as(:type)).maybe
         end
 
         rule(:field_keyword) { kw_field >> spaces }
@@ -87,15 +87,15 @@ module Lutaml
         rule(:method_argument) { name.as(:name) >> member_type }
         rule(:method_arguments_inner) do
           (method_argument >>
-            (spaces? >> str(',') >> spaces? >> method_argument).repeat)
+            (spaces? >> str(",") >> spaces? >> method_argument).repeat)
             .repeat.as(:arguments)
         end
         rule(:method_arguments) do
-          (str('(') >>
+          (str("(") >>
             spaces? >>
             method_arguments_inner >>
             spaces? >>
-            str(')'))
+            str(")"))
             .maybe
         end
 
@@ -138,10 +138,10 @@ module Lutaml
         end
         rule(:relationship_type) { kw_relationship_type.as(:type) >> spaces }
         rule(:relationship_from) do
-          (spaces >> (name | str('*').repeat(1)).as(:from)).maybe
+          (spaces >> (name | str("*").repeat(1)).as(:from)).maybe
         end
         rule(:relationship_to) do
-          (spaces >> (name | str('*').repeat(1)).as(:to)).maybe
+          (spaces >> (name | str("*").repeat(1)).as(:to)).maybe
         end
         rule(:relationship_definition) do
           (relationship_directionality >>
@@ -171,10 +171,10 @@ module Lutaml
         end
         rule(:class_body) do
           spaces? >>
-            str('{') >>
+            str("{") >>
             whitespace? >>
             class_inner_definition.repeat.as(:members) >>
-            str('}')
+            str("}")
         end
         rule(:class_body?) { class_body.maybe }
         rule(:class_definition) do
@@ -198,11 +198,11 @@ module Lutaml
         end
         rule(:diagram_body) do
           spaces? >>
-            str('{') >>
+            str("{") >>
             whitespace? >>
             title_definitions? >>
             diagram_inner_definition.repeat.as(:members) >>
-            str('}')
+            str("}")
         end
         rule(:diagram_body?) { diagram_body.maybe }
         rule(:diagram_definition) do

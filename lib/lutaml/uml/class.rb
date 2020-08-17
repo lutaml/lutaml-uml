@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/classifier'
-require 'lutaml/uml/association'
-require 'lutaml/uml/top_element_attribute'
+require "lutaml/uml/classifier"
+require "lutaml/uml/association"
+require "lutaml/uml/top_element_attribute"
 
 module Lutaml
   module Uml
     class Class < Classifier
-      class UknownMemberTypeError < StandardError; end
       attr_accessor :nested_classifier,
                     :is_abstract,
                     :type
@@ -41,7 +40,7 @@ module Lutaml
         end
       end
 
-      def members=(value)
+      def members=(_value)
         []
       end
 
