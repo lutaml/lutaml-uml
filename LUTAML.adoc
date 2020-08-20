@@ -15,6 +15,44 @@ diagram MyView {
 
 == Associations
 
+=== Explicit declaration
+
+Syntax:
+
+[source,java]
+----
+association name {
+  type association|composition|aggregation|generalization|uses
+  from|to association_name[#attribute_name] [{property_string}][cardinality]
+}
+----
+
+where:
+
+* `type` - association type(association|composition|aggregation|generalization|uses)
+* `from` - direction of association, start of the association arrow(for generalization, uses types)
+* `to` - direction of association, end of the association arrow(for generalization, uses types)
+* `property_string` - property string for attibutes associations
+* `cardinality` - examples: '1..*', '*'
+
+Example:
+
+[source,java]
+----
+class Association {
+  +association:
+}
+class Type {
+  +endType:
+}
+
+association AssociatingTypeAndAssociation {
+  type uses
+  from Association#+association {subsets relationship}[*]
+  to Type#+/endType {readOnly, subsets relatedElement} [1..*]
+}
+----
+
 === Undirected associations
 
 The simplest way to define relationship between two classes is to use `generalize` keyword:
