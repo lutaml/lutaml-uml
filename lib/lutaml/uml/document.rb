@@ -7,6 +7,7 @@ module Lutaml
     class Document
       class UnknownMemberTypeError < StandardError; end
       include HasAttributes
+      include HasMembers
 
       attr_accessor :name,
                     :title,
@@ -21,25 +22,8 @@ module Lutaml
       end
       # rubocop:enable Rails/ActiveRecordAliases
 
-      def members=(value)
-        value
-          .to_a
-          .group_by { |attributes| attributes[:type].to_s }
-          .map do |(type, group)|
-          public_send("#{associtaion_type(type)}=", group)
-        end
-      end
-
       def classes=(value)
         @classes = value.to_a.map { |attributes| Class.new(attributes) }
-      end
-
-      private
-
-      def associtaion_type(type)
-        return "classes" if type == "class"
-
-        raise(UnknownMemberTypeError, "Unknown member type: #{type}")
       end
     end
   end

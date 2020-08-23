@@ -32,7 +32,6 @@ module Lutaml
             when :method             then Method.new(attributes)
             when :relationship       then Relationship.new(attributes)
             when :class_relationship then ClassRelationship.new(attributes)
-            else # TODO: Raise or something
             end
           end
         end

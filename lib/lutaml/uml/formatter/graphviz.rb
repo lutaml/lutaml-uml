@@ -9,7 +9,10 @@ module Lutaml
       class Graphviz < Base
         class Attributes < Hash
           def to_s
-            to_a.reject { |(_k, val)| val.nil? }.map { |(a, b)| "#{a}=#{b.inspect}" }.join(" ")
+            to_a
+              .reject { |(_k, val)| val.nil? }
+              .map { |(a, b)| "#{a}=#{b.inspect}" }
+              .join(" ")
           end
         end
 

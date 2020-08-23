@@ -1,10 +1,10 @@
 digraph G {
-  graph [splines="ortho"]
+  graph [splines="true" pad=0.5 ranksep="1.2.equally" nodesep="1.2.equally"]
   edge [color="gray50"]
   node [shape="box"]
 
   AddressProfile [shape="plain" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><B>AddressProfile</B></TD>
   </TR>
@@ -13,7 +13,7 @@ digraph G {
   >]
   
   AddressClassProfile [shape="plain" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><B>AddressClassProfile</B></TD>
   </TR>
@@ -22,7 +22,7 @@ digraph G {
   >]
   
   AddressComponentProfile [shape="plain" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><B>AddressComponentProfile</B></TD>
   </TR>
@@ -31,7 +31,7 @@ digraph G {
   >]
   
   AttributeProfile [shape="plain" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><B>AttributeProfile</B></TD>
   </TR>
@@ -40,7 +40,7 @@ digraph G {
   >]
   
   ProfileCompliantAddress [shape="plain" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><B>ProfileCompliantAddress</B></TD>
   </TR>
@@ -49,7 +49,7 @@ digraph G {
   >]
   
   InterchangeAddressClassProfile [shape="plain" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><B>InterchangeAddressClassProfile</B></TD>
   </TR>
@@ -57,8 +57,8 @@ digraph G {
   </TABLE>
   >]
 
-  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" headlabel=nil arrowhead="onormal" arrowtail="odiamond" taillabel="+componentProfile 0..*"]
-  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" headlabel=nil arrowhead="onormal" arrowtail="odiamond" taillabel="+addressProfile 0..*"]
+  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" arrowhead="onormal" arrowtail="odiamond" taillabel="+componentProfile 0..*"]
+  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" arrowhead="onormal" arrowtail="odiamond" taillabel="+addressProfile 0..*"]
   AddressClassProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowhead="odiamond" arrowtail="onormal"]
   AddressClassProfile -> ProfileCompliantAddress [dir="direct" label="◀ compliesWith" headlabel="+profile 1..1" arrowhead="onormal" arrowtail="onormal"]
   AddressComponentProfile -> AddressClassProfile [dir="direct" label="◀ uses" taillabel="+componentProfile" arrowhead="onormal" arrowtail="odiamond"]

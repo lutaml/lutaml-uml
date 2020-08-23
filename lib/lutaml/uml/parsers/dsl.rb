@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "parslet"
+require "lutaml/uml/parsers/dsl_transform"
 require "lutaml/uml/node/document"
 
 module Lutaml
@@ -17,7 +18,7 @@ module Lutaml
         end
 
         def parse(io, options = {})
-          ::Lutaml::Uml::Document.new(super)
+          ::Lutaml::Uml::Document.new(DslTransform.new.apply(super))
         end
 
         KEYWORDS = %w[
@@ -27,7 +28,7 @@ module Lutaml
           interface
           abstract static
           public protected private
-          field method
+          attribute method
           generalizes realizes
           directional bidirectional
           dependency association aggregation composition
@@ -48,31 +49,41 @@ module Lutaml
         rule(:class_name) do
           class_name_chars >> (str("(") >> class_name_chars >> str(")")).maybe
         end
+        rule(:cardinality) do
+          spaces >>
+            str("[") >>
+            (match['0-9\*'].as(:min) >>
+              str("..").maybe >>
+              match['0-9\*'].as(:max).maybe)
+            .as(:cardinality) >>
+            str("]")
+        end
+        rule(:cardinality?) { cardinality.maybe }
 
-        # -- Field/Method
+        # -- attribute/Method
 
-        rule(:kw_access_modifier) { kw_public | kw_protected | kw_private }
+        rule(:kw_visibility_modifier) do
+          str("+") | str("-") | str("#") | str("~")
+        end
 
         rule(:member_static) { (kw_static.as(:static) >> spaces).maybe }
-        rule(:member_access) do
-          (kw_access_modifier.as(:access) >> spaces).maybe
+        rule(:visibility) do
+          kw_visibility_modifier.as(:visibility_modifier).maybe
         end
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
         rule(:member_type) do
-          (spaces >> str(":") >> spaces >> class_name.as(:type)).maybe
+          (str(":") >> spaces >> class_name.as(:type)).maybe
         end
 
-        rule(:field_keyword) { kw_field >> spaces }
-        rule(:field_name) { name.as(:name) }
-        rule(:field_return_type) { member_type.maybe }
-        rule(:field_definition) do
-          (member_static >>
-            member_access >>
-            field_keyword >>
-            field_name >>
-            field_return_type)
-            .as(:field)
+        rule(:attribute_name) { name.as(:name) }
+        rule(:attribute_return_type) { member_type.maybe }
+        rule(:attribute_definition) do
+          (visibility.as(:visibility) >>
+            attribute_name >>
+            attribute_return_type >>
+            cardinality?)
+            .as(:attribute)
         end
 
         rule(:title_keyword) { kw_title >> spaces }
@@ -104,7 +115,7 @@ module Lutaml
         rule(:method_definition) do
           (method_abstract >>
             member_static >>
-            member_access >>
+            visibility >>
             method_keyword >>
             method_name >>
             method_arguments >>
@@ -159,9 +170,9 @@ module Lutaml
         rule(:class_modifier) do
           (kw_class_modifier.as(:modifier) >> spaces).maybe
         end
-        rule(:class_keyword) { kw_class.as(:type) >> spaces }
+        rule(:class_keyword) { kw_class >> spaces }
         rule(:class_inner_definitions) do
-          field_definition |
+          attribute_definition |
             method_definition |
             class_relationship_definition |
             relationship_definition
@@ -188,7 +199,9 @@ module Lutaml
 
         rule(:diagram_keyword) { kw_diagram >> spaces? }
         rule(:diagram_inner_definitions) do
-          title_definition | class_definition | relationship_definition
+          title_definition |
+            class_definition.as(:class) |
+            relationship_definition
         end
         rule(:diagram_inner_definition) do
           diagram_inner_definitions >> whitespace?

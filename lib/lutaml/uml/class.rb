@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "lutaml/uml/has_members"
 require "lutaml/uml/classifier"
 require "lutaml/uml/association"
 require "lutaml/uml/top_element_attribute"
@@ -7,6 +8,8 @@ require "lutaml/uml/top_element_attribute"
 module Lutaml
   module Uml
     class Class < Classifier
+      include HasMembers
+
       attr_accessor :nested_classifier,
                     :is_abstract,
                     :type
@@ -38,10 +41,6 @@ module Lutaml
         @associations = value.to_a.map do |attr|
           Association.new(attr.to_h.merge(owned_end: name))
         end
-      end
-
-      def members=(_value)
-        []
       end
 
       def methods

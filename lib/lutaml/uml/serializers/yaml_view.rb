@@ -11,13 +11,6 @@ module Lutaml
         property :title
         property :caption
         property :groups
-        # TODO: implement view relations
-        # property :relations,
-        #          transform_with: (lambda do |entry|
-        #                             entry
-        #                               .keys
-        #                               .map {|name| { type: "association", name: name } }
-        #                           end)
         property :fidelity
       end
     end

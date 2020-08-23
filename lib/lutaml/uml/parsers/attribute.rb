@@ -30,20 +30,38 @@ module Lutaml
 
         rule(:digits) { match["0-9"].repeat(1) }
 
-        rule(:integer) { (str("-").maybe >> digits >> str(".").absent?).as(:integer) }
-        rule(:float) { (str("-").maybe >> digits >> str(".") >> digits).as(:float) }
+        rule(:integer) do
+          (str("-").maybe >> digits >> str(".").absent?).as(:integer)
+        end
+        rule(:float) do
+          (str("-").maybe >> digits >> str(".") >> digits).as(:float)
+        end
 
-        rule(:string_single_quoted) { str("'") >> (str("'").absent? >> any).repeat.as(:string) >> str("'") }
-        rule(:string_double_quoted) { str('"') >> (str('"').absent? >> any).repeat.as(:string) >> str('"') }
+        rule(:string_single_quoted) do
+          str("'") >>
+            (str("'").absent? >> any).repeat.as(:string) >>
+            str("'")
+        end
+        rule(:string_double_quoted) do
+          str('"') >>
+            (str('"').absent? >> any).repeat.as(:string) >>
+            str('"')
+        end
 
         rule(:string) { string_single_quoted | string_double_quoted }
 
-        rule(:assignment_name) { (match["=\s"].absent? >> any).repeat.as(:name) }
+        rule(:assignment_name) do
+          (match["=\s"].absent? >> any).repeat.as(:name)
+        end
         rule(:assignment_value) { (integer | float | string).as(:value) }
-        rule(:assignment) { assignment_name >> spaces? >> str("=") >> spaces? >> assignment_value }
+        rule(:assignment) do
+          assignment_name >> spaces? >> str("=") >> spaces? >> assignment_value
+        end
 
         rule(:attribute) { spaces? >> assignment >> spaces? }
-        rule(:attributes) { (attribute >> (str(",") >> attribute).repeat).repeat.as(:assignments) }
+        rule(:attributes) do
+          (attribute >> (str(",") >> attribute).repeat).repeat.as(:assignments)
+        end
 
         root(:attributes)
       end

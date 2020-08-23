@@ -53,14 +53,34 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       it_behaves_like "the correct graphviz formatting"
     end
 
-    context "when class associations" do
+    context "when class with fields" do
       let(:conent) do
-        File.read(fixtures_path("dsl/diagram_class_assocation.lutaml"))
+        File.read(fixtures_path("dsl/diagram_class_fields.lutaml"))
       end
 
-      it "creates Lutaml::Uml::Document object and creates dependent classes" do
-        expect(parse).to be_instance_of(Lutaml::Uml::Document)
-        expect(parse.classes.first.asscoiations.length).to eq(2)
+      def by_name(classes, name)
+        classes.detect { |n| n.name == name }
+      end
+
+      it "creates the correct classes and sets the correct number of attributes" do
+        classes = parse.classes
+        expect(by_name(classes, "Component").attributes).to be_nil
+        expect(by_name(classes, "AddressClassProfile").attributes.length).to eq(1)
+        expect(by_name(classes, "AttributeProfile").attributes.length).to eq(5)
+      end
+
+      it "creates the correct attributes with the correct visibility" do
+        attributes = by_name(parse.classes, "AttributeProfile").attributes
+        expect(by_name(attributes, "imlicistAttributeProfile").visibility)
+          .to be_nil
+        expect(by_name(attributes, "attributeProfile").visibility)
+          .to eq("public")
+        expect(by_name(attributes, "privateAttributeProfile").visibility)
+          .to eq("private")
+        expect(by_name(attributes, "friendlyAttributeProfile").visibility)
+          .to eq("friendly")
+        expect(by_name(attributes, "protectedAttributeProfile").visibility)
+          .to eq("protected")
       end
 
       it_behaves_like "the correct graphviz formatting"

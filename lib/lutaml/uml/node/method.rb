@@ -19,7 +19,9 @@ module Lutaml
         attr_reader :arguments
 
         def arguments=(value)
-          @arguments = value.to_a.map { |attributes| MethodArgument.new(attributes) }
+          @arguments = value.to_a.map do |attributes|
+            MethodArgument.new(attributes)
+          end
         end
       end
     end

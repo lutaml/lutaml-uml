@@ -3,7 +3,12 @@
 module Lutaml
   module Uml
     class Property < TopElement
-      attr_accessor :type, :aggregation, :association, :is_derived, :lowerValue, :upperValue
+      attr_accessor :type,
+                    :aggregation,
+                    :association,
+                    :is_derived,
+                    :lowerValue,
+                    :upperValue
 
       def initialize
         @name = nil
