@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'optparse'
-require 'lutaml/uml/has_attributes'
+require "optparse"
+require "lutaml/uml/has_attributes"
 
 module Lutaml
   module Uml

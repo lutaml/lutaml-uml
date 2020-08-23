@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'lutaml/uml/class'
-require 'lutaml/uml/document'
-require 'lutaml/uml/serializers/yaml_view'
+require "yaml"
+require "lutaml/uml/class"
+require "lutaml/uml/document"
+require "lutaml/uml/serializers/yaml_view"
 
 module Lutaml
   module Uml
@@ -29,14 +29,14 @@ module Lutaml
         private
 
         def imports_to_classes(yaml_content, yaml_path)
-          models_path = File.join(File.dirname(yaml_path), '..', 'models')
-          yaml_content['imports'].map do |(klass_name, _)|
+          models_path = File.join(File.dirname(yaml_path), "..", "models")
+          yaml_content["imports"].map do |(klass_name, _)|
             klass_attrs = YAML.safe_load(
               File.read(
                 File.join(models_path, "#{klass_name}.yml")
               )
             )
-            klass_attrs['name'] = klass_name if klass_attrs['name'].nil?
+            klass_attrs["name"] = klass_name if klass_attrs["name"].nil?
             Lutaml::Uml::Serializers::Class.new(klass_attrs)
           end
         end

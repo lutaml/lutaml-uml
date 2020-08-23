@@ -13,9 +13,9 @@ module Lutaml
         @association = nil
         @namespace = nil
         @is_derived = false
-        @visibility = 'public'
-        @lowerValue = '1'
-        @upperValue = '1'
+        @visibility = "public"
+        @lowerValue = "1"
+        @upperValue = "1"
       end
     end
   end

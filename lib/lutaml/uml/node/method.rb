@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/node/field'
-require 'lutaml/uml/node/method_argument'
-require 'lutaml/uml/node/has_name'
+require "lutaml/uml/node/field"
+require "lutaml/uml/node/method_argument"
+require "lutaml/uml/node/has_name"
 
 module Lutaml
   module Uml

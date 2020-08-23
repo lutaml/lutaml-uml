@@ -15,7 +15,7 @@ module Lutaml
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
-        @visibility = 'public'
+        @visibility = "public"
         update_attributes(attributes)
       end
       # rubocop:enable Rails/ActiveRecordAliases

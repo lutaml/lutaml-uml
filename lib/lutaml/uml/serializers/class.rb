@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/serializers/base'
-require 'lutaml/uml/serializers/top_element_attribute'
-require 'lutaml/uml/serializers/association'
+require "lutaml/uml/serializers/base"
+require "lutaml/uml/serializers/top_element_attribute"
+require "lutaml/uml/serializers/association"
 
 module Lutaml
   module Uml
