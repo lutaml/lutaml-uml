@@ -237,7 +237,8 @@ module Lutaml
               >]
             HEREDOC
           end.join("\n")
-          associations = node.classes.map(&:associations).compact.flatten
+          associations = node.classes.map(&:associations).compact.flatten +
+                         node.associations
           if node.groups
             associations = sort_by_document_groupping(node.groups, associations)
           end

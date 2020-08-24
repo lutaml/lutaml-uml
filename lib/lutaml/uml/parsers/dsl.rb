@@ -22,6 +22,11 @@ module Lutaml
         end
 
         KEYWORDS = %w[
+          association
+          owned_end_type
+          member_end_type
+          owned_end
+          member_end
           diagram
           title
           class
@@ -49,13 +54,15 @@ module Lutaml
         rule(:class_name) do
           class_name_chars >> (str("(") >> class_name_chars >> str(")")).maybe
         end
+        rule(:cardinality_body_definition) do
+          match['0-9\*'].as(:min) >>
+            str("..").maybe >>
+            match['0-9\*'].as(:max).maybe
+        end
         rule(:cardinality) do
           spaces >>
             str("[") >>
-            (match['0-9\*'].as(:min) >>
-              str("..").maybe >>
-              match['0-9\*'].as(:max).maybe)
-            .as(:cardinality) >>
+            cardinality_body_definition.as(:cardinality) >>
             str("]")
         end
         rule(:cardinality?) { cardinality.maybe }
@@ -70,6 +77,7 @@ module Lutaml
         rule(:visibility) do
           kw_visibility_modifier.as(:visibility_modifier).maybe
         end
+        rule(:visibility?) { visibility.maybe }
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
         rule(:member_type) do
@@ -123,44 +131,63 @@ module Lutaml
             .as(:method)
         end
 
-        # -- Class Relationship
+        # -- Association
 
-        rule(:kw_class_relationship_type) { kw_generalizes | kw_realizes }
+        rule(:association_keyword) { kw_association >> spaces }
 
-        rule(:class_relationship_type) do
-          kw_class_relationship_type.as(:type) >> spaces
-        end
-        rule(:class_relationship_definition) do
-          (class_relationship_type >> class_name.as(:name))
-            .as(:class_relationship)
+        %w[owned_end member_end].each do |association_end_type|
+          rule("#{association_end_type}_cardinality") do
+            spaces >>
+              str("[") >>
+              cardinality_body_definition
+              .as("#{association_end_type}_cardinality") >>
+              str("]")
+          end
+          rule("#{association_end_type}_cardinality?") do
+            send("#{association_end_type}_cardinality").maybe
+          end
+          rule("#{association_end_type}_attribute_name") do
+            str("#") >>
+              visibility? >>
+              name.as("#{association_end_type}_attribute_name")
+          end
+          rule("#{association_end_type}_attribute_name?") do
+            send("#{association_end_type}_attribute_name").maybe
+          end
+          rule("#{association_end_type}_definition") do
+            send("kw_#{association_end_type}") >>
+              spaces >>
+              name.as(association_end_type) >>
+              send("#{association_end_type}_attribute_name?") >>
+              send("#{association_end_type}_cardinality?")
+          end
+          rule("#{association_end_type}_type") do
+            send("kw_#{association_end_type}_type") >>
+              spaces >>
+              name.as("#{association_end_type}_type")
+          end
         end
 
-        # -- Relationship
-
-        rule(:kw_relationship_directionality) do
-          kw_directional | kw_bidirectional
+        rule(:association_inner_definitions) do
+          owned_end_type |
+            member_end_type |
+            owned_end_definition |
+            member_end_definition
         end
-        rule(:kw_relationship_type) do
-          kw_dependency | kw_association | kw_aggregation | kw_composition
+        rule(:association_inner_definition) do
+          association_inner_definitions >> whitespace?
         end
-
-        rule(:relationship_directionality) do
-          (kw_relationship_directionality.as(:directionality) >> spaces).maybe
+        rule(:association_body) do
+          spaces? >>
+            str("{") >>
+            whitespace? >>
+            association_inner_definition.repeat.as(:members) >>
+            str("}")
         end
-        rule(:relationship_type) { kw_relationship_type.as(:type) >> spaces }
-        rule(:relationship_from) do
-          (spaces >> (name | str("*").repeat(1)).as(:from)).maybe
-        end
-        rule(:relationship_to) do
-          (spaces >> (name | str("*").repeat(1)).as(:to)).maybe
-        end
-        rule(:relationship_definition) do
-          (relationship_directionality >>
-            relationship_type >>
-            class_name.as(:name) >>
-            relationship_from >>
-            relationship_to)
-            .as(:relationship)
+        rule(:association_definition) do
+          association_keyword >>
+            name.as(:name) >>
+            association_body
         end
 
         # -- Class
@@ -173,9 +200,7 @@ module Lutaml
         rule(:class_keyword) { kw_class >> spaces }
         rule(:class_inner_definitions) do
           attribute_definition |
-            method_definition |
-            class_relationship_definition |
-            relationship_definition
+            method_definition
         end
         rule(:class_inner_definition) do
           class_inner_definitions >> whitespace?
@@ -201,7 +226,7 @@ module Lutaml
         rule(:diagram_inner_definitions) do
           title_definition |
             class_definition.as(:class) |
-            relationship_definition
+            association_definition.as(:association)
         end
         rule(:diagram_inner_definition) do
           diagram_inner_definitions >> whitespace?

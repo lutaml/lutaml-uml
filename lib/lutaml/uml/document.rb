@@ -25,6 +25,14 @@ module Lutaml
       def classes=(value)
         @classes = value.to_a.map { |attributes| Class.new(attributes) }
       end
+
+      def associations=(value)
+        @associations = value.to_a.map { |attributes| Association.new(attributes) }
+      end
+
+      def associations
+        @associations || []
+      end
     end
   end
 end

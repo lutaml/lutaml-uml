@@ -19,3 +19,7 @@ end
 def fixtures_path(path)
   File.join(File.expand_path("./fixtures", __dir__), path)
 end
+
+def by_name(entries, name)
+  entries.detect { |n| n.name == name }
+end

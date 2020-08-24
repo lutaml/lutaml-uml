@@ -58,15 +58,14 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         File.read(fixtures_path("dsl/diagram_class_fields.lutaml"))
       end
 
-      def by_name(classes, name)
-        classes.detect { |n| n.name == name }
-      end
-
-      it "creates the correct classes and sets the correct number of attributes" do
+      it "creates the correct classes and sets the \
+          correct number of attributes" do
         classes = parse.classes
         expect(by_name(classes, "Component").attributes).to be_nil
-        expect(by_name(classes, "AddressClassProfile").attributes.length).to eq(1)
-        expect(by_name(classes, "AttributeProfile").attributes.length).to eq(5)
+        expect(by_name(classes, "AddressClassProfile")
+                .attributes.length).to eq(1)
+        expect(by_name(classes, "AttributeProfile")
+                .attributes.length).to eq(5)
       end
 
       it "creates the correct attributes with the correct visibility" do
@@ -84,6 +83,68 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       end
 
       it_behaves_like "the correct graphviz formatting"
+    end
+
+    context "when association blocks exists" do
+      let(:conent) do
+        File.read(fixtures_path("dsl/diagram_class_assocation.lutaml"))
+      end
+
+      it "creates the correct number of associations" do
+        expect(parse.associations.length).to eq(3)
+      end
+
+      context "when bidirectional asscoiation syntax " do
+        subject(:association) do
+          by_name(parse.associations, "BidirectionalAsscoiation")
+        end
+
+        it "creates associations with the correct attributes" do
+          expect(association.owned_end_type).to(eq("aggregation"))
+          expect(association.member_end_type).to(eq("direct"))
+          expect(association.owned_end).to(eq("AddressClassProfile"))
+          expect(association.owned_end_attribute_name)
+            .to(eq("addressClassProfile"))
+          expect(association.member_end).to(eq("AttributeProfile"))
+          expect(association.member_end_attribute_name)
+            .to(eq("attributeProfile"))
+          expect(association.member_end_cardinality).to(eq(min: "0", max: "*"))
+        end
+      end
+
+      context "when direct asscoiation syntax " do
+        subject(:association) do
+          by_name(parse.associations, "DirectAsscoiation")
+        end
+
+        it "creates associations with the correct attributes" do
+          expect(association.owned_end_type).to(be_nil)
+          expect(association.member_end_type).to(eq("direct"))
+          expect(association.owned_end).to(eq("AddressClassProfile"))
+          expect(association.owned_end_attribute_name).to(be_nil)
+          expect(association.member_end).to(eq("AttributeProfile"))
+          expect(association.member_end_attribute_name)
+            .to(eq("attributeProfile"))
+          expect(association.member_end_cardinality).to(be_nil)
+        end
+      end
+
+      context "when reverse asscoiation syntax " do
+        subject(:association) do
+          by_name(parse.associations, "ReverseAsscoiation")
+        end
+
+        it "creates associations with the correct attributes" do
+          expect(association.owned_end_type).to(eq("aggregation"))
+          expect(association.member_end_type).to(be_nil)
+          expect(association.owned_end).to(eq("AddressClassProfile"))
+          expect(association.owned_end_attribute_name)
+            .to(eq("addressClassProfile"))
+          expect(association.member_end).to(eq("AttributeProfile"))
+          expect(association.member_end_attribute_name).to(be_nil)
+          expect(association.member_end_cardinality).to(be_nil)
+        end
+      end
     end
   end
 end
