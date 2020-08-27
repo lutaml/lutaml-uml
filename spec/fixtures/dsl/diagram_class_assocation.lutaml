@@ -2,28 +2,28 @@ diagram MyView {
   title "my diagram"
 
   class AddressClassProfile {
-    field addressClassProfile
+    addressClassProfile
   }
   class AttributeProfile {
-    field attributeProfile
+    attributeProfile
   }
 
   association BidirectionalAsscoiation {
-    owned_end_type aggregation
-    member_end_type direct
-    owned_end AddressClassProfile#addressClassProfile
-    member_end AttributeProfile#attributeProfile [0..*]
+    owner_type aggregation
+    member_type direct
+    owner AddressClassProfile#addressClassProfile
+    member AttributeProfile#attributeProfile [0..*]
   }
 
   association DirectAsscoiation {
-    member_end_type direct
-    owned_end AddressClassProfile
-    member_end AttributeProfile#attributeProfile
+    member_type direct
+    owner AddressClassProfile
+    member AttributeProfile#attributeProfile
   }
 
   association ReverseAsscoiation {
-    owned_end_type aggregation
-    owned_end AddressClassProfile#addressClassProfile
-    member_end AttributeProfile
+    owner_type aggregation
+    owner AddressClassProfile#addressClassProfile
+    member AttributeProfile
   }
 }

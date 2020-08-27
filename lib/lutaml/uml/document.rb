@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "lutaml/uml/class"
+require "lutaml/uml/enum"
 
 module Lutaml
   module Uml
@@ -14,7 +15,7 @@ module Lutaml
                     :caption,
                     :groups,
                     :fidelity
-      attr_reader :classes
+      attr_reader :classes, :enums
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
@@ -26,8 +27,20 @@ module Lutaml
         @classes = value.to_a.map { |attributes| Class.new(attributes) }
       end
 
+      def enums=(value)
+        @enums = value.to_a.map { |attributes| Enum.new(attributes) }
+      end
+
       def associations=(value)
         @associations = value.to_a.map { |attributes| Association.new(attributes) }
+      end
+
+      def classes
+        @classes || []
+      end
+
+      def enums
+        @enums || []
       end
 
       def associations

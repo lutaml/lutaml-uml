@@ -26,20 +26,20 @@ module Lutaml
                  transform_with: (lambda do |val|
                    val.dig("target", "type")
                  end)
-        property :owned_end_attribute_name,
+        property :owner_end_attribute_name,
                  from: "relationship",
                  transform_with: (lambda do |val|
                    val.dig("source", "attributes")&.keys&.first ||
                      val.dig("source", "attribute")&.keys&.first
                  end)
-        property :owned_end_cardinality,
+        property :owner_end_cardinality,
                  from: "relationship",
                  transform_with: (lambda do |val|
                    res = val.dig("source", "attributes")&.values&.first ||
                            val.dig("source", "attribute")&.values&.first
                    res["cardinality"] if res
                  end)
-        property :owned_end_type,
+        property :owner_end_type,
                  from: "relationship",
                  transform_with: (lambda do |val|
                    val.dig("source", "type")

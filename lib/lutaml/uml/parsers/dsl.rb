@@ -23,14 +23,15 @@ module Lutaml
 
         KEYWORDS = %w[
           association
-          owned_end_type
-          member_end_type
-          owned_end
-          member_end
-          diagram
-          title
           class
+          diagram
+          enum
           interface
+          member
+          member_type
+          owner
+          owner_type
+          title
           abstract static
           public protected private
           attribute method
@@ -60,8 +61,7 @@ module Lutaml
             match['0-9\*'].as(:max).maybe
         end
         rule(:cardinality) do
-          spaces >>
-            str("[") >>
+          str("[") >>
             cardinality_body_definition.as(:cardinality) >>
             str("]")
         end
@@ -75,72 +75,81 @@ module Lutaml
 
         rule(:member_static) { (kw_static.as(:static) >> spaces).maybe }
         rule(:visibility) do
-          kw_visibility_modifier.as(:visibility_modifier).maybe
+          kw_visibility_modifier.as(:visibility_modifier)
         end
         rule(:visibility?) { visibility.maybe }
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
-        rule(:member_type) do
-          (str(":") >> spaces >> class_name.as(:type)).maybe
+        rule(:attribute_type) do
+          (str(":") >>
+            spaces >>
+            match['"\''].maybe >>
+            match['a-zA-Z0-9_\-\>\< '].repeat(1).as(:type) >>
+            match['"\''].maybe >>
+            spaces?
+          )
+        end
+        rule(:attribute_type?) do
+          attribute_type.maybe
         end
 
         rule(:attribute_name) { name.as(:name) }
-        rule(:attribute_return_type) { member_type.maybe }
         rule(:attribute_definition) do
-          (visibility.as(:visibility) >>
+          (visibility?.as(:visibility) >>
             attribute_name >>
-            attribute_return_type >>
+            attribute_type? >>
             cardinality?)
             .as(:attribute)
         end
 
         rule(:title_keyword) { kw_title >> spaces }
         rule(:title_text) do
-          match['"'].maybe >>
-            match('[a-zA-Z0-9_-]|\s').repeat(1).as(:title) >>
-            match['"'].maybe
+          match['"\''].maybe >>
+            match['a-zA-Z0-9_\- '].repeat(1).as(:title) >>
+            match['"\''].maybe
         end
         rule(:title_definition) { title_keyword >> title_text }
 
-        rule(:method_keyword) { kw_method >> spaces }
-        rule(:method_argument) { name.as(:name) >> member_type }
-        rule(:method_arguments_inner) do
-          (method_argument >>
-            (spaces? >> str(",") >> spaces? >> method_argument).repeat)
-            .repeat.as(:arguments)
-        end
-        rule(:method_arguments) do
-          (str("(") >>
-            spaces? >>
-            method_arguments_inner >>
-            spaces? >>
-            str(")"))
-            .maybe
-        end
+        # Method
+        # rule(:method_keyword) { kw_method >> spaces }
+        # rule(:method_argument) { name.as(:name) >> member_type }
+        # rule(:method_arguments_inner) do
+        #   (method_argument >>
+        #     (spaces? >> str(",") >> spaces? >> method_argument).repeat)
+        #     .repeat.as(:arguments)
+        # end
+        # rule(:method_arguments) do
+        #   (str("(") >>
+        #     spaces? >>
+        #     method_arguments_inner >>
+        #     spaces? >>
+        #     str(")"))
+        #     .maybe
+        # end
 
-        rule(:method_name) { name.as(:name) }
-        rule(:method_return_type) { member_type.maybe }
-        rule(:method_definition) do
-          (method_abstract >>
-            member_static >>
-            visibility >>
-            method_keyword >>
-            method_name >>
-            method_arguments >>
-            method_return_type)
-            .as(:method)
-        end
+        # rule(:method_name) { name.as(:name) }
+        # rule(:method_return_type) { member_type.maybe }
+        # rule(:method_definition) do
+        #   (method_abstract >>
+        #     member_static >>
+        #     visibility >>
+        #     method_keyword >>
+        #     method_name >>
+        #     method_arguments >>
+        #     method_return_type)
+        #     .as(:method)
+        # end
 
         # -- Association
 
         rule(:association_keyword) { kw_association >> spaces }
 
-        %w[owned_end member_end].each do |association_end_type|
+        %w[owner member].each do |association_end_type|
           rule("#{association_end_type}_cardinality") do
             spaces >>
               str("[") >>
               cardinality_body_definition
-              .as("#{association_end_type}_cardinality") >>
+              .as("#{association_end_type}_end_cardinality") >>
               str("]")
           end
           rule("#{association_end_type}_cardinality?") do
@@ -149,7 +158,7 @@ module Lutaml
           rule("#{association_end_type}_attribute_name") do
             str("#") >>
               visibility? >>
-              name.as("#{association_end_type}_attribute_name")
+              name.as("#{association_end_type}_end_attribute_name")
           end
           rule("#{association_end_type}_attribute_name?") do
             send("#{association_end_type}_attribute_name").maybe
@@ -157,22 +166,22 @@ module Lutaml
           rule("#{association_end_type}_definition") do
             send("kw_#{association_end_type}") >>
               spaces >>
-              name.as(association_end_type) >>
+              name.as("#{association_end_type}_end") >>
               send("#{association_end_type}_attribute_name?") >>
               send("#{association_end_type}_cardinality?")
           end
           rule("#{association_end_type}_type") do
             send("kw_#{association_end_type}_type") >>
               spaces >>
-              name.as("#{association_end_type}_type")
+              name.as("#{association_end_type}_end_type")
           end
         end
 
         rule(:association_inner_definitions) do
-          owned_end_type |
-            member_end_type |
-            owned_end_definition |
-            member_end_definition
+          owner_type |
+            member_type |
+            owner_definition |
+            member_definition
         end
         rule(:association_inner_definition) do
           association_inner_definitions >> whitespace?
@@ -186,7 +195,7 @@ module Lutaml
         end
         rule(:association_definition) do
           association_keyword >>
-            name.as(:name) >>
+            name.as(:name).maybe >>
             association_body
         end
 
@@ -199,8 +208,8 @@ module Lutaml
         end
         rule(:class_keyword) { kw_class >> spaces }
         rule(:class_inner_definitions) do
-          attribute_definition |
-            method_definition
+          attribute_definition # |
+            # method_definition
         end
         rule(:class_inner_definition) do
           class_inner_definitions >> whitespace?
@@ -220,12 +229,35 @@ module Lutaml
             class_body?
         end
 
+        # -- Enum
+        rule(:enum_keyword) { kw_enum >> spaces }
+        rule(:enum_inner_definitions) do
+          attribute_definition
+        end
+        rule(:enum_inner_definition) do
+          enum_inner_definitions >> whitespace?
+        end
+        rule(:enum_body) do
+          spaces? >>
+            str("{") >>
+            whitespace? >>
+            enum_inner_definition.repeat.as(:members) >>
+            str("}")
+        end
+        rule(:enum_body?) { enum_body.maybe }
+        rule(:enum_definition) do
+          enum_keyword >>
+            class_name.as(:name) >>
+            enum_body?
+        end
+
         # -- Diagram
 
         rule(:diagram_keyword) { kw_diagram >> spaces? }
         rule(:diagram_inner_definitions) do
           title_definition |
             class_definition.as(:class) |
+            enum_definition.as(:enum) |
             association_definition.as(:association)
         end
         rule(:diagram_inner_definition) do
@@ -247,7 +279,8 @@ module Lutaml
           diagram_keyword >>
             spaces? >>
             class_name.as(:name) >>
-            diagram_body?
+            diagram_body? >>
+            whitespace?
         end
         rule(:diagram_definitions) { diagram_definition >> whitespace? }
         rule(:diagram) { whitespace? >> diagram_definition }

@@ -79,10 +79,22 @@ module Lutaml
           generate_from_dot(dot)
         end
 
+        def escape_html_chars(text)
+          text
+            .gsub(/</, '&#60;')
+            .gsub(/>/, '&#62;')
+            .gsub(/\[/, '&#91;')
+            .gsub(/\]/, '&#93;')
+        end
+
         def format_field(node)
           symbol = ACCESS_SYMBOLS[node.visibility]
           result = "#{symbol} #{node.name}"
           result += " : #{node.type}" if node.type
+          if node.cardinality
+            result += "[#{node.cardinality[:min]}..#{node.cardinality[:max]}]"
+          end
+          result = escape_html_chars(result)
           result = "<U>#{result}</U>" if node.static
 
           result
@@ -106,7 +118,7 @@ module Lutaml
         end
 
         def format_relationship(node)
-          graph_parent_name = generate_graph_name(node.owned_end)
+          graph_parent_name = generate_graph_name(node.owner_end)
           graph_node_name = generate_graph_name(node.member_end)
           attributes = generate_graph_relationship_attributes(node)
           graph_attributes = " [#{attributes}]" unless attributes.empty?
@@ -119,18 +131,18 @@ module Lutaml
           if %w[dependency realizes].include?(node.member_end_type)
             attributes["style"] = "dashed"
           end
-          attributes["dir"] = if node.owned_end_type && node.member_end_type
+          attributes["dir"] = if node.owner_end_type && node.member_end_type
                                 "both"
-                              elsif node.owned_end_type
+                              elsif node.owner_end_type
                                 "back"
                               else
                                 "direct"
                               end
           attributes["label"] = node.action if node.action
-          if node.owned_end_attribute_name
+          if node.owner_end_attribute_name
             attributes["headlabel"] = format_label(
-              node.owned_end_attribute_name,
-              node.owned_end_cardinality
+              node.owner_end_attribute_name,
+              node.owner_end_cardinality
             )
           end
           if node.member_end_attribute_name
@@ -140,7 +152,7 @@ module Lutaml
             )
           end
 
-          attributes["arrowhead"] = case node.owned_end_type
+          attributes["arrowhead"] = case node.owner_end_type
                                     when "composition"
                                       "diamond"
                                     when "aggregation"
@@ -276,7 +288,7 @@ module Lutaml
           groups.each do |batch|
             batch.each do |group_name|
               associations
-                .select { |assc| assc.owned_end == group_name }
+                .select { |assc| assc.owner_end == group_name }
                 .each do |association|
                   result.push(association) unless result.include?(association)
                 end

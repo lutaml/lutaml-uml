@@ -1,0 +1,89 @@
+diagram Designations {
+  title 'Designation models'
+  class Designation {
+    normativeStatus: 'NormativeStatus'
+    absent: 'Boolean' [0..1]
+    geographicArea: 'Iso3166Code' [0..*]
+    sources: 'ConceptSource' [0..*]
+  }
+  enum NormativeStatus {
+  }
+  class ExpressionDesignation {
+    text: 'GlossaristTextElementType'
+    language: 'Iso639ThreeCharCode'
+    script: 'Iso15924Code' [0..1]
+    pronunciation: '<<BasicDocument>> LocalizedString' [0..*]
+    grammarInfo: 'GrammarInfo' [0..*]
+  }
+  association ExpressionDesignationDesignation {
+    owner ExpressionDesignation
+    member_type inheritance
+    member Designation
+  }
+  class GrammarInfo {
+    gender: 'GrammarGender' [0..*]
+    isPreposition: 'Boolean' [0..1]
+    isParticiple: 'Boolean' [0..1]
+    isAdjective: 'Boolean' [0..1]
+    isVerb: 'Boolean' [0..1]
+    isAdverb: 'Boolean' [0..1]
+    isNoun: 'Boolean' [0..1]
+  }
+  class SymbolDesignation {
+    isInternational: 'Boolean'
+  }
+  association SymbolDesignationDesignation {
+    owner SymbolDesignation
+    member_type inheritance
+    member Designation
+  }
+  class PrefixDesignation {
+  }
+  association PrefixDesignationExpressionDesignation {
+    owner PrefixDesignation
+    member_type inheritance
+    member ExpressionDesignation
+  }
+  class SuffixDesignation {
+  }
+  association SuffixDesignationExpressionDesignation {
+    owner SuffixDesignation
+    member_type inheritance
+    member ExpressionDesignation
+  }
+  class AbbreviationDesignation {
+    isInternational: 'Boolean'
+    abbreviationType: 'AbbreviationType' [0..1]
+  }
+  association AbbreviationDesignationExpressionDesignation {
+    owner AbbreviationDesignation
+    member_type inheritance
+    member ExpressionDesignation
+  }
+  enum AbbreviationType {
+  }
+  class LetterSymbolDesignation {
+    text: '<<BasicDocument>> LocalizedString'
+    language: 'Iso639ThreeCharCode'
+    script: 'Iso15924Code' [0..1]
+  }
+  association LetterSymbolDesignationSymbolDesignation {
+    owner LetterSymbolDesignation
+    member_type inheritance
+    member SymbolDesignation
+  }
+  class GraphicalSymbolDesignation {
+    text: '<<BasicDocument>> LocalizedString' [0..1]
+    image: 'Image' [0..1]
+    isInternational: 'Boolean'
+  }
+  association GraphicalSymbolDesignationSymbolDesignation {
+    owner GraphicalSymbolDesignation
+    member_type inheritance
+    member SymbolDesignation
+  }
+  enum GrammarGender {
+  }
+}
+
+

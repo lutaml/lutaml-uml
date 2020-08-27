@@ -22,18 +22,18 @@ Syntax:
 [source,java]
 ----
 association name {
-  owned_end_type association|composition|aggregation|generalization|uses
-  member_end_type association|composition|aggregation|generalization|uses
-  owned_end association_name[#attribute_name] [{property_string}][cardinality]
-  member_end association_name[#attribute_name] [{property_string}][cardinality]
+  owned_type association|composition|aggregation|generalization|uses
+  member_type association|composition|aggregation|generalization|uses
+  owned association_name[#attribute_name] [{property_string}][cardinality]
+  member association_name[#attribute_name] [{property_string}][cardinality]
 }
 ----
 
 where:
 
-* `owned_end_type` - optional, use to define bidirectional association(association|composition|aggregation|generalization|uses)
-* `member_end_type` - association type(association|composition|aggregation|generalization|uses)
-* `owned_end|member_end` - end of association, use `\#attribute_name` to set a role name
+* `owned_type` - optional, use to define bidirectional association(association|composition|aggregation|generalization|uses)
+* `member_type` - association type(association|composition|aggregation|generalization|uses)
+* `owned|member` - end of association, use `\#attribute_name` to set a role name
 * `property_string` - property string for attibutes associations
 * `cardinality` - examples: '1..*', '*'
 

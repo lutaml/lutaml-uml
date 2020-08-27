@@ -27,6 +27,7 @@ module Lutaml
       def associtaion_type(type)
         return type if respond_to?("#{type}=")
         return "classes" if type == :class
+        return "enums" if type == :enum
         return "attributes" if type == :attribute
         return "associations" if type == :association
 

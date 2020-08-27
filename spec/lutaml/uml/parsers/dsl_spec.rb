@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe Lutaml::Uml::Parsers::Dsl do
   describe ".parse" do
-    subject(:parse) { described_class.parse(conent) }
+    subject(:parse) { described_class.parse(content) }
     subject(:format_parsed_document) do
       Lutaml::Uml::Formatter::Graphviz.new.format_document(parse)
     end
@@ -16,7 +16,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
     end
 
     context "when simple diagram without attributes" do
-      let(:conent) do
+      let(:content) do
         File.read(fixtures_path("dsl/diagram.lutaml"))
       end
 
@@ -28,7 +28,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
     end
 
     context "when diagram with attributes" do
-      let(:conent) do
+      let(:content) do
         File.read(fixtures_path("dsl/diagram_attributes.lutaml"))
       end
 
@@ -41,7 +41,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
     end
 
     context "when multiply classes entries" do
-      let(:conent) do
+      let(:content) do
         File.read(fixtures_path("dsl/diagram_multiply_classes.lutaml"))
       end
 
@@ -54,7 +54,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
     end
 
     context "when class with fields" do
-      let(:conent) do
+      let(:content) do
         File.read(fixtures_path("dsl/diagram_class_fields.lutaml"))
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         expect(by_name(classes, "AddressClassProfile")
                 .attributes.length).to eq(1)
         expect(by_name(classes, "AttributeProfile")
-                .attributes.length).to eq(5)
+                .attributes.length).to eq(7)
       end
 
       it "creates the correct attributes with the correct visibility" do
@@ -86,7 +86,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
     end
 
     context "when association blocks exists" do
-      let(:conent) do
+      let(:content) do
         File.read(fixtures_path("dsl/diagram_class_assocation.lutaml"))
       end
 
@@ -100,10 +100,10 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         end
 
         it "creates associations with the correct attributes" do
-          expect(association.owned_end_type).to(eq("aggregation"))
+          expect(association.owner_end_type).to(eq("aggregation"))
           expect(association.member_end_type).to(eq("direct"))
-          expect(association.owned_end).to(eq("AddressClassProfile"))
-          expect(association.owned_end_attribute_name)
+          expect(association.owner_end).to(eq("AddressClassProfile"))
+          expect(association.owner_end_attribute_name)
             .to(eq("addressClassProfile"))
           expect(association.member_end).to(eq("AttributeProfile"))
           expect(association.member_end_attribute_name)
@@ -118,10 +118,10 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         end
 
         it "creates associations with the correct attributes" do
-          expect(association.owned_end_type).to(be_nil)
+          expect(association.owner_end_type).to(be_nil)
           expect(association.member_end_type).to(eq("direct"))
-          expect(association.owned_end).to(eq("AddressClassProfile"))
-          expect(association.owned_end_attribute_name).to(be_nil)
+          expect(association.owner_end).to(eq("AddressClassProfile"))
+          expect(association.owner_end_attribute_name).to(be_nil)
           expect(association.member_end).to(eq("AttributeProfile"))
           expect(association.member_end_attribute_name)
             .to(eq("attributeProfile"))
@@ -135,16 +135,60 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         end
 
         it "creates associations with the correct attributes" do
-          expect(association.owned_end_type).to(eq("aggregation"))
+          expect(association.owner_end_type).to(eq("aggregation"))
           expect(association.member_end_type).to(be_nil)
-          expect(association.owned_end).to(eq("AddressClassProfile"))
-          expect(association.owned_end_attribute_name)
+          expect(association.owner_end).to(eq("AddressClassProfile"))
+          expect(association.owner_end_attribute_name)
             .to(eq("addressClassProfile"))
           expect(association.member_end).to(eq("AttributeProfile"))
           expect(association.member_end_attribute_name).to(be_nil)
           expect(association.member_end_cardinality).to(be_nil)
         end
       end
+    end
+
+    context "whene enum entries" do
+      let(:content) do
+        File.read(fixtures_path("dsl/diagram_enum.lutaml"))
+      end
+
+      it "Generates the correct enums list" do
+        enums = parse.enums
+        expect(by_name(enums, "MyEnum").attributes).to be_nil
+        expect(by_name(enums, "AddressClassProfile")
+                .attributes.length).to eq(1)
+        expect(by_name(enums, "Profile")
+                .attributes.length).to eq(5)
+      end
+
+      it_behaves_like "the correct graphviz formatting"
+    end
+
+    context "when concept model generated lutaml file" do
+      let(:content) do
+        File.read(fixtures_path("dsl/diagram_concept_model.lutaml"))
+      end
+
+      it "Generates the correct class/enums/associations list" do
+        document = parse
+        expect(document.classes.length).to(eq(9))
+        expect(document.enums.length).to(eq(3))
+        expect(document.associations.length).to(eq(7))
+      end
+
+      it "Generates the correct attributes list" do
+        attributes = by_name(parse.classes, 'ExpressionDesignation').attributes
+        expect(attributes.length).to(eq(5))
+        expect(attributes.map(&:name)).to(eq(%w[text language script pronunciation grammarInfo]))
+        expect(attributes.map(&:type))
+          .to(eq(["GlossaristTextElementType",
+                  "Iso639ThreeCharCode",
+                  "Iso15924Code",
+                  "<<BasicDocument>> LocalizedString",
+                  "GrammarInfo"]))
+      end
+
+      it_behaves_like "the correct graphviz formatting"
     end
   end
 end

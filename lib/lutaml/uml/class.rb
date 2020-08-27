@@ -39,7 +39,7 @@ module Lutaml
 
       def associations=(value)
         @associations = value.to_a.map do |attr|
-          Association.new(attr.to_h.merge(owned_end: name))
+          Association.new(attr.to_h.merge(owner_end: name))
         end
       end
 

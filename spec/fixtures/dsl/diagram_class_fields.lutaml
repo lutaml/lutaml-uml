@@ -9,9 +9,11 @@ diagram MyView {
 
   class AttributeProfile {
     imlicistAttributeProfile: CharacterString [0..1]
-    +attributeProfile: CharacterString [0..1]
+    +attributeProfile: '<<BasicDocument>> LocalizedString' [0..1]
+    +attributeProfile1: '<<BasicDocument>> LocalizedString'
     -privateAttributeProfile: CharacterString [1]
-    ~friendlyAttributeProfile: CharacterString [1..*]
+    ~friendlyAttributeProfile: "<<Type>> CharacterString" [1..*]
+    ~friendlyAttributeProfile1: "<<Type>> CharacterString"
     #protectedAttributeProfile: CharacterString
   }
 }
