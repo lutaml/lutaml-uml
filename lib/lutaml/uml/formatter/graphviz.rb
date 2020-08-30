@@ -19,7 +19,7 @@ module Lutaml
         ACCESS_SYMBOLS = {
           "public"    => "+",
           "protected" => "#",
-          "private"   => "-"
+          "private"   => "-",
         }.freeze
 
         VALID_TYPES = %i[
@@ -43,8 +43,9 @@ module Lutaml
           super
 
           @graph = Attributes.new
-          # Associations lines style
-          @graph["splines"] = "true"
+          # Associations lines style, `true` gives curved lines
+          # https://graphviz.org/doc/info/attrs.html#d:splines
+          @graph["splines"] = "ortho"
           # Padding between outside of picture and nodes
           @graph["pad"] = 0.5
           # Padding between levels
@@ -81,10 +82,10 @@ module Lutaml
 
         def escape_html_chars(text)
           text
-            .gsub(/</, '&#60;')
-            .gsub(/>/, '&#62;')
-            .gsub(/\[/, '&#91;')
-            .gsub(/\]/, '&#93;')
+            .gsub(/</, "&#60;")
+            .gsub(/>/, "&#62;")
+            .gsub(/\[/, "&#91;")
+            .gsub(/\]/, "&#93;")
         end
 
         def format_field(node)
@@ -152,20 +153,24 @@ module Lutaml
             )
           end
 
-          attributes["arrowhead"] = case node.owner_end_type
+          attributes["arrowtail"] = case node.owner_end_type
                                     when "composition"
                                       "diamond"
                                     when "aggregation"
                                       "odiamond"
+                                    when "direct"
+                                      "vee"
                                     else
                                       "onormal"
                                     end
 
-          attributes["arrowtail"] = case node.member_end_type
+          attributes["arrowhead"] = case node.member_end_type
                                     when "composition"
                                       "diamond"
                                     when "aggregation"
                                       "odiamond"
+                                    when "direct"
+                                      "vee"
                                     else
                                       "onormal"
                                     end
@@ -180,7 +185,7 @@ module Lutaml
         def format_label(name, cardinality = {})
           res = "+#{name}"
           if cardinality.nil? ||
-             (cardinality["min"].nil? || cardinality["max"].nil?)
+              (cardinality["min"].nil? || cardinality["max"].nil?)
             return res
           end
 
@@ -192,7 +197,7 @@ module Lutaml
           name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
           name = "«interface»<BR/>#{name}" if node.modifier == "interface"
 
-          unless node.attributes.nil? || node.attributes.empty? || hide_members
+          unless node.attributes.blank? || hide_members
             field_rows = node.attributes.map do |field|
               %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>}
             end
@@ -205,7 +210,7 @@ module Lutaml
             field_table << "\n" << " " * 6
           end
 
-          unless node.methods.nil? || node.methods.empty? || hide_members
+          unless node.methods.blank? || hide_members
             method_rows = node.methods.map do |method|
               %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>}
             end
@@ -250,14 +255,14 @@ module Lutaml
             HEREDOC
           end.join("\n")
           associations = node.classes.map(&:associations).compact.flatten +
-                         node.associations
+            node.associations
           if node.groups
             associations = sort_by_document_groupping(node.groups, associations)
           end
           classes_names = node.classes.map(&:name)
           associations = associations.map do |assoc_node|
             if hide_other_classes &&
-               !classes_names.include?(assoc_node.member_end)
+                !classes_names.include?(assoc_node.member_end)
               next
             end
 
@@ -266,7 +271,7 @@ module Lutaml
 
           classes = classes.lines.map { |line| "  #{line}" }.join.chomp
           associations = associations
-                         .lines.map { |line| "  #{line}" }.join.chomp
+            .lines.map { |line| "  #{line}" }.join.chomp
 
           <<~HEREDOC
             digraph G {

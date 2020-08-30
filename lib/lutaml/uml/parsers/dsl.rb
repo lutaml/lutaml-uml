@@ -209,7 +209,7 @@ module Lutaml
         rule(:class_keyword) { kw_class >> spaces }
         rule(:class_inner_definitions) do
           attribute_definition # |
-            # method_definition
+          # method_definition
         end
         rule(:class_inner_definition) do
           class_inner_definitions >> whitespace?

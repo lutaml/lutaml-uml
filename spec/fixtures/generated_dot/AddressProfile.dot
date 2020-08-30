@@ -1,5 +1,5 @@
 digraph G {
-  graph [splines="true" pad=0.5 ranksep="1.2.equally" nodesep="1.2.equally"]
+  graph [splines="ortho" pad=0.5 ranksep="1.2.equally" nodesep="1.2.equally"]
   edge [color="gray50"]
   node [shape="box"]
 
@@ -12,7 +12,7 @@ digraph G {
   <TR>
     <TD>
           <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
-            <TR><TD ALIGN="LEFT">+ country : iso3166Code</TD></TR>
+            <TR><TD ALIGN="LEFT">+ country : iso3166Code&#91;0..*&#93;</TD></TR>
           </TABLE>
         </TD>
   </TR>
@@ -20,6 +20,6 @@ digraph G {
   </TABLE>
   >]
 
-  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" arrowhead="onormal" arrowtail="odiamond" taillabel="+componentProfile 0..*"]
-  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" arrowhead="onormal" arrowtail="odiamond" taillabel="+addressProfile 0..*"]
+  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" arrowtail="onormal" arrowhead="odiamond" taillabel="+componentProfile 0..*"]
+  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" arrowtail="onormal" arrowhead="odiamond" taillabel="+addressProfile 0..*"]
 }

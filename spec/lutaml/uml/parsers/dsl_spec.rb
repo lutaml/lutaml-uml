@@ -173,13 +173,14 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         document = parse
         expect(document.classes.length).to(eq(9))
         expect(document.enums.length).to(eq(3))
-        expect(document.associations.length).to(eq(7))
+        expect(document.associations.length).to(eq(16))
       end
 
       it "Generates the correct attributes list" do
-        attributes = by_name(parse.classes, 'ExpressionDesignation').attributes
+        attributes = by_name(parse.classes, "ExpressionDesignation").attributes
         expect(attributes.length).to(eq(5))
-        expect(attributes.map(&:name)).to(eq(%w[text language script pronunciation grammarInfo]))
+        expect(attributes.map(&:name))
+          .to(eq(%w[text language script pronunciation grammarInfo]))
         expect(attributes.map(&:type))
           .to(eq(["GlossaristTextElementType",
                   "Iso639ThreeCharCode",

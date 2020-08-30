@@ -20,7 +20,7 @@ module Lutaml
         def yaml_parse(yaml_path)
           yaml_content = YAML.safe_load(File.read(yaml_path))
           serialized_yaml = Lutaml::Uml::Serializers::YamlView
-                            .new(yaml_content)
+            .new(yaml_content)
           result = Lutaml::Uml::Document.new(serialized_yaml)
           result.classes = imports_to_classes(yaml_content, yaml_path)
           result

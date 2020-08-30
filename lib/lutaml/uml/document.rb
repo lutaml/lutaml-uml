@@ -15,7 +15,6 @@ module Lutaml
                     :caption,
                     :groups,
                     :fidelity
-      attr_reader :classes, :enums
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
@@ -32,7 +31,9 @@ module Lutaml
       end
 
       def associations=(value)
-        @associations = value.to_a.map { |attributes| Association.new(attributes) }
+        @associations = value.to_a.map do |attributes|
+          Association.new(attributes)
+        end
       end
 
       def classes

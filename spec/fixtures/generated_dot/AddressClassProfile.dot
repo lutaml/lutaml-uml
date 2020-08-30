@@ -1,5 +1,5 @@
 digraph G {
-  graph [splines="true" pad=0.5 ranksep="1.2.equally" nodesep="1.2.equally"]
+  graph [splines="ortho" pad=0.5 ranksep="1.2.equally" nodesep="1.2.equally"]
   edge [color="gray50"]
   node [shape="box"]
 
@@ -57,16 +57,16 @@ digraph G {
   </TABLE>
   >]
 
-  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" arrowhead="onormal" arrowtail="odiamond" taillabel="+componentProfile 0..*"]
-  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" arrowhead="onormal" arrowtail="odiamond" taillabel="+addressProfile 0..*"]
-  AddressClassProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowhead="odiamond" arrowtail="onormal"]
-  AddressClassProfile -> ProfileCompliantAddress [dir="direct" label="◀ compliesWith" headlabel="+profile 1..1" arrowhead="onormal" arrowtail="onormal"]
-  AddressComponentProfile -> AddressClassProfile [dir="direct" label="◀ uses" taillabel="+componentProfile" arrowhead="onormal" arrowtail="odiamond"]
-  AddressComponentProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowhead="odiamond" arrowtail="onormal"]
+  AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" arrowtail="onormal" arrowhead="odiamond" taillabel="+componentProfile 0..*"]
+  AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" arrowtail="onormal" arrowhead="odiamond" taillabel="+addressProfile 0..*"]
+  AddressClassProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowtail="odiamond" arrowhead="vee"]
+  AddressClassProfile -> ProfileCompliantAddress [dir="direct" label="◀ compliesWith" headlabel="+profile 1..1" arrowtail="onormal" arrowhead="vee"]
+  AddressComponentProfile -> AddressClassProfile [dir="direct" label="◀ uses" taillabel="+componentProfile" arrowtail="onormal" arrowhead="odiamond"]
+  AddressComponentProfile -> AttributeProfile [dir="both" headlabel="+addressClassProfile" taillabel="+attributeProfile" arrowtail="odiamond" arrowhead="vee"]
   
   
   
-  InterchangeAddressClassProfile -> AddressClassProfile [dir="direct" arrowhead="onormal" arrowtail="onormal"]
+  InterchangeAddressClassProfile -> AddressClassProfile [dir="direct" arrowtail="onormal" arrowhead="onormal"]
   
   
   
