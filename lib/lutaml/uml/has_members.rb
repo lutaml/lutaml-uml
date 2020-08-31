@@ -3,6 +3,8 @@
 module Lutaml
   module Uml
     module HasMembers
+      class UnknownMemberTypeError < StandardError; end
+
       # TODO: move to Parslet::Transform
       def members=(value)
         value

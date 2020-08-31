@@ -86,6 +86,9 @@ view_yaml["imports"].keys.each do |entry|
   import_name = import["name"]
   # Class notation
   sync_puts("#{import['modelType']} #{import['name']} {", 2)
+  import["values"]&.each_pair do |key, values|
+    sync_puts("#{key}", 4)
+  end
   import["attributes"]&.each_pair do |key, values|
     cardinality = if values["cardinality"]
                     cardinality_val = values["cardinality"]
@@ -93,7 +96,7 @@ view_yaml["imports"].keys.each do |entry|
                   else
                     ""
                   end
-    sync_puts("+#{key}: '#{values['type']}' #{cardinality}", 4)
+    sync_puts("+#{key}: #{values['type']} #{cardinality}", 4)
   end
   sync_puts("}", 2)
 

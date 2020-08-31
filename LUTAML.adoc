@@ -10,6 +10,7 @@ diagram MyView {
   import Relationship, Element
   render_option typed_as_associations
   file "my_view.png"
+  fontname "Helvetica"
 }
 ----
 

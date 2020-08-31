@@ -61,7 +61,7 @@ diagram Designations {
     member GlossaristTextElementType
   }
   class Designation {
-    +normativeStatus: 'NormativeStatus' 
+    +normativeStatus: 'NormativeStatus'
     +absent: 'Boolean' [0..1]
     +geographicArea: 'Iso3166Code' [0..*]
     +sources: 'ConceptSource' [0..*]
@@ -69,10 +69,10 @@ diagram Designations {
   enum NormativeStatus {
   }
   class ExpressionDesignation {
-    +text: 'GlossaristTextElementType' 
-    +language: 'Iso639ThreeCharCode' 
+    +text: 'GlossaristTextElementType'
+    +language: 'Iso639ThreeCharCode'
     +script: 'Iso15924Code' [0..1]
-    +pronunciation: '<<BasicDocument>> LocalizedString' [0..*]
+    +pronunciation: <<BasicDocument>> 'LocalizedString' [0..*]
     +grammarInfo: 'GrammarInfo' [0..*]
   }
   association {
@@ -90,7 +90,7 @@ diagram Designations {
     +isNoun: 'Boolean' [0..1]
   }
   class SymbolDesignation {
-    +isInternational: 'Boolean' 
+    +isInternational: 'Boolean'
   }
   association {
     owner SymbolDesignation
@@ -102,14 +102,14 @@ diagram Designations {
   class SuffixDesignation {
   }
   class AbbreviationDesignation {
-    +isInternational: 'Boolean' 
+    +isInternational: 'Boolean'
     +abbreviationType: 'AbbreviationType' [0..1]
   }
   enum AbbreviationType {
   }
   class LetterSymbolDesignation {
-    +text: '<<BasicDocument>> LocalizedString' 
-    +language: 'Iso639ThreeCharCode' 
+    +text: <<BasicDocument>> 'LocalizedString'
+    +language: 'Iso639ThreeCharCode'
     +script: 'Iso15924Code' [0..1]
   }
   association {
@@ -118,9 +118,9 @@ diagram Designations {
     member SymbolDesignation
   }
   class GraphicalSymbolDesignation {
-    +text: '<<BasicDocument>> LocalizedString' [0..1]
+    +text: <<BasicDocument>> 'LocalizedString' [0..1]
     +image: 'Image' [0..1]
-    +isInternational: 'Boolean' 
+    +isInternational: 'Boolean'
   }
   association {
     owner GraphicalSymbolDesignation

@@ -21,6 +21,7 @@ module Lutaml
           "protected" => "#",
           "private"   => "-",
         }.freeze
+        DEFAULT_CLASS_FONT = 'Helvetica'.freeze
 
         VALID_TYPES = %i[
           dot
@@ -197,7 +198,7 @@ module Lutaml
           name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
           name = "«interface»<BR/>#{name}" if node.modifier == "interface"
 
-          unless node.attributes.blank? || hide_members
+          unless node.attributes.nil? || node.attributes.empty? || hide_members
             field_rows = node.attributes.map do |field|
               %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>}
             end
@@ -210,7 +211,7 @@ module Lutaml
             field_table << "\n" << " " * 6
           end
 
-          unless node.methods.blank? || hide_members
+          unless node.attributes.nil? || node.methods.empty? || hide_members
             method_rows = node.methods.map do |method|
               %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>}
             end
@@ -241,15 +242,18 @@ module Lutaml
         end
 
         def format_document(node)
+          @fontname = node.fontname || DEFAULT_CLASS_FONT
+          @node["fontname"] = "#{@fontname}-bold"
+
           if node.fidelity
             hide_members = node.fidelity["hideMembers"]
             hide_other_classes = node.fidelity["hideOtherClasses"]
           end
-          classes = node.classes.map do |class_node|
+          classes = (node.classes + node.enums).map do |class_node|
             graph_node_name = generate_graph_name(class_node.name)
 
             <<~HEREDOC
-              #{graph_node_name} [shape="plain" label=<
+              #{graph_node_name} [shape="plain" fontname="#{@fontname || DEFAULT_CLASS_FONT}" label=<
                 #{format_class(class_node, hide_members)}
               >]
             HEREDOC

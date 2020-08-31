@@ -1,4 +1,5 @@
 diagram MyView {
+  fontname "Arial"
   title "my diagram"
   class Foo {}
 }

@@ -22,6 +22,7 @@ module Lutaml
         end
 
         KEYWORDS = %w[
+          fontname
           association
           class
           diagram
@@ -80,11 +81,19 @@ module Lutaml
         rule(:visibility?) { visibility.maybe }
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
+        rule(:attribute_namespace) do
+          str('<<') >>
+            match['a-zA-Z0-9_\-'].repeat(1).as(:namespace) >>
+            str('>>')
+        end
+        rule(:attribute_namespace?) { attribute_namespace.maybe }
         rule(:attribute_type) do
           (str(":") >>
-            spaces >>
+            spaces? >>
+            attribute_namespace? >>
+            spaces? >>
             match['"\''].maybe >>
-            match['a-zA-Z0-9_\-\>\< '].repeat(1).as(:type) >>
+            match['a-zA-Z0-9_\- '].repeat(1).as(:type) >>
             match['"\''].maybe >>
             spaces?
           )
@@ -109,6 +118,14 @@ module Lutaml
             match['"\''].maybe
         end
         rule(:title_definition) { title_keyword >> title_text }
+
+        rule(:fontname_keyword) { kw_fontname >> spaces }
+        rule(:fontname_text) do
+          match['"\''].maybe >>
+            match['a-zA-Z0-9_\- '].repeat(1).as(:fontname) >>
+            match['"\''].maybe
+        end
+        rule(:fontname_definition) { fontname_keyword >> fontname_text }
 
         # Method
         # rule(:method_keyword) { kw_method >> spaces }
@@ -256,6 +273,7 @@ module Lutaml
         rule(:diagram_keyword) { kw_diagram >> spaces? }
         rule(:diagram_inner_definitions) do
           title_definition |
+            fontname_definition |
             class_definition.as(:class) |
             enum_definition.as(:enum) |
             association_definition.as(:association)
@@ -263,14 +281,10 @@ module Lutaml
         rule(:diagram_inner_definition) do
           diagram_inner_definitions >> whitespace?
         end
-        rule(:title_definitions?) do
-          (title_definition >> whitespace?).maybe
-        end
         rule(:diagram_body) do
           spaces? >>
             str("{") >>
             whitespace? >>
-            title_definitions? >>
             diagram_inner_definition.repeat.as(:members) >>
             str("}")
         end

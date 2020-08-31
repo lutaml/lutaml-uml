@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+#
+# Script to convert lutaml files into dot and png files
+# Usage: bin/lutaml2dotpng /path/to/lutaml/folder/
+require "bundler/setup"
+require "lutaml/uml"
+
+basedir = ARGV[0]
+Dir["#{basedir}/*.lutaml"].each do |filename|
+  puts(filename)
+  base_filename = File.basename(filename, '.lutaml')
+  File.open("#{basedir}/#{base_filename}.dot", 'w') do |file|
+    file
+      .puts(Lutaml::Uml::Formatter::Graphviz
+              .new
+              .format_document(
+                Lutaml::Uml::Parsers::Dsl
+                  .parse(File.read("#{basedir}/#{base_filename}.lutaml"))))
+  end
+  `dot -T png #{"#{basedir}/#{base_filename}.dot"} > "#{basedir}/#{base_filename}.png"`
+end

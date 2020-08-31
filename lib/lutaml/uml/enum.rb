@@ -19,6 +19,11 @@ module Lutaml
           TopElementAttribute.new(attr)
         end
       end
+
+      # TODO: reserved name, change
+      def methods
+        []
+      end
     end
   end
 end

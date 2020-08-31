@@ -35,6 +35,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       it "creates Lutaml::Uml::Document object and sets its attributes" do
         expect(parse).to be_instance_of(Lutaml::Uml::Document)
         expect(parse.title).to eq("my diagram")
+        expect(parse.fontname).to eq("Arial")
       end
 
       it_behaves_like "the correct graphviz formatting"
@@ -72,12 +73,22 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         attributes = by_name(parse.classes, "AttributeProfile").attributes
         expect(by_name(attributes, "imlicistAttributeProfile").visibility)
           .to be_nil
+        expect(by_name(attributes, "imlicistAttributeProfile").namespace)
+          .to be_nil
         expect(by_name(attributes, "attributeProfile").visibility)
           .to eq("public")
+        expect(by_name(attributes, "attributeProfile").namespace)
+          .to eq("BasicDocument")
+        expect(by_name(attributes, "attributeProfile1").visibility)
+          .to eq("public")
+        expect(by_name(attributes, "attributeProfile1").namespace)
+          .to eq("BasicDocument")
         expect(by_name(attributes, "privateAttributeProfile").visibility)
           .to eq("private")
         expect(by_name(attributes, "friendlyAttributeProfile").visibility)
           .to eq("friendly")
+        expect(by_name(attributes, "friendlyAttributeProfile").namespace)
+          .to eq("Type")
         expect(by_name(attributes, "protectedAttributeProfile").visibility)
           .to eq("protected")
       end
@@ -185,7 +196,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
           .to(eq(["GlossaristTextElementType",
                   "Iso639ThreeCharCode",
                   "Iso15924Code",
-                  "<<BasicDocument>> LocalizedString",
+                  "LocalizedString",
                   "GrammarInfo"]))
       end
 

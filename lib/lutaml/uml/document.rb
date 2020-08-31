@@ -6,7 +6,6 @@ require "lutaml/uml/enum"
 module Lutaml
   module Uml
     class Document
-      class UnknownMemberTypeError < StandardError; end
       include HasAttributes
       include HasMembers
 
@@ -14,7 +13,8 @@ module Lutaml
                     :title,
                     :caption,
                     :groups,
-                    :fidelity
+                    :fidelity,
+                    :fontname
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
