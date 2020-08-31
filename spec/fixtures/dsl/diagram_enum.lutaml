@@ -1,0 +1,17 @@
+diagram MyView {
+  title "my diagram"
+
+  enum MyEnum {}
+
+  enum AddressClassProfile {
+    +addressClassProfile: CharacterString
+  }
+
+  enum Profile {
+    imlicistAttributeProfile: CharacterString
+    +attributeProfile: CharacterString
+    -privateAttributeProfile: CharacterString
+    ~friendlyAttributeProfile: CharacterString
+    #protectedAttributeProfile: CharacterString
+  }
+}

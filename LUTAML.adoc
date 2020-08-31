@@ -10,6 +10,7 @@ diagram MyView {
   import Relationship, Element
   render_option typed_as_associations
   file "my_view.png"
+  fontname "Helvetica"
 }
 ----
 
@@ -22,16 +23,18 @@ Syntax:
 [source,java]
 ----
 association name {
-  type association|composition|aggregation|generalization|uses
-  from|to association_name[#attribute_name] [{property_string}][cardinality]
+  owned_type association|composition|aggregation|generalization|uses
+  member_type association|composition|aggregation|generalization|uses
+  owned association_name[#attribute_name] [{property_string}][cardinality]
+  member association_name[#attribute_name] [{property_string}][cardinality]
 }
 ----
 
 where:
 
-* `type` - association type(association|composition|aggregation|generalization|uses)
-* `from` - direction of association, start of the association arrow(for generalization, uses types)
-* `to` - direction of association, end of the association arrow(for generalization, uses types)
+* `owned_type` - optional, use to define bidirectional association(association|composition|aggregation|generalization|uses)
+* `member_type` - association type(association|composition|aggregation|generalization|uses)
+* `owned|member` - end of association, use `\#attribute_name` to set a role name
 * `property_string` - property string for attibutes associations
 * `cardinality` - examples: '1..*', '*'
 

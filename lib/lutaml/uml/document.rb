@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 require "lutaml/uml/class"
+require "lutaml/uml/enum"
 
 module Lutaml
   module Uml
     class Document
-      class UnknownMemberTypeError < StandardError; end
       include HasAttributes
+      include HasMembers
 
       attr_accessor :name,
                     :title,
                     :caption,
                     :groups,
-                    :fidelity
-      attr_reader :classes
+                    :fidelity,
+                    :fontname
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
@@ -21,25 +22,30 @@ module Lutaml
       end
       # rubocop:enable Rails/ActiveRecordAliases
 
-      def members=(value)
-        value
-          .to_a
-          .group_by { |attributes| attributes[:type].to_s }
-          .map do |(type, group)|
-          public_send("#{associtaion_type(type)}=", group)
-        end
-      end
-
       def classes=(value)
         @classes = value.to_a.map { |attributes| Class.new(attributes) }
       end
 
-      private
+      def enums=(value)
+        @enums = value.to_a.map { |attributes| Enum.new(attributes) }
+      end
 
-      def associtaion_type(type)
-        return "classes" if type == "class"
+      def associations=(value)
+        @associations = value.to_a.map do |attributes|
+          Association.new(attributes)
+        end
+      end
 
-        raise(UnknownMemberTypeError, "Unknown member type: #{type}")
+      def classes
+        @classes || []
+      end
+
+      def enums
+        @enums || []
+      end
+
+      def associations
+        @associations || []
       end
     end
   end

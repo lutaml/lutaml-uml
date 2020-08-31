@@ -3,10 +3,12 @@
 module Lutaml
   module Uml
     class Association < TopElement
-      attr_accessor :owned_end,
-                    :owned_end_attribute_name,
-                    :owned_end_cardinality,
-                    :owned_end_type,
+      include HasMembers
+
+      attr_accessor :owner_end,
+                    :owner_end_attribute_name,
+                    :owner_end_cardinality,
+                    :owner_end_type,
                     :member_end,
                     :member_end_attribute_name,
                     :member_end_cardinality,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'open3'
-require 'lutaml/uml/formatter/base'
+require "open3"
+require "lutaml/uml/formatter/base"
 
 module Lutaml
   module Uml
@@ -9,15 +9,19 @@ module Lutaml
       class Graphviz < Base
         class Attributes < Hash
           def to_s
-            to_a.reject {|(_k, val)| val.nil? }.map { |(a, b)| "#{a}=#{b.inspect}" }.join(' ')
+            to_a
+              .reject { |(_k, val)| val.nil? }
+              .map { |(a, b)| "#{a}=#{b.inspect}" }
+              .join(" ")
           end
         end
 
         ACCESS_SYMBOLS = {
-          'public'    => '+',
-          'protected' => '#',
-          'private'   => '-'
+          "public"    => "+",
+          "protected" => "#",
+          "private"   => "-",
         }.freeze
+        DEFAULT_CLASS_FONT = 'Helvetica'.freeze
 
         VALID_TYPES = %i[
           dot
@@ -40,22 +44,23 @@ module Lutaml
           super
 
           @graph = Attributes.new
-          # Associations lines style
-          @graph['splines'] = 'true'
+          # Associations lines style, `true` gives curved lines
+          # https://graphviz.org/doc/info/attrs.html#d:splines
+          @graph["splines"] = "ortho"
           # Padding between outside of picture and nodes
-          @graph['pad'] = 0.5
+          @graph["pad"] = 0.5
           # Padding between levels
-          @graph['ranksep'] = "1.2.equally"
+          @graph["ranksep"] = "1.2.equally"
           # Padding between nodes
-          @graph['nodesep'] = "1.2.equally"
+          @graph["nodesep"] = "1.2.equally"
           # TODO: set rankdir
           # @graph['rankdir'] = 'BT'
 
           @edge = Attributes.new
-          @edge['color'] = 'gray50'
+          @edge["color"] = "gray50"
 
           @node = Attributes.new
-          @node['shape'] = 'box'
+          @node["shape"] = "box"
 
           @type = :dot
         end
@@ -76,10 +81,25 @@ module Lutaml
           generate_from_dot(dot)
         end
 
+        def escape_html_chars(text)
+          text
+            .gsub(/</, "&#60;")
+            .gsub(/>/, "&#62;")
+            .gsub(/\[/, "&#91;")
+            .gsub(/\]/, "&#93;")
+        end
+
         def format_field(node)
           symbol = ACCESS_SYMBOLS[node.visibility]
-          result = "#{symbol} #{node.name}"
-          result += " : #{node.type}" if node.type
+          result = "#{symbol}#{node.name}"
+          if node.type
+            namespace = node.namespace ? "<<#{node.namespace}>>" : ''
+            result += " : #{namespace}#{node.type}"
+          end
+          if node.cardinality
+            result += "[#{node.cardinality[:min]}..#{node.cardinality[:max]}]"
+          end
+          result = escape_html_chars(result)
           result = "<U>#{result}</U>" if node.static
 
           result
@@ -91,7 +111,7 @@ module Lutaml
           if node.arguments
             arguments = node.arguments.map do |argument|
               "#{argument.name}#{" : #{argument.type}" if argument.type}"
-            end.join(', ')
+            end.join(", ")
           end
 
           result << "(#{arguments})"
@@ -103,7 +123,7 @@ module Lutaml
         end
 
         def format_relationship(node)
-          graph_parent_name = generate_graph_name(node.owned_end)
+          graph_parent_name = generate_graph_name(node.owner_end)
           graph_node_name = generate_graph_name(node.member_end)
           attributes = generate_graph_relationship_attributes(node)
           graph_attributes = " [#{attributes}]" unless attributes.empty?
@@ -114,50 +134,54 @@ module Lutaml
         def generate_graph_relationship_attributes(node)
           attributes = Attributes.new
           if %w[dependency realizes].include?(node.member_end_type)
-            attributes['style'] = 'dashed'
+            attributes["style"] = "dashed"
           end
-          attributes['dir'] = if node.owned_end_type && node.member_end_type
-                                'both'
-                              elsif node.owned_end_type
-                                'back'
+          attributes["dir"] = if node.owner_end_type && node.member_end_type
+                                "both"
+                              elsif node.owner_end_type
+                                "back"
                               else
-                                'direct'
+                                "direct"
                               end
-          attributes['label'] = node.action if node.action
-          if node.owned_end_attribute_name
-            attributes['headlabel'] = format_label(
-              node.owned_end_attribute_name,
-              node.owned_end_cardinality
+          attributes["label"] = node.action if node.action
+          if node.owner_end_attribute_name
+            attributes["headlabel"] = format_label(
+              node.owner_end_attribute_name,
+              node.owner_end_cardinality
             )
           end
           if node.member_end_attribute_name
-            attributes['taillabel'] = format_label(
+            attributes["taillabel"] = format_label(
               node.member_end_attribute_name,
               node.member_end_cardinality
             )
           end
 
-          attributes['arrowhead'] = case node.owned_end_type
-                                    when 'composition'
-                                      'diamond'
-                                    when 'aggregation'
-                                      'odiamond'
+          attributes["arrowtail"] = case node.owner_end_type
+                                    when "composition"
+                                      "diamond"
+                                    when "aggregation"
+                                      "odiamond"
+                                    when "direct"
+                                      "vee"
                                     else
-                                      'onormal'
+                                      "onormal"
                                     end
 
-          attributes['arrowtail'] = case node.member_end_type
-                                    when 'composition'
-                                      'diamond'
-                                    when 'aggregation'
-                                      'odiamond'
+          attributes["arrowhead"] = case node.member_end_type
+                                    when "composition"
+                                      "diamond"
+                                    when "aggregation"
+                                      "odiamond"
+                                    when "direct"
+                                      "vee"
                                     else
-                                      'onormal'
+                                      "onormal"
                                     end
           # swap labels and arrows if `dir` eq to `back`
-          if attributes['dir'] == 'back'
-            attributes['arrowhead'], attributes['arrowtail'] = [attributes['arrowtail'], attributes['arrowhead']]
-            attributes['headlabel'], attributes['taillabel'] = [attributes['taillabel'], attributes['headlabel']]
+          if attributes["dir"] == "back"
+            attributes["arrowhead"], attributes["arrowtail"] = [attributes["arrowtail"], attributes["arrowhead"]]
+            attributes["headlabel"], attributes["taillabel"] = [attributes["taillabel"], attributes["headlabel"]]
           end
           attributes
         end
@@ -165,7 +189,7 @@ module Lutaml
         def format_label(name, cardinality = {})
           res = "+#{name}"
           if cardinality.nil? ||
-             (cardinality['min'].nil? || cardinality['max'].nil?)
+              (cardinality["min"].nil? || cardinality["max"].nil?)
             return res
           end
 
@@ -174,8 +198,8 @@ module Lutaml
 
         def format_class(node, hide_members)
           name = "<B>#{node.name}</B>"
-          name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == 'abstract'
-          name = "«interface»<BR/>#{name}" if node.modifier == 'interface'
+          name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
+          name = "«interface»<BR/>#{name}" if node.modifier == "interface"
 
           unless node.attributes.nil? || node.attributes.empty? || hide_members
             field_rows = node.attributes.map do |field|
@@ -187,10 +211,10 @@ module Lutaml
               #{field_rows.map { |row| ' ' * 10 + row }.join("\n")}
                       </TABLE>
             HEREDOC
-            field_table << "\n" << ' ' * 6
+            field_table << "\n" << " " * 6
           end
 
-          unless node.methods.nil? || node.methods.empty? || hide_members
+          unless node.attributes.nil? || node.methods.empty? || hide_members
             method_rows = node.methods.map do |method|
               %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>}
             end
@@ -200,7 +224,7 @@ module Lutaml
               #{method_rows.map { |row| ' ' * 10 + row }.join("\n")}
                       </TABLE>
             HEREDOC
-            method_table << "\n" << ' ' * 6
+            method_table << "\n" << " " * 6
           end
 
           table_body = [name, field_table, method_table].map do |type|
@@ -221,27 +245,31 @@ module Lutaml
         end
 
         def format_document(node)
+          @fontname = node.fontname || DEFAULT_CLASS_FONT
+          @node["fontname"] = "#{@fontname}-bold"
+
           if node.fidelity
-            hide_members = node.fidelity['hideMembers']
-            hide_other_classes = node.fidelity['hideOtherClasses']
+            hide_members = node.fidelity["hideMembers"]
+            hide_other_classes = node.fidelity["hideOtherClasses"]
           end
-          classes = node.classes.map do |class_node|
+          classes = (node.classes + node.enums).map do |class_node|
             graph_node_name = generate_graph_name(class_node.name)
 
             <<~HEREDOC
-              #{graph_node_name} [shape="plain" label=<
+              #{graph_node_name} [shape="plain" fontname="#{@fontname || DEFAULT_CLASS_FONT}" label=<
                 #{format_class(class_node, hide_members)}
               >]
             HEREDOC
           end.join("\n")
-          associations = node.classes.map(&:associations).compact.flatten
+          associations = node.classes.map(&:associations).compact.flatten +
+            node.associations
           if node.groups
             associations = sort_by_document_groupping(node.groups, associations)
           end
           classes_names = node.classes.map(&:name)
           associations = associations.map do |assoc_node|
             if hide_other_classes &&
-               !classes_names.include?(assoc_node.member_end)
+                !classes_names.include?(assoc_node.member_end)
               next
             end
 
@@ -250,7 +278,7 @@ module Lutaml
 
           classes = classes.lines.map { |line| "  #{line}" }.join.chomp
           associations = associations
-                         .lines.map { |line| "  #{line}" }.join.chomp
+            .lines.map { |line| "  #{line}" }.join.chomp
 
           <<~HEREDOC
             digraph G {
@@ -272,7 +300,7 @@ module Lutaml
           groups.each do |batch|
             batch.each do |group_name|
               associations
-                .select { |assc| assc.owned_end == group_name }
+                .select { |assc| assc.owner_end == group_name }
                 .each do |association|
                   result.push(association) unless result.include?(association)
                 end
@@ -296,7 +324,7 @@ module Lutaml
         end
 
         def generate_graph_name(name)
-          name.gsub(/[^0-9a-zA-Z]/i, '')
+          name.gsub(/[^0-9a-zA-Z]/i, "")
         end
       end
     end

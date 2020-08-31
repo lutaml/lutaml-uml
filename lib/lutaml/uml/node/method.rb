@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/node/field'
-require 'lutaml/uml/node/method_argument'
-require 'lutaml/uml/node/has_name'
+require "lutaml/uml/node/field"
+require "lutaml/uml/node/method_argument"
+require "lutaml/uml/node/has_name"
 
 module Lutaml
   module Uml
@@ -19,7 +19,9 @@ module Lutaml
         attr_reader :arguments
 
         def arguments=(value)
-          @arguments = value.to_a.map { |attributes| MethodArgument.new(attributes) }
+          @arguments = value.to_a.map do |attributes|
+            MethodArgument.new(attributes)
+          end
         end
       end
     end

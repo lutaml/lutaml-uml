@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/node/base'
-require 'lutaml/uml/node/has_name'
-require 'lutaml/uml/node/has_type'
+require "lutaml/uml/node/base"
+require "lutaml/uml/node/has_name"
+require "lutaml/uml/node/has_type"
 
 module Lutaml
   module Uml
@@ -12,7 +12,7 @@ module Lutaml
         include HasType
 
         def initialize(attributes = {})
-          @access = 'public'
+          @access = "public"
 
           super
         end

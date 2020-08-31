@@ -11,11 +11,12 @@ module Lutaml
                     :definition,
                     :contain,
                     :static,
-                    :cardinality
+                    :cardinality,
+                    :namespace
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
-        @visibility = 'public'
+        @visibility = "public"
         update_attributes(attributes)
       end
       # rubocop:enable Rails/ActiveRecordAliases

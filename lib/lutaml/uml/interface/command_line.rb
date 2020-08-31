@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'optparse'
-require 'pathname'
-require 'lutaml/uml/interface/base'
-require 'lutaml/uml/parsers/dsl'
-require 'lutaml/uml/parsers/yaml'
-require 'lutaml/uml/parsers/attribute'
-require 'lutaml/uml/formatter'
+require "optparse"
+require "pathname"
+require "lutaml/uml/interface/base"
+require "lutaml/uml/parsers/dsl"
+require "lutaml/uml/parsers/yaml"
+require "lutaml/uml/parsers/attribute"
+require "lutaml/uml/formatter"
 
 module Lutaml
   module Uml
@@ -17,7 +17,7 @@ module Lutaml
         class NotSupportedInputFormat < Error; end
 
         SUPPORTED_FORMATS = %w[yaml dsl].freeze
-        DEFAULT_INPUT_FORMAT = 'dsl'
+        DEFAULT_INPUT_FORMAT = "dsl"
 
         def initialize(attributes = {})
           @formatter     = Formatter::Graphviz.new
@@ -87,7 +87,7 @@ module Lutaml
               raise FileError, "File does not exist: #{input_path}"
             end
 
-            document = if @input_format == 'yaml'
+            document = if @input_format == "yaml"
                          Parsers::Yaml.parse(input_path)
                        else
                          data = input_path.read
@@ -99,11 +99,11 @@ module Lutaml
               output_path = @output_path
               if output_path.directory?
                 output_path = output_path.join(input_path
-                                                .basename('.*').to_s +
+                                                .basename(".*").to_s +
                                               ".#{@formatter.type}")
               end
 
-              output_path.open('w+') { |file| file.write(result) }
+              output_path.open("w+") { |file| file.write(result) }
             else
               puts result
             end
@@ -140,28 +140,28 @@ module Lutaml
         end
 
         def setup_parser_options
-          @option_parser.banner = ''
+          @option_parser.banner = ""
           format_desc = "The output formatter (Default: '#{@formatter.name}')"
           @option_parser
-            .on('-f',
-                '--formatter VALUE',
+            .on("-f",
+                "--formatter VALUE",
                 format_desc) do |value|
             self.formatter = value
           end
           @option_parser
-            .on('-t', '--type VALUE', 'The output format type') do |value|
+            .on("-t", "--type VALUE", "The output format type") do |value|
               @type = value
             end
           @option_parser
-            .on('-o', '--output VALUE', 'The output path') do |value|
+            .on("-o", "--output VALUE", "The output path") do |value|
               self.output_path = value
             end
           @option_parser
-            .on('-i', '--input-format VALUE', 'The input format') do |value|
+            .on("-i", "--input-format VALUE", "The input format") do |value|
               self.input_format = value
             end
           @option_parser
-            .on('-h', '--help', 'Prints this help') do
+            .on("-h", "--help", "Prints this help") do
             print_help
             exit
           end
@@ -170,25 +170,25 @@ module Lutaml
         def setup_parser_formatter_options
           case @formatter.name
           when :graphviz
-            @option_parser.on('-g', '--graph VALUE') do |value|
+            @option_parser.on("-g", "--graph VALUE") do |value|
               Parsers::Attribute.parse(value).each do |key, attr_value|
                 @formatter.graph[key] = attr_value
               end
             end
 
-            @option_parser.on('-e', '--edge VALUE') do |value|
+            @option_parser.on("-e", "--edge VALUE") do |value|
               Parsers::Attribute.parse(value).each do |key, attr_value|
                 @formatter.edge[key] = attr_value
               end
             end
 
-            @option_parser.on('-n', '--node VALUE') do |value|
+            @option_parser.on("-n", "--node VALUE") do |value|
               Parsers::Attribute.parse(value).each do |key, attr_value|
                 @formatter.node[key] = attr_value
               end
             end
 
-            @option_parser.on('-a', '--all VALUE') do |value|
+            @option_parser.on("-a", "--all VALUE") do |value|
               Parsers::Attribute.parse(value).each do |key, attr_value|
                 @formatter.graph[key] = attr_value
                 @formatter.edge[key] = attr_value

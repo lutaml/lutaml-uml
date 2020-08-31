@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/serializers/base'
+require "lutaml/uml/serializers/base"
 
 module Lutaml
   module Uml

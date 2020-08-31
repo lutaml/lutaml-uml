@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'lutaml/uml/formatter'
-require 'lutaml/uml/has_attributes'
+require "lutaml/uml/formatter"
+require "lutaml/uml/has_attributes"
 
 module Lutaml
   module Uml
@@ -17,7 +17,7 @@ module Lutaml
           end
 
           def name
-            to_s.split('::').last.downcase.to_sym
+            to_s.split("::").last.downcase.to_sym
           end
         end
 
