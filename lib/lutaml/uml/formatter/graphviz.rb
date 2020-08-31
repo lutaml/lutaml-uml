@@ -91,8 +91,11 @@ module Lutaml
 
         def format_field(node)
           symbol = ACCESS_SYMBOLS[node.visibility]
-          result = "#{symbol} #{node.name}"
-          result += " : #{node.type}" if node.type
+          result = "#{symbol}#{node.name}"
+          if node.type
+            namespace = node.namespace ? "<<#{node.namespace}>>" : ''
+            result += " : #{namespace}#{node.type}"
+          end
           if node.cardinality
             result += "[#{node.cardinality[:min]}..#{node.cardinality[:max]}]"
           end
