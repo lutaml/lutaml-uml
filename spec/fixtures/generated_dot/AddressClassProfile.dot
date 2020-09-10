@@ -1,57 +1,147 @@
 digraph G {
   graph [splines="ortho" pad=0.5 ranksep="1.2.equally" nodesep="1.2.equally"]
   edge [color="gray50"]
-  node [shape="box"]
+  node [shape="box" fontname="Helvetica-bold"]
 
-  AddressProfile [shape="plain" label=<
+  AddressProfile [shape="plain" fontname="Helvetica" label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
-    <TD><B>AddressProfile</B></TD>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>AddressProfile</B></TD></TR>
+  </TABLE>
+  </TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
   </TR>
   
   </TABLE>
   >]
   
-  AddressClassProfile [shape="plain" label=<
+  AddressClassProfile [shape="plain" fontname="Helvetica" label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
-    <TD><B>AddressClassProfile</B></TD>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>AddressClassProfile</B></TD></TR>
+  </TABLE>
+  </TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
   </TR>
   
   </TABLE>
   >]
   
-  AddressComponentProfile [shape="plain" label=<
+  AddressComponentProfile [shape="plain" fontname="Helvetica" label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
-    <TD><B>AddressComponentProfile</B></TD>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>AddressComponentProfile</B></TD></TR>
+  </TABLE>
+  </TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
   </TR>
   
   </TABLE>
   >]
   
-  AttributeProfile [shape="plain" label=<
+  AttributeProfile [shape="plain" fontname="Helvetica" label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
-    <TD><B>AttributeProfile</B></TD>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>AttributeProfile</B></TD></TR>
+  </TABLE>
+  </TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
   </TR>
   
   </TABLE>
   >]
   
-  ProfileCompliantAddress [shape="plain" label=<
+  ProfileCompliantAddress [shape="plain" fontname="Helvetica" label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
-    <TD><B>ProfileCompliantAddress</B></TD>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>ProfileCompliantAddress</B></TD></TR>
+  </TABLE>
+  </TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
   </TR>
   
   </TABLE>
   >]
   
-  InterchangeAddressClassProfile [shape="plain" label=<
+  InterchangeAddressClassProfile [shape="plain" fontname="Helvetica" label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
-    <TD><B>InterchangeAddressClassProfile</B></TD>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="CENTER"><B>InterchangeAddressClassProfile</B></TD></TR>
+  </TABLE>
+  </TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
+  </TR>
+  
+  <TR>
+    <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR><TD ALIGN="LEFT"></TD></TR>
+  </TABLE></TD>
   </TR>
   
   </TABLE>

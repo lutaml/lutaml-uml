@@ -14,12 +14,12 @@ RSpec.describe Lutaml::Uml::Formatter::Graphviz do
           .parse(fixtures_path("datamodel/views/AddressProfile.yml"))
       end
 
-      let(:foramttted_dot_content) do
+      let(:formatted_dot_content) do
         File.read(fixtures_path("generated_dot/AddressProfile.dot"))
       end
 
       it "generates the correct relationship graph" do
-        expect(format_document).to eq(foramttted_dot_content)
+        expect(format_document).to eq(formatted_dot_content)
       end
     end
 
@@ -29,12 +29,12 @@ RSpec.describe Lutaml::Uml::Formatter::Graphviz do
           .parse(fixtures_path("datamodel/views/AddressClassProfile.yml"))
       end
 
-      let(:foramttted_dot_content) do
+      let(:formatted_dot_content) do
         File.read(fixtures_path("generated_dot/AddressClassProfile.dot"))
       end
 
       it "generates the correct relationship graph" do
-        expect(format_document).to eq(foramttted_dot_content)
+        expect(format_document).to eq(formatted_dot_content)
       end
     end
   end

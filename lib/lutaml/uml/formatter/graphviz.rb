@@ -93,7 +93,7 @@ module Lutaml
           symbol = ACCESS_SYMBOLS[node.visibility]
           result = "#{symbol}#{node.name}"
           if node.type
-            namespace = node.namespace ? "<<#{node.namespace}>>" : ''
+            namespace = node.namespace ? "«#{node.namespace}»" : ''
             result += " : #{namespace}#{node.type}"
           end
           if node.cardinality
@@ -196,45 +196,48 @@ module Lutaml
           "#{res} #{cardinality['min']}..#{cardinality['max']}"
         end
 
-        def format_class(node, hide_members)
-          name = "<B>#{node.name}</B>"
-          name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
-          name = "«interface»<BR/>#{name}" if node.modifier == "interface"
+        def format_member_rows(members, hide_members)
+          unless !hide_members && members && members.length.positive?
+            return <<~HEREDOC.chomp
+              <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+                <TR><TD ALIGN="LEFT"></TD></TR>
+              </TABLE>
+            HEREDOC
+          end
 
-          unless node.attributes.nil? || node.attributes.empty? || hide_members
-            field_rows = node.attributes.map do |field|
-              %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>}
-            end
-            field_table = <<~HEREDOC.chomp
-
-                      <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+          field_rows = members.map do |field|
+            %{<TR><TD ALIGN="LEFT">#{format_field(field)}</TD></TR>}
+          end
+          field_table = <<~HEREDOC.chomp
+            <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
               #{field_rows.map { |row| ' ' * 10 + row }.join("\n")}
-                      </TABLE>
-            HEREDOC
-            field_table << "\n" << " " * 6
-          end
+            </TABLE>
+          HEREDOC
+          field_table << "\n" << " " * 6
+          field_table
+        end
 
-          unless node.attributes.nil? || node.methods.empty? || hide_members
-            method_rows = node.methods.map do |method|
-              %{<TR><TD ALIGN="LEFT">#{format_method(method)}</TD></TR>}
-            end
-            method_table = <<~HEREDOC.chomp
+        def format_class(node, hide_members)
+          name = ["<B>#{node.name}</B>"]
+          name.unshift("«#{node.namespace}»") if node.namespace
+          name_html = <<~HEREDOC
+            <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+              #{name.map {|n| %Q(<TR><TD ALIGN="CENTER">#{n}</TD></TR>) }.join('\n')}
+            </TABLE>
+          HEREDOC
+          # name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
+          # name = "«interface»<BR/>#{name}" if node.modifier == "interface"
 
-                      <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
-              #{method_rows.map { |row| ' ' * 10 + row }.join("\n")}
-                      </TABLE>
-            HEREDOC
-            method_table << "\n" << " " * 6
-          end
-
-          table_body = [name, field_table, method_table].map do |type|
+          field_table = format_member_rows(node.attributes, hide_members)
+          method_table = format_member_rows(node.methods, hide_members)
+          table_body = [name_html, field_table, method_table].map do |type|
             next if type.nil?
 
             <<~TEXT
               <TR>
                 <TD>#{type}</TD>
               </TR>
-                         TEXT
+            TEXT
           end
 
           <<~HEREDOC.chomp

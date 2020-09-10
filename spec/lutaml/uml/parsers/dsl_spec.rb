@@ -47,8 +47,10 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       end
 
       it "creates Lutaml::Uml::Document object and creates dependent classes" do
+        classes = parse.classes
         expect(parse).to be_instance_of(Lutaml::Uml::Document)
-        expect(parse.classes.length).to eq(3)
+        expect(parse.classes.length).to eq(4)
+        expect(by_name(classes, "NamespacedClass").namespace).to eq('MyNamespace')
       end
 
       it_behaves_like "the correct graphviz formatting"

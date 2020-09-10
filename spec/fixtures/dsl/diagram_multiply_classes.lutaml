@@ -3,4 +3,5 @@ diagram MyView {
   class Foo {}
   class Doo {}
   class Koo {}
+  class NamespacedClass <<MyNamespace>> {}
 }
