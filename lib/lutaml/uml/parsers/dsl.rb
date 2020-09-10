@@ -243,6 +243,8 @@ module Lutaml
           class_modifier >>
             class_keyword >>
             class_name.as(:name) >>
+            spaces? >>
+            attribute_namespace? >>
             class_body?
         end
 
