@@ -18,9 +18,12 @@ jobs:
       matrix:
         ruby: [ '2.6', '2.5', '2.4' ]
         experimental: [false]
-        include:
-          - ruby: '2.7'
-            experimental: true
+        # Does not supported yet:
+        # Ruby (< 2.7.dev, >= 2.3), which is required by gem 'nokogiri (~> 1.10)', is not
+        #   available in the local ruby installation
+        # include:
+        #   - ruby: '2.7'
+        #     experimental: true
     steps:
       - uses: actions/checkout@master
       - name: Use Ruby
