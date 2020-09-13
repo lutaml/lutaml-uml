@@ -1,28 +1,27 @@
 # Lutaml::Uml
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/lutaml/uml`. To experiment with that code, run `bin/console` for an interactive prompt.
+Lutaml is a language for specifying UML class diagrams and a tool for converting it into various different formats.
 
-TODO: Delete this and the text above, and describe your gem
+## Install
 
-## Installation
+### Bundler: `gem "lutaml-uml"`
 
-Add this line to your application's Gemfile:
+### RubyGems: `gem install lutaml-uml`
 
-```ruby
-gem 'lutaml-uml'
-```
+## Executable
 
-And then execute:
+[source,sh]
+--
+# Convert example.lutaml to example.png
+$ lutaml-uml --type png --output . example.lutaml
 
-    $ bundle install
+# Display detailed help message
+$ lutaml-uml --help
+--
 
-Or install it yourself as:
+## Language
 
-    $ gem install lutaml-uml
-
-## Usage
-
-TODO: Write usage instructions here
+See link:LUTAML.adoc[LUTAML.adoc]
 
 ## Development
 

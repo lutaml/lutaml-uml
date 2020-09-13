@@ -3,8 +3,10 @@ digraph G {
   edge [color="gray50"]
   node [shape="box" fontname="Helvetica-bold"]
 
-  AddressProfile [shape="plain" fontname="Helvetica" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  AddressProfile [
+    shape="plain"
+    fontname="Helvetica"
+    label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD ALIGN="CENTER"><B>AddressProfile</B></TD></TR>
@@ -24,11 +26,12 @@ digraph G {
   </TABLE></TD>
   </TR>
   
-  </TABLE>
-  >]
+  </TABLE>>]
   
-  AddressClassProfile [shape="plain" fontname="Helvetica" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  AddressClassProfile [
+    shape="plain"
+    fontname="Helvetica"
+    label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD ALIGN="CENTER"><B>AddressClassProfile</B></TD></TR>
@@ -48,11 +51,12 @@ digraph G {
   </TABLE></TD>
   </TR>
   
-  </TABLE>
-  >]
+  </TABLE>>]
   
-  AddressComponentProfile [shape="plain" fontname="Helvetica" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  AddressComponentProfile [
+    shape="plain"
+    fontname="Helvetica"
+    label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD ALIGN="CENTER"><B>AddressComponentProfile</B></TD></TR>
@@ -72,11 +76,12 @@ digraph G {
   </TABLE></TD>
   </TR>
   
-  </TABLE>
-  >]
+  </TABLE>>]
   
-  AttributeProfile [shape="plain" fontname="Helvetica" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  AttributeProfile [
+    shape="plain"
+    fontname="Helvetica"
+    label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD ALIGN="CENTER"><B>AttributeProfile</B></TD></TR>
@@ -96,11 +101,12 @@ digraph G {
   </TABLE></TD>
   </TR>
   
-  </TABLE>
-  >]
+  </TABLE>>]
   
-  ProfileCompliantAddress [shape="plain" fontname="Helvetica" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  ProfileCompliantAddress [
+    shape="plain"
+    fontname="Helvetica"
+    label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD ALIGN="CENTER"><B>ProfileCompliantAddress</B></TD></TR>
@@ -120,11 +126,12 @@ digraph G {
   </TABLE></TD>
   </TR>
   
-  </TABLE>
-  >]
+  </TABLE>>]
   
-  InterchangeAddressClassProfile [shape="plain" fontname="Helvetica" label=<
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
+  InterchangeAddressClassProfile [
+    shape="plain"
+    fontname="Helvetica"
+    label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">
     <TR>
     <TD><TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD ALIGN="CENTER"><B>InterchangeAddressClassProfile</B></TD></TR>
@@ -144,8 +151,7 @@ digraph G {
   </TABLE></TD>
   </TR>
   
-  </TABLE>
-  >]
+  </TABLE>>]
 
   AddressProfile -> AddressComponentProfile [dir="back" label="defines ▶" arrowtail="onormal" arrowhead="odiamond" taillabel="+componentProfile 0..*"]
   AddressProfile -> AddressClassProfile [dir="back" label="defines ▶" arrowtail="onormal" arrowhead="odiamond" taillabel="+addressProfile 0..*"]

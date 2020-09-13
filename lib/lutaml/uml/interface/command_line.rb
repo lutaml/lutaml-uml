@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "optparse"
 require "pathname"
 require "lutaml/uml/interface/base"
@@ -200,7 +198,7 @@ module Lutaml
 
         def print_help
           puts <<~HELP
-            #{text_bold('Usage:')} ucd [options] PATHS
+            #{text_bold('Usage:')} lutaml-uml [options] PATHS
 
             #{text_bold('Overview:')} Generate output from UML Class Diagram language files
 
@@ -218,27 +216,27 @@ module Lutaml
 
                 #{text_underline('Examples')}
 
-                    `ucd project.ucd`
+                    `lutaml-uml project.lutaml`
 
                         Produces DOT notation, sent to standard output
 
-                    `ucd -o . project.ucd`
+                    `lutaml-uml -o . project.lutaml`
 
                         Produces DOT notation, written to #{text_italic('./project.dot')}
 
-                    `ucd -o ./diagram.dot project.ucd`
+                    `lutaml-uml -o ./diagram.dot project.lutaml`
 
                         Produces DOT notation, written to #{text_italic('./diagram.dot')}
 
-                    `ucd -o ./diagram.png project.ucd`
+                    `lutaml-uml -o ./diagram.png project.lutaml`
 
                         Produces PNG image, written to #{text_italic('./diagram.png')}
 
-                    `ucd -t png -o . project.ucd`
+                    `lutaml-uml -t png -o . project.lutaml`
 
                         Produces PNG image, written to #{text_italic('./project.png')}
 
-                    `ucd -t png -o . project.ucd core_ext.ucd`
+                    `lutaml-uml -t png -o . project.lutaml-uml core_ext.lutaml`
 
                         Produces PNG images, written to #{text_italic('./project.png')} and #{text_italic('./core_ext.png')}
 

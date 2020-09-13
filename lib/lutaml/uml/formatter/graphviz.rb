@@ -2,6 +2,7 @@
 
 require "open3"
 require "lutaml/uml/formatter/base"
+require "ruby-graphviz"
 
 module Lutaml
   module Uml
@@ -259,9 +260,10 @@ module Lutaml
             graph_node_name = generate_graph_name(class_node.name)
 
             <<~HEREDOC
-              #{graph_node_name} [shape="plain" fontname="#{@fontname || DEFAULT_CLASS_FONT}" label=<
-                #{format_class(class_node, hide_members)}
-              >]
+              #{graph_node_name} [
+                shape="plain"
+                fontname="#{@fontname || DEFAULT_CLASS_FONT}"
+                label=<#{format_class(class_node, hide_members)}>]
             HEREDOC
           end.join("\n")
           associations = node.classes.map(&:associations).compact.flatten +
@@ -316,14 +318,14 @@ module Lutaml
         end
 
         def generate_from_dot(dot)
-          return dot if @type == :dot
-
-          Open3.popen3("dot -T#{type}") do |stdin, stdout, _stderr, _wait|
-            stdin.puts(dot)
-            stdin.close
-            # unless (err = stderr.read).empty? then raise err end
-            stdout.read
-          end
+          # https://github.com/glejeune/Ruby-Graphviz/issues/78
+          # Ruby-Graphviz has an old bug when html labels was not displayed
+          #  property because of `<` and `>` characters escape, add additional
+          #   `<` and `>` symbols to workaround it
+          escaped_dot = dot.gsub("<<", "<<<").gsub(">>", ">>>")
+          GraphViz
+            .parse_string(escaped_dot)
+            .output(@type => String)
         end
 
         def generate_graph_name(name)
