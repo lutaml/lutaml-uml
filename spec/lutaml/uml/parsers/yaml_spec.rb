@@ -14,11 +14,5 @@ RSpec.describe Lutaml::Uml::Parsers::Yaml do
       expect(parse).to be_instance_of(Lutaml::Uml::Document)
       expect(parse.classes.first).to be_instance_of(Lutaml::Uml::Class)
     end
-
-    it "Lutaml::Uml::Formatter::Graphviz understands the format of document" do
-      expect do
-        Lutaml::Uml::Formatter::Graphviz.new.format(parse)
-      end.to_not(raise_error)
-    end
   end
 end
