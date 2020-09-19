@@ -3,6 +3,9 @@
 module Lutaml
   module Uml
     class DataType < Class
+      def keyword
+        "dataType"
+      end
     end
   end
 end

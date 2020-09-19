@@ -7,6 +7,13 @@ diagram MyView {
     +addressClassProfile: CharacterString
   }
 
+  data_type "Banking Information" {
+    "art code"
+    "CCT Number"
+  }
+
+  primitive Integer
+
   enum Profile {
     imlicistAttributeProfile: CharacterString
     +attributeProfile: CharacterString

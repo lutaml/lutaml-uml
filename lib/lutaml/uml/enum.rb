@@ -24,6 +24,10 @@ module Lutaml
       def methods
         []
       end
+
+      def keyword
+        "enumeration"
+      end
     end
   end
 end

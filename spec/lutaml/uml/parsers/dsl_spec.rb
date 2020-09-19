@@ -50,7 +50,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         classes = parse.classes
         expect(parse).to be_instance_of(Lutaml::Uml::Document)
         expect(parse.classes.length).to eq(4)
-        expect(by_name(classes, "NamespacedClass").namespace).to eq('MyNamespace')
+        expect(by_name(classes, "NamespacedClass").keyword).to eq('MyNamespace')
       end
 
       it_behaves_like "the correct graphviz formatting"
@@ -75,21 +75,21 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         attributes = by_name(parse.classes, "AttributeProfile").attributes
         expect(by_name(attributes, "imlicistAttributeProfile").visibility)
           .to be_nil
-        expect(by_name(attributes, "imlicistAttributeProfile").namespace)
+        expect(by_name(attributes, "imlicistAttributeProfile").keyword)
           .to be_nil
         expect(by_name(attributes, "attributeProfile").visibility)
           .to eq("public")
-        expect(by_name(attributes, "attributeProfile").namespace)
+        expect(by_name(attributes, "attributeProfile").keyword)
           .to eq("BasicDocument")
         expect(by_name(attributes, "attributeProfile1").visibility)
           .to eq("public")
-        expect(by_name(attributes, "attributeProfile1").namespace)
+        expect(by_name(attributes, "attributeProfile1").keyword)
           .to eq("BasicDocument")
         expect(by_name(attributes, "privateAttributeProfile").visibility)
           .to eq("private")
         expect(by_name(attributes, "friendlyAttributeProfile").visibility)
           .to eq("friendly")
-        expect(by_name(attributes, "friendlyAttributeProfile").namespace)
+        expect(by_name(attributes, "friendlyAttributeProfile").keyword)
           .to eq("Type")
         expect(by_name(attributes, "protectedAttributeProfile").visibility)
           .to eq("protected")
@@ -160,18 +160,30 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       end
     end
 
-    context "whene enum entries" do
+    context "when data_types entries" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_enum.lutaml"))
+        File.read(fixtures_path("dsl/diagram_data_types.lutaml"))
       end
 
-      it "Generates the correct enums list" do
+      it "Generates the correct nodes for enums" do
         enums = parse.enums
         expect(by_name(enums, "MyEnum").attributes).to be_nil
         expect(by_name(enums, "AddressClassProfile")
                 .attributes.length).to eq(1)
         expect(by_name(enums, "Profile")
                 .attributes.length).to eq(5)
+      end
+
+      it "Generates the correct nodes for data_types" do
+        data_types = parse.data_types
+        expect(by_name(data_types, "Banking Information")
+                .attributes.map(&:name))
+          .to(eq(["art code", "CCT Number"]))
+      end
+
+      it "Generates the correct nodes for primitives" do
+        data_types = parse.primitives
+        expect(by_name(data_types, "Integer")).to_not be_nil
       end
 
       it_behaves_like "the correct graphviz formatting"
