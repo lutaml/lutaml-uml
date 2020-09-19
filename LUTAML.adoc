@@ -14,6 +14,36 @@ diagram MyView {
 }
 ----
 
+== DataTypes
+
+Lutaml supports 3 types of data_types: `data_type`, `primitive` and `enum`. Example of data types declaration:
+
+[source,java]
+----
+diagram MyView {
+  enum MyEnum {}
+
+  enum AddressClassProfile {
+    +addressClassProfile: CharacterString
+  }
+
+  data_type "Banking Information" {
+    "art code"
+    "CCT Number"
+  }
+
+  primitive Integer
+
+  enum Profile {
+    imlicistAttributeProfile: CharacterString
+    +attributeProfile: CharacterString
+    -privateAttributeProfile: CharacterString
+    ~friendlyAttributeProfile: CharacterString
+    #protectedAttributeProfile: CharacterString
+  }
+}
+----
+
 == Associations
 
 === Explicit declaration

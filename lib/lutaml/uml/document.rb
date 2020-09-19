@@ -2,6 +2,8 @@
 
 require "lutaml/uml/class"
 require "lutaml/uml/enum"
+require "lutaml/uml/data_type"
+require "lutaml/uml/primitive_type"
 
 module Lutaml
   module Uml
@@ -30,6 +32,14 @@ module Lutaml
         @enums = value.to_a.map { |attributes| Enum.new(attributes) }
       end
 
+      def data_types=(value)
+        @data_types = value.to_a.map { |attributes| DataType.new(attributes) }
+      end
+
+      def primitives=(value)
+        @primitives = value.to_a.map { |attributes| PrimitiveType.new(attributes) }
+      end
+
       def associations=(value)
         @associations = value.to_a.map do |attributes|
           Association.new(attributes)
@@ -42,6 +52,14 @@ module Lutaml
 
       def enums
         @enums || []
+      end
+
+      def data_types
+        @data_types || []
+      end
+
+      def primitives
+        @primitives || []
       end
 
       def associations

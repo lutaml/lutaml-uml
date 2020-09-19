@@ -20,7 +20,7 @@ module Lutaml
             "public"
           end
         end
-        rule(simple(:member)) { member.nil? ? member : member.to_s }
+        rule(simple(:member)) { member.nil? ? member : member.to_s.strip }
       end
     end
   end

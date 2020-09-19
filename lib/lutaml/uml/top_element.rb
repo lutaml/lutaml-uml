@@ -9,6 +9,7 @@ module Lutaml
                     :xmi_id,
                     :xmi_uuid,
                     :namespace,
+                    :keyword,
                     :stereotype,
                     :href,
                     :visibility

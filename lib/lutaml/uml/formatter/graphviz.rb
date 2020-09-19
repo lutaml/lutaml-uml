@@ -94,8 +94,8 @@ module Lutaml
           symbol = ACCESS_SYMBOLS[node.visibility]
           result = "#{symbol}#{node.name}"
           if node.type
-            namespace = node.namespace ? "«#{node.namespace}»" : ''
-            result += " : #{namespace}#{node.type}"
+            keyword = node.keyword ? "«#{node.keyword}»" : ''
+            result += " : #{keyword}#{node.type}"
           end
           if node.cardinality
             result += "[#{node.cardinality[:min]}..#{node.cardinality[:max]}]"
@@ -220,7 +220,7 @@ module Lutaml
 
         def format_class(node, hide_members)
           name = ["<B>#{node.name}</B>"]
-          name.unshift("«#{node.namespace}»") if node.namespace
+          name.unshift("«#{node.keyword}»") if node.keyword
           name_html = <<~HEREDOC
             <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
               #{name.map {|n| %Q(<TR><TD ALIGN="CENTER">#{n}</TD></TR>) }.join('\n')}

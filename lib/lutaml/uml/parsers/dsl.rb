@@ -25,6 +25,7 @@ module Lutaml
           fontname
           association
           class
+          data_type
           diagram
           enum
           interface
@@ -32,6 +33,7 @@ module Lutaml
           member_type
           owner
           owner_type
+          primitive
           title
           abstract static
           public protected private
@@ -50,11 +52,14 @@ module Lutaml
         rule(:whitespace) { (match("\s") | match("\n") | str(";")).repeat(1) }
         rule(:whitespace?) { whitespace.maybe }
 
-        rule(:name) { match["a-zA-Z0-9_-"].repeat(1) }
+        rule(:name) { match["a-zA-Z0-9 _-"].repeat(1) }
 
-        rule(:class_name_chars) { match('(?:[a-zA-Z0-9_-]|\:|\.)').repeat(1) }
+        rule(:class_name_chars) { match('(?:[a-zA-Z0-9 _-]|\:|\.)').repeat(1) }
         rule(:class_name) do
-          class_name_chars >> (str("(") >> class_name_chars >> str(")")).maybe
+          class_name_chars >>
+            (str("(") >>
+              class_name_chars >>
+              str(")")).maybe
         end
         rule(:cardinality_body_definition) do
           match['0-9\*'].as(:min) >>
@@ -81,16 +86,16 @@ module Lutaml
         rule(:visibility?) { visibility.maybe }
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
-        rule(:attribute_namespace) do
+        rule(:attribute_keyword) do
           str('<<') >>
-            match['a-zA-Z0-9_\-'].repeat(1).as(:namespace) >>
+            match['a-zA-Z0-9_\-'].repeat(1).as(:keyword) >>
             str('>>')
         end
-        rule(:attribute_namespace?) { attribute_namespace.maybe }
+        rule(:attribute_keyword?) { attribute_keyword.maybe }
         rule(:attribute_type) do
           (str(":") >>
             spaces? >>
-            attribute_namespace? >>
+            attribute_keyword? >>
             spaces? >>
             match['"\''].maybe >>
             match['a-zA-Z0-9_\- '].repeat(1).as(:type) >>
@@ -105,10 +110,12 @@ module Lutaml
         rule(:attribute_name) { name.as(:name) }
         rule(:attribute_definition) do
           (visibility?.as(:visibility) >>
+            match['"\''].maybe >>
             attribute_name >>
+            match['"\''].maybe >>
             attribute_type? >>
             cardinality?)
-            .as(:attribute)
+            .as(:attributes)
         end
 
         rule(:title_keyword) { kw_title >> spaces }
@@ -163,7 +170,7 @@ module Lutaml
 
         %w[owner member].each do |association_end_type|
           rule("#{association_end_type}_cardinality") do
-            spaces >>
+            spaces? >>
               str("[") >>
               cardinality_body_definition
               .as("#{association_end_type}_end_cardinality") >>
@@ -244,7 +251,7 @@ module Lutaml
             class_keyword >>
             class_name.as(:name) >>
             spaces? >>
-            attribute_namespace? >>
+            attribute_keyword? >>
             class_body?
         end
 
@@ -266,8 +273,43 @@ module Lutaml
         rule(:enum_body?) { enum_body.maybe }
         rule(:enum_definition) do
           enum_keyword >>
+            match['"\''].maybe >>
             class_name.as(:name) >>
+            match['"\''].maybe >>
             enum_body?
+        end
+
+        # -- data_type
+        rule(:data_type_keyword) { kw_data_type >> spaces }
+        rule(:data_type_inner_definitions) do
+          attribute_definition
+        end
+        rule(:data_type_inner_definition) do
+          data_type_inner_definitions >> whitespace?
+        end
+        rule(:data_type_body) do
+          spaces? >>
+            str("{") >>
+            whitespace? >>
+            data_type_inner_definition.repeat.as(:members) >>
+            str("}")
+        end
+        rule(:data_type_body?) { data_type_body.maybe }
+        rule(:data_type_definition) do
+          data_type_keyword >>
+            match['"\''].maybe >>
+            class_name.as(:name) >>
+            match['"\''].maybe >>
+            data_type_body?
+        end
+
+        # -- primitive
+        rule(:primitive_keyword) { kw_primitive >> spaces }
+        rule(:primitive_definition) do
+          primitive_keyword >>
+            match['"\''].maybe >>
+            class_name.as(:name) >>
+            match['"\''].maybe
         end
 
         # -- Diagram
@@ -276,9 +318,11 @@ module Lutaml
         rule(:diagram_inner_definitions) do
           title_definition |
             fontname_definition |
-            class_definition.as(:class) |
-            enum_definition.as(:enum) |
-            association_definition.as(:association)
+            class_definition.as(:classes) |
+            enum_definition.as(:enums) |
+            primitive_definition.as(:primitives) |
+            data_type_definition.as(:data_types) |
+            association_definition.as(:associations)
         end
         rule(:diagram_inner_definition) do
           diagram_inner_definitions >> whitespace?
