@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "parslet"
+require "lutaml/uml/parsers/dsl_preprocessor"
 require "lutaml/uml/parsers/dsl_transform"
 require "lutaml/uml/node/document"
 
@@ -17,30 +18,41 @@ module Lutaml
           new.parse(io, options)
         end
 
-        def parse(io, options = {})
-          ::Lutaml::Uml::Document.new(DslTransform.new.apply(super))
+        def parse(input_file, _options = {})
+          data = Lutaml::Uml::Parsers::DslPreprocessor.call(input_file)
+          ::Lutaml::Uml::Document.new(DslTransform.new.apply(super(data)))
         end
 
         KEYWORDS = %w[
-          fontname
+          abstract
+          aggregation
           association
+          association
+          attribute
+          bidirectional
           class
+          composition
           data_type
+          dependency
           diagram
+          directional
           enum
+          fontname
+          generalizes
+          include
           interface
           member
           member_type
+          method
           owner
           owner_type
           primitive
+          private
+          protected
+          public
+          realizes
+          static
           title
-          abstract static
-          public protected private
-          attribute method
-          generalizes realizes
-          directional bidirectional
-          dependency association aggregation composition
         ].freeze
 
         KEYWORDS.each do |keyword|
@@ -87,9 +99,9 @@ module Lutaml
 
         rule(:method_abstract) { (kw_abstract.as(:abstract) >> spaces).maybe }
         rule(:attribute_keyword) do
-          str('<<') >>
+          str("<<") >>
             match['a-zA-Z0-9_\-'].repeat(1).as(:keyword) >>
-            str('>>')
+            str(">>")
         end
         rule(:attribute_keyword?) { attribute_keyword.maybe }
         rule(:attribute_type) do
