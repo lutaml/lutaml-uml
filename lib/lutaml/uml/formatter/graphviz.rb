@@ -22,7 +22,7 @@ module Lutaml
           "protected" => "#",
           "private"   => "-",
         }.freeze
-        DEFAULT_CLASS_FONT = 'Helvetica'.freeze
+        DEFAULT_CLASS_FONT = "Helvetica".freeze
 
         VALID_TYPES = %i[
           dot
@@ -94,7 +94,7 @@ module Lutaml
           symbol = ACCESS_SYMBOLS[node.visibility]
           result = "#{symbol}#{node.name}"
           if node.type
-            keyword = node.keyword ? "«#{node.keyword}»" : ''
+            keyword = node.keyword ? "«#{node.keyword}»" : ""
             result += " : #{keyword}#{node.type}"
           end
           if node.cardinality
@@ -223,7 +223,7 @@ module Lutaml
           name.unshift("«#{node.keyword}»") if node.keyword
           name_html = <<~HEREDOC
             <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
-              #{name.map {|n| %Q(<TR><TD ALIGN="CENTER">#{n}</TD></TR>) }.join('\n')}
+              #{name.map { |n| %(<TR><TD ALIGN="CENTER">#{n}</TD></TR>) }.join('\n')}
             </TABLE>
           HEREDOC
           # name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
@@ -317,13 +317,13 @@ module Lutaml
           result
         end
 
-        def generate_from_dot(dot)
+        def generate_from_dot(input)
           # https://github.com/glejeune/Ruby-Graphviz/issues/78
           # Ruby-Graphviz has an old bug when html labels was not displayed
           #  property because of `<` and `>` characters escape, add additional
           #   `<` and `>` symbols to workaround it
           escaped_dot = input.gsub("<<", "<<<").gsub(">>", ">>>")
-          Lutaml::Layout::GraphVizEngine.new(escaped_dot).render(@type)
+          Lutaml::Layout::GraphVizEngine.new(input: escaped_dot).render(@type)
         end
 
         def generate_graph_name(name)

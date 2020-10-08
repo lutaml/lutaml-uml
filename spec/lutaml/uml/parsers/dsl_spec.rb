@@ -17,7 +17,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when simple diagram without attributes" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram.lutaml"))
+        File.new(fixtures_path("dsl/diagram.lutaml"))
       end
 
       it "creates Lutaml::Uml::Document object from supplied dsl" do
@@ -29,7 +29,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when diagram with attributes" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_attributes.lutaml"))
+        File.new(fixtures_path("dsl/diagram_attributes.lutaml"))
       end
 
       it "creates Lutaml::Uml::Document object and sets its attributes" do
@@ -43,14 +43,14 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when multiply classes entries" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_multiply_classes.lutaml"))
+        File.new(fixtures_path("dsl/diagram_multiply_classes.lutaml"))
       end
 
       it "creates Lutaml::Uml::Document object and creates dependent classes" do
         classes = parse.classes
         expect(parse).to be_instance_of(Lutaml::Uml::Document)
         expect(parse.classes.length).to eq(4)
-        expect(by_name(classes, "NamespacedClass").keyword).to eq('MyNamespace')
+        expect(by_name(classes, "NamespacedClass").keyword).to eq("MyNamespace")
       end
 
       it_behaves_like "the correct graphviz formatting"
@@ -58,7 +58,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when class with fields" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_class_fields.lutaml"))
+        File.new(fixtures_path("dsl/diagram_class_fields.lutaml"))
       end
 
       it "creates the correct classes and sets the \
@@ -100,7 +100,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when association blocks exists" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_class_assocation.lutaml"))
+        File.new(fixtures_path("dsl/diagram_class_assocation.lutaml"))
       end
 
       it "creates the correct number of associations" do
@@ -162,7 +162,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when data_types entries" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_data_types.lutaml"))
+        File.new(fixtures_path("dsl/diagram_data_types.lutaml"))
       end
 
       it "Generates the correct nodes for enums" do
@@ -191,7 +191,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
     context "when concept model generated lutaml file" do
       let(:content) do
-        File.read(fixtures_path("dsl/diagram_concept_model.lutaml"))
+        File.new(fixtures_path("dsl/diagram_concept_model.lutaml"))
       end
 
       it "Generates the correct class/enums/associations list" do
@@ -212,6 +212,20 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
                   "Iso15924Code",
                   "LocalizedString",
                   "GrammarInfo"]))
+      end
+
+      it_behaves_like "the correct graphviz formatting"
+    end
+
+    context "when include directives is used" do
+      let(:content) do
+        File.new(fixtures_path("dsl/diagram_includes.lutaml"))
+      end
+
+      it "includes supplied files into the document" do
+        expect(parse.classes.map(&:name)).to(eq(%w[Foo Doo Koo AttributeProfile]))
+        expect(by_name(parse.classes, "AttributeProfile").attributes.map(&:name))
+          .to eq(["imlicistAttributeProfile", "attributeProfile"])
       end
 
       it_behaves_like "the correct graphviz formatting"

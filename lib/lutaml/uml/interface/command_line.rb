@@ -15,7 +15,7 @@ module Lutaml
         class NotSupportedInputFormat < Error; end
 
         SUPPORTED_FORMATS = %w[yaml dsl].freeze
-        DEFAULT_INPUT_FORMAT = "dsl"
+        DEFAULT_INPUT_FORMAT = "dsl".freeze
 
         def initialize(attributes = {})
           @formatter     = Formatter::Graphviz.new
@@ -88,8 +88,7 @@ module Lutaml
             document = if @input_format == "yaml"
                          Parsers::Yaml.parse(input_path)
                        else
-                         data = input_path.read
-                         Parsers::Dsl.parse(data)
+                         Parsers::Dsl.parse(File.new(input_path))
                        end
             result = @formatter.format(document)
 
