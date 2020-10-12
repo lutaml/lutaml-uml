@@ -66,10 +66,10 @@ module Lutaml
         rule(:name) { match["a-zA-Z0-9 _-"].repeat(1) }
         rule(:newline) { str("\n") >> str("\r").maybe }
         rule(:comment_definition) do
-          spaces? >> str('**') >> (newline.absent? >> any).repeat.as(:comments)
+          spaces? >> str("**") >> (newline.absent? >> any).repeat.as(:comments)
         end
         rule(:comment_multiline_definition) do
-          spaces? >> str('*|') >> (str('|*').absent? >> any).repeat.as(:comments) >> whitespace? >>  str('|*')
+          spaces? >> str("*|") >> (str("|*").absent? >> any).repeat.as(:comments) >> whitespace? >> str("|*")
         end
         rule(:class_name_chars) { match('(?:[a-zA-Z0-9 _-]|\:|\.)').repeat(1) }
         rule(:class_name) do

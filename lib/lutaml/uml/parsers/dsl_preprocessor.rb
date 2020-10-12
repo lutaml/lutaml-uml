@@ -20,10 +20,10 @@ module Lutaml
         end
 
         def process_comment_line(line)
-          has_comment = line.match(Regexp.new('//.+'))
+          has_comment = line.match(Regexp.new("//.+"))
           return line if has_comment.nil?
 
-          line.gsub(Regexp.new('//.+'), '')
+          line.gsub(Regexp.new("//.+"), "")
         end
 
         def process_include_line(include_root, line)
