@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lutaml-uml (0.1.0)
+    lutaml-uml (0.2.0)
       activesupport (~> 5.0)
       hashie (~> 4.1.0)
       parslet (~> 1.7.1)
