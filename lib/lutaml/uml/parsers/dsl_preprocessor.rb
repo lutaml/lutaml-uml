@@ -16,6 +16,17 @@ module Lutaml
         end
 
         def process_dsl_line(include_root, line)
+          process_include_line(include_root, process_comment_line(line))
+        end
+
+        def process_comment_line(line)
+          has_comment = line.match(Regexp.new("//.+"))
+          return line if has_comment.nil?
+
+          line.gsub(Regexp.new("//.+"), "")
+        end
+
+        def process_include_line(include_root, line)
           include_path_match = line.match(/\s*include\s+(.+)/)
           return line if include_path_match.nil?
 
