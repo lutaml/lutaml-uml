@@ -7,15 +7,17 @@ diagram MyView {
 
   *|
     this is multiline
-    comment with {} special //
-    chars
+    comment with {} special
+    chars/
 
-    +-//
+    +-|/
   |*
   class AddressClassProfile {
+    // TODO: write attributes
     +addressClassProfile: CharacterString [0..1]
   }
 
+  // TODO: description
   class AttributeProfile {
     ** this is attribute comment
     imlicistAttributeProfile: CharacterString [0..1]

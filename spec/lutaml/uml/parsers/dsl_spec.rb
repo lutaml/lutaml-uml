@@ -237,7 +237,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       end
 
       it "create comments for document and classes" do
-        expect(parse.comments).to(eq(["My comment", "this is multiline\n    comment with {} special //\n    chars\n\n    +-//"]))
+        expect(parse.comments).to(eq(["My comment", "this is multiline\n    comment with {} special\n    chars/\n\n    +-|/"]))
         expect(parse.classes.last.comments)
           .to(eq(["this is attribute comment", "this is another comment line\n    with multiply lines"]))
       end

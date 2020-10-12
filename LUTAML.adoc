@@ -255,7 +255,7 @@ abstract class Pet {}
 
 == Comment objects diagram
 
-Use `**`(one line comment) or `*| |*`(multiline comment) to create comment object for diagram entry.
+Use `\**`(one line comment) or `*| |*`(multiline comment) to create comment object for diagram entry.
 If this syntax used inside class/enum/association block it will be created for owner of this block.
 
 [source,java]
@@ -265,7 +265,7 @@ If this syntax used inside class/enum/association block it will be created for o
 *|
   This is a
   multiply
-  line document comment.
+  lines document comment.
 *|
 
 class A
@@ -275,8 +275,23 @@ enum B {
   *|
     This is a
     multiply
-    line class comment.
+    lines class comment.
   *|
+  bar
+}
+----
+
+== Syntax comments
+
+Use `//` to create syntax comment, chars after // will be ignored during processing
+
+[source,java]
+----
+// TODO: attributes
+class A
+enum B {
+  // Write docs
+  foo
   bar
 }
 ----
