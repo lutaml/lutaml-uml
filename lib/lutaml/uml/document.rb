@@ -16,7 +16,8 @@ module Lutaml
                     :caption,
                     :groups,
                     :fidelity,
-                    :fontname
+                    :fontname,
+                    :comments
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})

@@ -12,7 +12,8 @@ module Lutaml
                     :keyword,
                     :stereotype,
                     :href,
-                    :visibility
+                    :visibility,
+                    :comments
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})

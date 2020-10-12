@@ -1,0 +1,26 @@
+diagram MyView {
+  title "my diagram"
+
+  ** My comment
+
+  class Component {}
+
+  *|
+    this is multiline
+    comment with {} special //
+    chars
+
+    +-//
+  |*
+  class AddressClassProfile {
+    +addressClassProfile: CharacterString [0..1]
+  }
+
+  class AttributeProfile {
+    ** this is attribute comment
+    imlicistAttributeProfile: CharacterString [0..1]
+    *| this is another comment line
+    with multiply lines
+    |*
+  }
+}

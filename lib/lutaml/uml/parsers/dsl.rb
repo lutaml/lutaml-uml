@@ -63,9 +63,14 @@ module Lutaml
         rule(:spaces?) { spaces.maybe }
         rule(:whitespace) { (match("\s") | match("\n") | str(";")).repeat(1) }
         rule(:whitespace?) { whitespace.maybe }
-
         rule(:name) { match["a-zA-Z0-9 _-"].repeat(1) }
-
+        rule(:newline) { str("\n") >> str("\r").maybe }
+        rule(:comment_definition) do
+          spaces? >> str('**') >> (newline.absent? >> any).repeat.as(:comments)
+        end
+        rule(:comment_multiline_definition) do
+          spaces? >> str('*|') >> (str('|*').absent? >> any).repeat.as(:comments) >> whitespace? >>  str('|*')
+        end
         rule(:class_name_chars) { match('(?:[a-zA-Z0-9 _-]|\:|\.)').repeat(1) }
         rule(:class_name) do
           class_name_chars >>
@@ -86,7 +91,6 @@ module Lutaml
         rule(:cardinality?) { cardinality.maybe }
 
         # -- attribute/Method
-
         rule(:kw_visibility_modifier) do
           str("+") | str("-") | str("#") | str("~")
         end
@@ -217,7 +221,9 @@ module Lutaml
           owner_type |
             member_type |
             owner_definition |
-            member_definition
+            member_definition |
+            comment_definition |
+            comment_multiline_definition
         end
         rule(:association_inner_definition) do
           association_inner_definitions >> whitespace?
@@ -244,8 +250,9 @@ module Lutaml
         end
         rule(:class_keyword) { kw_class >> spaces }
         rule(:class_inner_definitions) do
-          attribute_definition # |
-          # method_definition
+          attribute_definition |
+            comment_definition |
+            comment_multiline_definition
         end
         rule(:class_inner_definition) do
           class_inner_definitions >> whitespace?
@@ -270,7 +277,9 @@ module Lutaml
         # -- Enum
         rule(:enum_keyword) { kw_enum >> spaces }
         rule(:enum_inner_definitions) do
-          attribute_definition
+          attribute_definition |
+            comment_definition |
+            comment_multiline_definition
         end
         rule(:enum_inner_definition) do
           enum_inner_definitions >> whitespace?
@@ -325,7 +334,6 @@ module Lutaml
         end
 
         # -- Diagram
-
         rule(:diagram_keyword) { kw_diagram >> spaces? }
         rule(:diagram_inner_definitions) do
           title_definition |
@@ -334,7 +342,9 @@ module Lutaml
             enum_definition.as(:enums) |
             primitive_definition.as(:primitives) |
             data_type_definition.as(:data_types) |
-            association_definition.as(:associations)
+            association_definition.as(:associations) |
+            comment_definition |
+            comment_multiline_definition
         end
         rule(:diagram_inner_definition) do
           diagram_inner_definitions >> whitespace?

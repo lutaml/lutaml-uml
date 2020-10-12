@@ -230,5 +230,19 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
       it_behaves_like "the correct graphviz formatting"
     end
+
+    context "when include directives is used" do
+      let(:content) do
+        File.new(fixtures_path("dsl/diagram_comments.lutaml"))
+      end
+
+      it "create comments for document and classes" do
+        expect(parse.comments).to(eq(["My comment", "this is multiline\n    comment with {} special //\n    chars\n\n    +-//"]))
+        expect(parse.classes.last.comments)
+          .to(eq(["this is attribute comment", "this is another comment line\n    with multiply lines"]))
+      end
+
+      it_behaves_like "the correct graphviz formatting"
+    end
   end
 end
