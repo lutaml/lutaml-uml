@@ -256,7 +256,7 @@ module Lutaml
             hide_members = node.fidelity["hideMembers"]
             hide_other_classes = node.fidelity["hideOtherClasses"]
           end
-          classes = (node.classes + node.enums).map do |class_node|
+          classes = (node.classes + node.enums + node.data_types + node.primitives).map do |class_node|
             graph_node_name = generate_graph_name(class_node.name)
 
             <<~HEREDOC

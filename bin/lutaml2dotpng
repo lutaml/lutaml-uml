@@ -17,7 +17,7 @@ Dir["#{basedir}/*.lutaml"].each do |filename|
               .new
               .format_document(
                 Lutaml::Uml::Parsers::Dsl
-                  .parse(File.read("#{basedir}/#{base_filename}.lutaml"))))
+                  .parse(File.new("#{basedir}/#{base_filename}.lutaml"))))
   end
   `dot -T png #{"#{basedir}/#{base_filename}.dot"} > "#{basedir}/#{base_filename}.png"`
 end
