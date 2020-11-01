@@ -61,7 +61,9 @@ module Lutaml
 
         rule(:spaces) { match("\s").repeat(1) }
         rule(:spaces?) { spaces.maybe }
-        rule(:whitespace) { (match("\s") | match("\r?\n") | match("\r") | str(";")).repeat(1) }
+        rule(:whitespace) do
+          (match("\s") | match("\r?\n") | match("\r") | str(";")).repeat(1)
+        end
         rule(:whitespace?) { whitespace.maybe }
         rule(:name) { match["a-zA-Z0-9 _-"].repeat(1) }
         rule(:newline) { str("\n") >> str("\r").maybe }
