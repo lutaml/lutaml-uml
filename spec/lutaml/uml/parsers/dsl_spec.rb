@@ -65,6 +65,8 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
           correct number of attributes" do
         classes = parse.classes
         expect(by_name(classes, "Component").attributes).to be_nil
+        expect(by_name(classes, "KeywordClass").keyword).to eq("MyKeyword")
+        expect(by_name(classes, "AnotherKeywordClass").keyword).to eq("AnotherMyKeyword")
         expect(by_name(classes, "AddressClassProfile")
                 .attributes.length).to eq(1)
         expect(by_name(classes, "AttributeProfile")

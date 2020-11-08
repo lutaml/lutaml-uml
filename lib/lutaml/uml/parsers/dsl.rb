@@ -41,6 +41,7 @@ module Lutaml
           generalizes
           include
           interface
+          keyword
           member
           member_type
           method
@@ -363,6 +364,7 @@ module Lutaml
           diagram_keyword >>
             spaces? >>
             class_name.as(:name) >>
+            attribute_keyword? >>
             diagram_body? >>
             whitespace?
         end

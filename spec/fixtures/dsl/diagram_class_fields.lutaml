@@ -3,6 +3,12 @@ diagram MyView {
 
   class Component {}
 
+  class KeywordClass <<MyKeyword>> {}
+
+  class AnotherKeywordClass<<AnotherMyKeyword>> {
+    +addressClassProfile: CharacterString
+  }
+
   class AddressClassProfile {
     +addressClassProfile: CharacterString [0..1]
   }
