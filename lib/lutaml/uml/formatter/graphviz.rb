@@ -181,8 +181,10 @@ module Lutaml
                                     end
           # swap labels and arrows if `dir` eq to `back`
           if attributes["dir"] == "back"
-            attributes["arrowhead"], attributes["arrowtail"] = [attributes["arrowtail"], attributes["arrowhead"]]
-            attributes["headlabel"], attributes["taillabel"] = [attributes["taillabel"], attributes["headlabel"]]
+            attributes["arrowhead"], attributes["arrowtail"] =
+              [attributes["arrowtail"], attributes["arrowhead"]]
+            attributes["headlabel"], attributes["taillabel"] =
+              [attributes["taillabel"], attributes["headlabel"]]
           end
           attributes
         end
@@ -226,8 +228,6 @@ module Lutaml
               #{name.map { |n| %(<TR><TD ALIGN="CENTER">#{n}</TD></TR>) }.join('\n')}
             </TABLE>
           HEREDOC
-          # name = "«abstract»<BR/><I>#{name}</I>" if node.modifier == "abstract"
-          # name = "«interface»<BR/>#{name}" if node.modifier == "interface"
 
           field_table = format_member_rows(node.attributes, hide_members)
           method_table = format_member_rows(node.methods, hide_members)
@@ -256,7 +256,10 @@ module Lutaml
             hide_members = node.fidelity["hideMembers"]
             hide_other_classes = node.fidelity["hideOtherClasses"]
           end
-          classes = (node.classes + node.enums).map do |class_node|
+          classes = (node.classes +
+                      node.enums +
+                      node.data_types +
+                      node.primitives).map do |class_node|
             graph_node_name = generate_graph_name(class_node.name)
 
             <<~HEREDOC
@@ -269,7 +272,8 @@ module Lutaml
           associations = node.classes.map(&:associations).compact.flatten +
             node.associations
           if node.groups
-            associations = sort_by_document_groupping(node.groups, associations)
+            associations = sort_by_document_groupping(node.groups,
+                                                      associations)
           end
           classes_names = node.classes.map(&:name)
           associations = associations.map do |assoc_node|

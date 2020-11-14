@@ -45,7 +45,7 @@ def process_association(owner, values, encountered_relations)
     if source["attribute"]
       source_attribute_name = source["attribute"].keys.first
       owner += "##{source_attribute_name}"
-      if source["attribute"][source_attribute_name]["cardinality"]
+      if source["attribute"][source_attribute_name] && source["attribute"][source_attribute_name]["cardinality"]
         cardinality = source["attribute"][source_attribute_name]["cardinality"]
         owner += " [#{cardinality['min']}..#{cardinality['max']}]"
       end
@@ -61,7 +61,7 @@ def process_association(owner, values, encountered_relations)
     if target["attribute"]
       target_attribute_name = target["attribute"].keys.first
       member += "##{target_attribute_name}"
-      if target["attribute"][target_attribute_name]["cardinality"]
+      if target["attribute"][target_attribute_name] && target["attribute"][target_attribute_name]["cardinality"]
         cardinality = target["attribute"][target_attribute_name]["cardinality"]
         member += " [#{cardinality['min']}..#{cardinality['max']}]"
       end
@@ -83,9 +83,9 @@ end
 
 view_yaml["imports"].keys.each do |entry|
   import = YAML.safe_load(File.read(File.join(models_path, "#{entry}.yml")))
-  import_name = import["name"]
+  import_name = import["name"] ||  File.basename(entry)
   # Class notation
-  sync_puts("#{import['modelType']} #{import['name']} {", 2)
+  sync_puts("#{import['modelType']} #{import_name} {", 2)
   import["values"]&.each_pair do |key, values|
     sync_puts("#{key}", 4)
   end
