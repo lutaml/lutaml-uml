@@ -12,18 +12,18 @@ RSpec.describe Lutaml::Layout::GraphVizEngine do
     end
 
     context "when png output type" do
-      let(:type) { 'png' }
+      let(:type) { "png" }
       let(:png_header) { "\x89PNG" }
 
-      it 'renders input as png binary string' do
+      it "renders input as png binary string" do
         expect(render[0..3]).to(eq(png_header))
       end
     end
 
     context "when dot output type" do
-      let(:type) { 'dot' }
+      let(:type) { "dot" }
 
-      it 'renders input as dot string' do
+      it "renders input as dot string" do
         expect(render).to(match("digraph G {"))
       end
     end
