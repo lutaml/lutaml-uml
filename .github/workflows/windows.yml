@@ -36,6 +36,9 @@ jobs:
           gem install bundler
           bundle config --local path vendor/bundle
           bundle install --jobs 4 --retry 3
+      - name: Install Grpahviz Windows
+        run: |
+          cinst -y graphviz
       - name: Run specs
         run: |
           bundle exec rake

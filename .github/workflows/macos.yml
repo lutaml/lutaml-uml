@@ -31,6 +31,8 @@ jobs:
         run: |
           sudo gem install bundler --force
           bundle install --jobs 4 --retry 3
+      - name: Install Grpahviz macOS
+        run: brew install graphviz
       - name: Run specs
         run: |
           bundle exec rake
