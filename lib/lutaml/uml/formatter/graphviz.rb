@@ -322,12 +322,7 @@ module Lutaml
         end
 
         def generate_from_dot(input)
-          # https://github.com/glejeune/Ruby-Graphviz/issues/78
-          # Ruby-Graphviz has an old bug when html labels was not displayed
-          #  property because of `<` and `>` characters escape, add additional
-          #   `<` and `>` symbols to workaround it
-          escaped_dot = input.gsub("<<", "<<<").gsub(">>", ">>>")
-          Lutaml::Layout::GraphVizEngine.new(input: escaped_dot).render(@type)
+          Lutaml::Layout::GraphVizEngine.new(input: input).render(@type)
         end
 
         def generate_graph_name(name)
