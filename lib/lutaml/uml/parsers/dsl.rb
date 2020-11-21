@@ -132,7 +132,8 @@ module Lutaml
             attribute_name >>
             match['"\''].maybe >>
             attribute_type? >>
-            cardinality?)
+            cardinality? >>
+            class_body?)
             .as(:attributes)
         end
 
@@ -252,7 +253,8 @@ module Lutaml
         end
         rule(:class_keyword) { kw_class >> spaces }
         rule(:class_inner_definitions) do
-          attribute_definition |
+          definition_body |
+            attribute_definition |
             comment_definition |
             comment_multiline_definition
         end
@@ -274,6 +276,16 @@ module Lutaml
             spaces? >>
             attribute_keyword? >>
             class_body?
+        end
+
+        # -- Definition
+        rule(:definition_body) do
+          spaces? >>
+            str("definition") >>
+            whitespace? >>
+            (str("end definition").absent? >> any).repeat.as(:definition) >>
+            whitespace? >>
+            str("end definition")
         end
 
         # -- Enum

@@ -110,6 +110,20 @@ class Relationship {
 class Element {}
 ----
 
+== Class' multiline "definition" property
+
+=== Definition
+
+Full syntax:
+
+[source,java]
+----
+definition
+  inner text
+end definition
+----
+
+
 == Attributes/entries
 
 === Definition
@@ -118,7 +132,7 @@ Full syntax:
 
 [source,java]
 ----
-[visibility][/][attribute] name [:type][multiplicity][=initial value][{property string}]
+[visibility][/][attribute] name [:type][multiplicity][=initial value][{attribute body}]
 ----
 
 where:
@@ -128,11 +142,7 @@ where:
 * `/` - symbolizes a derived attribute.
 * `multiplicity` -  Multiplicity is in square brackets (e.g. [1..*]).
 * `initial value` - Default value specifies the initial value of the attribute.
-* `property string` - Property string indicates a modifier that applies to the attribute:
-  ** {readonly}: the property can be read but not changed.
-  ** {union}: the property is a union of subsets.
-  ** {subsets <property>}: the property is a subset of <property>.
-  ** {redefines <property>}: the property is a new definition of <property> (overwritten by inheritance).
+* `{attribute body}` - Body of attribute, additional properties for attribute
 
 
 One can use explicit or implicit syntax for attribute definition
@@ -183,6 +193,21 @@ class Figure {
   - filled
   // protected attribute `length`
   # length
+}
+----
+
+=== Additional attribute' properties
+
+example:
+
+[source,java]
+----
+class Figure {
+  + radius {
+    definition
+      Radius of the Figure
+    end definition
+  }
 }
 ----
 

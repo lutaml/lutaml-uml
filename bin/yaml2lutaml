@@ -90,13 +90,24 @@ view_yaml["imports"].keys.each do |entry|
     sync_puts("#{key}", 4)
   end
   import["attributes"]&.each_pair do |key, values|
+    definition = values["definition"]
     cardinality = if values["cardinality"]
                     cardinality_val = values["cardinality"]
                     "[#{cardinality_val['min']}..#{cardinality_val['max']}]"
                   else
                     ""
                   end
-    sync_puts("+#{key}: #{values['type']} #{cardinality}", 4)
+    result_string = "+#{key}: #{values['type']} #{cardinality}"
+    if definition
+      result_string += <<~TEXT
+        {
+          definition
+          #{definition}
+          end definition
+        }
+      TEXT
+    end
+    sync_puts(result_string, 4)
   end
   sync_puts("}", 2)
 
