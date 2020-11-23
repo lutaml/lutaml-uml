@@ -2,6 +2,7 @@
 
 require "lutaml/uml/version"
 require "lutaml/uml/interface/command_line"
+require 'lutaml/uml/lutaml_path/document_wrapper'
 
 module Lutaml
   module Uml

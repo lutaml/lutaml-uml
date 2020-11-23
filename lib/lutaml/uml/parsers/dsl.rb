@@ -53,6 +53,7 @@ module Lutaml
           realizes
           static
           title
+          caption
         ].freeze
 
         KEYWORDS.each do |keyword|
@@ -144,6 +145,13 @@ module Lutaml
             match['"\''].maybe
         end
         rule(:title_definition) { title_keyword >> title_text }
+        rule(:caption_keyword) { kw_caption >> spaces }
+        rule(:caption_text) do
+          match['"\''].maybe >>
+            match['a-zA-Z0-9_\- '].repeat(1).as(:caption) >>
+            match['"\''].maybe
+        end
+        rule(:caption_definition) { caption_keyword >> caption_text }
 
         rule(:fontname_keyword) { kw_fontname >> spaces }
         rule(:fontname_text) do
@@ -291,7 +299,8 @@ module Lutaml
         # -- Enum
         rule(:enum_keyword) { kw_enum >> spaces }
         rule(:enum_inner_definitions) do
-          attribute_definition |
+          definition_body |
+            attribute_definition |
             comment_definition |
             comment_multiline_definition
         end
@@ -351,6 +360,7 @@ module Lutaml
         rule(:diagram_keyword) { kw_diagram >> spaces? }
         rule(:diagram_inner_definitions) do
           title_definition |
+            caption_definition |
             fontname_definition |
             class_definition.as(:classes) |
             enum_definition.as(:enums) |
