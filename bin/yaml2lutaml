@@ -84,13 +84,13 @@ end
 
 view_yaml["imports"].keys.each do |entry|
   import = YAML.safe_load(File.read(File.join(models_path, "#{entry}.yml")))
-  import_name = import["name"] ||  File.basename(entry)
+  import_name = import["name"] || File.basename(entry)
   # Class notation
   sync_puts("#{import['modelType']} #{import_name} {", 2)
   if import["definition"]
     definition = <<~TEXT
       definition
-        #{import["definition"]}
+        #{import['definition']}
       end definition
     TEXT
     sync_puts(definition, 4)
@@ -101,7 +101,7 @@ view_yaml["imports"].keys.each do |entry|
       result_string += <<~TEXT
         {
           definition
-          #{values["definition"]}
+          #{values['definition']}
           end definition
         }
       TEXT
@@ -117,7 +117,7 @@ view_yaml["imports"].keys.each do |entry|
                     ""
                   end
     result_string = "+#{key}"
-    if values['type']
+    if values["type"]
       result_string += ": #{values['type']}"
     end
     if cardinality

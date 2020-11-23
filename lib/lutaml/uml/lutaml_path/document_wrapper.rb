@@ -1,4 +1,4 @@
-require 'lutaml/lutaml_path/document_wrapper'
+require "lutaml/lutaml_path/document_wrapper"
 
 module Lutaml
   module Uml
