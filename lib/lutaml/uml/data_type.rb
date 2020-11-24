@@ -3,8 +3,11 @@
 module Lutaml
   module Uml
     class DataType < Class
-      def keyword
-        "dataType"
+      attr_reader :keyword
+
+      def initialize(attributes = {})
+        super
+        @keyword = "dataType"
       end
     end
   end

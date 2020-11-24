@@ -248,5 +248,29 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
       it_behaves_like "the correct graphviz formatting"
     end
+
+    context "when defninition directives included" do
+      let(:content) do
+        File.new(fixtures_path("dsl/diagram_definitions.lutaml"))
+      end
+      let(:class_definition) do
+        "this is multiline with `ascidoc`\n      comments\n      and list"
+      end
+      let(:attribute_definition) do
+        "this is attribute definition\n      with multiply lines"
+      end
+
+      it "create comments for document and classes" do
+        expect(by_name(parse.classes, "AddressClassProfile").definition)
+          .to(eq(class_definition))
+        expect(by_name(parse.classes, "AttributeProfile")
+                .attributes
+                .first
+                .definition)
+          .to(eq(attribute_definition))
+      end
+
+      it_behaves_like "the correct graphviz formatting"
+    end
   end
 end

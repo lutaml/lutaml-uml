@@ -16,6 +16,7 @@ module Lutaml
 
       attr_reader :associations,
                   :attributes,
+                  :definition,
                   :members,
                   :modifier
 
@@ -29,6 +30,10 @@ module Lutaml
 
       def modifier=(value)
         @modifier = value.to_s # TODO: Validate?
+      end
+
+      def definition=(value)
+        @definition = value.to_s
       end
 
       def attributes=(value)

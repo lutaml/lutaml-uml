@@ -12,7 +12,14 @@ module Lutaml
 
       attr_reader :attributes,
                   :members,
-                  :modifier
+                  :modifier,
+                  :definition,
+                  :keyword
+
+      def initialize(attributes = {})
+        super
+        @keyword = "enumeration"
+      end
 
       def attributes=(value)
         @attributes = value.to_a.map do |attr|
@@ -20,13 +27,13 @@ module Lutaml
         end
       end
 
+      def definition=(value)
+        @definition = value.to_s
+      end
+
       # TODO: reserved name, change
       def methods
         []
-      end
-
-      def keyword
-        "enumeration"
       end
     end
   end

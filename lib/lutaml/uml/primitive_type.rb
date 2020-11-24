@@ -3,8 +3,11 @@
 module Lutaml
   module Uml
     class PrimitiveType < DataType
-      def keyword
-        "primitive"
+      attr_reader :keyword
+
+      def initialize(attributes = {})
+        super
+        @keyword = "primitive"
       end
     end
   end
