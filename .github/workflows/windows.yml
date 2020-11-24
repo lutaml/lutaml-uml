@@ -39,6 +39,9 @@ jobs:
       - name: Install Grpahviz Windows
         run: |
           cinst -y graphviz
+      - name: Check dot command
+        run: |
+          dot -?
       - name: Run specs
         run: |
           bundle exec rake
