@@ -4,6 +4,7 @@ module Lutaml
   module Uml
     class TopElementAttribute
       include HasAttributes
+      include HasMembers
 
       attr_accessor :name,
                     :visibility,

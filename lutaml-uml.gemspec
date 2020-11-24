@@ -26,15 +26,16 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "activesupport", "~> 5.0"
   spec.add_runtime_dependency "hashie", "~> 4.1.0"
+  spec.add_runtime_dependency "lutaml", "~> 0.3.0"
   spec.add_runtime_dependency "parslet", "~> 1.7.1"
   spec.add_runtime_dependency "ruby-graphviz", "~> 1.2"
   spec.add_runtime_dependency "thor", "~> 1.0"
 
+  spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "byebug"
   spec.add_development_dependency "nokogiri", "~> 1.10"
-  spec.add_development_dependency "rubocop", "~> 0.54.0"
-  spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "pry", "~> 0.12.2"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rubocop", "~> 0.54.0"
 end
