@@ -36,9 +36,13 @@ jobs:
           gem install bundler
           bundle config --local path vendor/bundle
           bundle install --jobs 4 --retry 3
-      - name: Install Grpahviz Windows
-        run: |
-          cinst -y graphviz
+      - name: Install graphviz
+        uses: nick-invision/retry@v1
+        with:
+          polling_interval_seconds: 5
+          timeout_minutes: 5
+          max_attempts: 3
+          command: choco install --no-progress graphviz
       - name: Check dot command
         run: |
           dot -?
