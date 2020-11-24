@@ -43,6 +43,11 @@ jobs:
           timeout_minutes: 5
           max_attempts: 3
           command: choco install --no-progress graphviz
+      - name: Set PATH
+        shell: cmd
+        run: |
+          call refreshenv
+          echo ::set-env name=PATH::%PATH%
       - name: Check dot command
         run: |
           dot -?
