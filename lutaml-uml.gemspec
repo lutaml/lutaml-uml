@@ -24,7 +24,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.executables   = %w[lutaml-uml]
 
-  spec.add_runtime_dependency "activesupport", "~> 5.0"
   spec.add_runtime_dependency "hashie", "~> 4.1.0"
   spec.add_runtime_dependency "parslet", "~> 1.7.1"
   spec.add_runtime_dependency "ruby-graphviz", "~> 1.2"
