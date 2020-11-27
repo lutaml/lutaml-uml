@@ -257,7 +257,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         "this is multiline with `ascidoc`\n      comments\n      and list"
       end
       let(:attribute_definition) do
-        "this is attribute definition\n      with multiply lines"
+        "this is attribute definition\n        with multiply lines\n        end definition"
       end
 
       it "create comments for document and classes" do
