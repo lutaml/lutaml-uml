@@ -118,9 +118,9 @@ Full syntax:
 
 [source,java]
 ----
-definition
+definition {
   inner text
-end definition
+}
 ----
 
 
@@ -204,9 +204,9 @@ example:
 ----
 class Figure {
   + radius {
-    definition
+    definition {
       Radius of the Figure
-    end definition
+    }
   }
 }
 ----
