@@ -291,9 +291,11 @@ module Lutaml
           spaces? >>
             str("definition") >>
             whitespace? >>
-            (str("end definition").absent? >> any).repeat.as(:definition) >>
+            str("{") >>
             whitespace? >>
-            str("end definition")
+            (str("}").absent? >> any).repeat.as(:definition) >>
+            whitespace? >>
+            str("}")
         end
 
         # -- Enum

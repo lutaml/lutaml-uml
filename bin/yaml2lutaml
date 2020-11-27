@@ -89,9 +89,9 @@ view_yaml["imports"].keys.each do |entry|
   sync_puts("#{import['modelType']} #{import_name} {", 2)
   if import["definition"]
     definition = <<~TEXT
-      definition
+      definition {
         #{import['definition']}
-      end definition
+      }
     TEXT
     sync_puts(definition, 4)
   end
