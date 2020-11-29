@@ -100,9 +100,9 @@ view_yaml["imports"].keys.each do |entry|
     if values["definition"]
       result_string += <<~TEXT
         {
-          definition
+          definition {
           #{values['definition']}
-          end definition
+          }
         }
       TEXT
     end

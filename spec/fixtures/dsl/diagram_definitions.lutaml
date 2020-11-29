@@ -6,6 +6,7 @@ diagram MyView {
       this is multiline with `ascidoc`
       comments
       and list
+      \{foo\} \{name\}
     }
     +addressClassProfile: CharacterString [0..1]
   }
@@ -16,6 +17,7 @@ diagram MyView {
       {
         this is attribute definition
         with multiply lines
+        \{foo\} \{name\}
         end definition
       }
     }

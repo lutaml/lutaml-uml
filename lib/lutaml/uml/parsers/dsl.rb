@@ -82,9 +82,9 @@ module Lutaml
               str(")")).maybe
         end
         rule(:cardinality_body_definition) do
-          match['0-9\*'].as(:min) >>
+          match['0-9\*'].as('min') >>
             str("..").maybe >>
-            match['0-9\*'].as(:max).maybe
+            match['0-9\*'].as('max').maybe
         end
         rule(:cardinality) do
           str("[") >>
@@ -293,9 +293,9 @@ module Lutaml
             whitespace? >>
             str("{") >>
             whitespace? >>
-            (str("}").absent? >> any).repeat.as(:definition) >>
+            (match("[\n\s]}").absent? >> any).repeat.as(:definition) >>
             whitespace? >>
-            str("}")
+            str('}')
         end
 
         # -- Enum

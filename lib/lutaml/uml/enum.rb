@@ -27,10 +27,6 @@ module Lutaml
         end
       end
 
-      def definition=(value)
-        @definition = value.to_s
-      end
-
       # TODO: reserved name, change
       def methods
         []

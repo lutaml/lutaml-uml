@@ -6,6 +6,7 @@ module Lutaml
       include HasAttributes
 
       attr_accessor :name,
+                    :definition,
                     :xmi_id,
                     :xmi_uuid,
                     :namespace,
@@ -41,6 +42,16 @@ module Lutaml
         end
 
         the_name
+      end
+
+      def definition=(value)
+        @definition = value
+                        .to_s
+                        .gsub(/\\}/, '}')
+                        .gsub(/\\{/, '{')
+                        .split("\n")
+                        .map(&:strip)
+                        .join("\n")
       end
     end
   end

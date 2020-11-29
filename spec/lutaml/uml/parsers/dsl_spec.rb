@@ -121,7 +121,7 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
           expect(association.member_end).to(eq("AttributeProfile"))
           expect(association.member_end_attribute_name)
             .to(eq("attributeProfile"))
-          expect(association.member_end_cardinality).to(eq(min: "0", max: "*"))
+          expect(association.member_end_cardinality).to(eq("min" => "0", "max" => "*"))
         end
       end
 
@@ -254,10 +254,10 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         File.new(fixtures_path("dsl/diagram_definitions.lutaml"))
       end
       let(:class_definition) do
-        "this is multiline with `ascidoc`\n      comments\n      and list"
+        "this is multiline with `ascidoc`\ncomments\nand list\n{foo} {name}"
       end
       let(:attribute_definition) do
-        "this is attribute definition\n        with multiply lines\n        end definition"
+        "this is attribute definition\nwith multiply lines\n{foo} {name}\nend definition"
       end
 
       it "create comments for document and classes" do
