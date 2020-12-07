@@ -8,17 +8,6 @@ Lutaml is a language for specifying UML class diagrams and a tool for converting
 
 ### RubyGems: `gem install lutaml-uml`
 
-## Executable
-
-[source,sh]
---
-# Convert example.lutaml to example.png
-$ lutaml-uml --type png --output . example.lutaml
-
-# Display detailed help message
-$ lutaml-uml --help
---
-
 ## Language
 
 See link:LUTAML.adoc[LUTAML.adoc]
