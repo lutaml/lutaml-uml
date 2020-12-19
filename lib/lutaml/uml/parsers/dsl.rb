@@ -322,6 +322,7 @@ module Lutaml
             match['"\''].maybe >>
             class_name.as(:name) >>
             match['"\''].maybe >>
+            attribute_keyword? >>
             enum_body?
         end
 

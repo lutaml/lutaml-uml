@@ -3,7 +3,7 @@ diagram MyView {
 
   enum MyEnum {}
 
-  enum AddressClassProfile {
+  enum AddressClassProfile <<my_keyword>> {
     +addressClassProfile: CharacterString
   }
 
