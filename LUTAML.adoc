@@ -7,12 +7,17 @@
 [source,java]
 ----
 diagram MyView {
-  import Relationship, Element
-  render_option typed_as_associations
-  file "my_view.png"
+  title "My diagram"
+  caption "My custom caption"
   fontname "Helvetica"
 }
 ----
+
+where:
+
+* `fontname` - optional, configuration option to use supplied font name
+* `title` - optional, set custom title for diagram
+* `caption` - optional, set custom caption for diagram
 
 == DataTypes
 
