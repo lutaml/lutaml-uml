@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.bindir        = "exe"
   spec.require_paths = ["lib"]
-  spec.executables   = %w[lutaml-uml]
+  spec.executables   = %w[plantuml2lutaml yaml2lutaml]
 
   spec.add_runtime_dependency "hashie", "~> 4.1.0"
   spec.add_runtime_dependency "parslet", "~> 1.7.1"
