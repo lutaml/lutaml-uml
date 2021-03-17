@@ -15,5 +15,7 @@ diagram MyView {
     ~friendlyAttributeProfile: <<Type>> "CharacterString" [1..*]
     ~friendlyAttributeProfile1: <<Type>> "CharacterString"
     #protectedAttributeProfile: CharacterString
+    type/text: String
+    slashType: slash/type
   }
 }

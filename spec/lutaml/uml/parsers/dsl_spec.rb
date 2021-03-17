@@ -68,7 +68,18 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         expect(by_name(classes, "AddressClassProfile")
                 .attributes.length).to eq(1)
         expect(by_name(classes, "AttributeProfile")
-                .attributes.length).to eq(7)
+                .attributes.length).to eq(9)
+        expect(by_name(classes, "AttributeProfile")
+                .attributes.map(&:name))
+              .to(eq(["imlicistAttributeProfile",
+                "attributeProfile",
+                "attributeProfile1",
+                "privateAttributeProfile",
+                "friendlyAttributeProfile",
+                "friendlyAttributeProfile1",
+                "protectedAttributeProfile",
+                "type/text",
+                "slashType"]))
       end
 
       it "creates the correct attributes with the correct visibility" do
