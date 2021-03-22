@@ -39,7 +39,7 @@ module Lutaml
       end
 
       def packages=(value)
-        @package = value.to_a.map { |attributes| Package.new(attributes) }
+        @packages = value.to_a.map { |attributes| Package.new(attributes) }
       end
 
       def primitives=(value)
