@@ -65,7 +65,7 @@ module Lutaml
       end
 
       def packages
-        @package || []
+        @packages || []
       end
 
       def primitives

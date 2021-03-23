@@ -6,7 +6,7 @@ module Lutaml
       include HasAttributes
 
       attr_accessor :imports, :contents
-      attr_reader :packages, :classes, :enums
+      attr_reader :classes, :enums
 
       def initialize(attributes)
         update_attributes(attributes)
