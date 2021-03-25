@@ -6,6 +6,8 @@ require "lutaml/uml/parsers/yaml"
 require "lutaml/uml/parsers/attribute"
 require "lutaml/uml/formatter"
 
+puts "HELLO!!!"
+
 module Lutaml
   module Uml
     class Error < StandardError; end
