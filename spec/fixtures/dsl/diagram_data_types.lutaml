@@ -8,8 +8,28 @@ diagram MyView {
   }
 
   data_type "Banking Information" {
-    "art code"
+    definition {
+      Common code types used in banking.
+    }
+    "art code" {
+      definition {
+        The bank ART code.
+      }
+    }
     "CCT Number"
+  }
+
+  data_type DateTimeType {
+    definition {
+      Type of date time value.
+    }
+    year {
+      definition {
+        The value only provides year.
+      }
+    }
+    monthYear
+    dayMonthYear
   }
 
   primitive Integer
