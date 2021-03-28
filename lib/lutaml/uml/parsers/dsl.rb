@@ -117,7 +117,7 @@ module Lutaml
             attribute_keyword? >>
             spaces? >>
             match['"\''].maybe >>
-            match['a-zA-Z0-9_\- \/'].repeat(1).as(:type) >>
+            match['a-zA-Z0-9_\- \/\+'].repeat(1).as(:type) >>
             match['"\''].maybe >>
             spaces?
           )
@@ -126,7 +126,7 @@ module Lutaml
           attribute_type.maybe
         end
 
-        rule(:attribute_name) { match['a-zA-Z0-9_\- \/'].repeat(1).as(:name) }
+        rule(:attribute_name) { match['a-zA-Z0-9_\- \/\+'].repeat(1).as(:name) }
         rule(:attribute_definition) do
           (visibility?.as(:visibility) >>
             match['"\''].maybe >>
@@ -329,7 +329,10 @@ module Lutaml
         # -- data_type
         rule(:data_type_keyword) { kw_data_type >> spaces }
         rule(:data_type_inner_definitions) do
-          attribute_definition
+          definition_body |
+            attribute_definition |
+            comment_definition |
+            comment_multiline_definition
         end
         rule(:data_type_inner_definition) do
           data_type_inner_definitions >> whitespace?
@@ -347,6 +350,7 @@ module Lutaml
             match['"\''].maybe >>
             class_name.as(:name) >>
             match['"\''].maybe >>
+            attribute_keyword? >>
             data_type_body?
         end
 

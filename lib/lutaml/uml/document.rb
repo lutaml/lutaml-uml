@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require "lutaml/uml/class"
-require "lutaml/uml/enum"
 require "lutaml/uml/data_type"
+require "lutaml/uml/enum"
+require "lutaml/uml/package"
 require "lutaml/uml/primitive_type"
 
 module Lutaml
@@ -18,23 +19,27 @@ module Lutaml
                     :fidelity,
                     :fontname,
                     :comments
+      attr_reader :packages
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
         update_attributes(attributes)
       end
       # rubocop:enable Rails/ActiveRecordAliases
-
       def classes=(value)
         @classes = value.to_a.map { |attributes| Class.new(attributes) }
+      end
+
+      def data_types=(value)
+        @data_types = value.to_a.map { |attributes| DataType.new(attributes) }
       end
 
       def enums=(value)
         @enums = value.to_a.map { |attributes| Enum.new(attributes) }
       end
 
-      def data_types=(value)
-        @data_types = value.to_a.map { |attributes| DataType.new(attributes) }
+      def packages=(value)
+        @packages = value.to_a.map { |attributes| Package.new(attributes) }
       end
 
       def primitives=(value)
@@ -57,6 +62,10 @@ module Lutaml
 
       def data_types
         @data_types || []
+      end
+
+      def packages
+        @packages || []
       end
 
       def primitives

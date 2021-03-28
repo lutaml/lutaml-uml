@@ -17,5 +17,9 @@ diagram MyView {
     #protectedAttributeProfile: CharacterString
     type/text: String
     slashType: slash/type
+    application/docbook+xml
+    application/tei+xml
+    text/x-asciidoc
+    application/x-isodoc+xml
   }
 }
