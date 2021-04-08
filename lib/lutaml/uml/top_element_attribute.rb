@@ -13,7 +13,8 @@ module Lutaml
                     :contain,
                     :static,
                     :cardinality,
-                    :keyword
+                    :keyword,
+                    :is_derived
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
