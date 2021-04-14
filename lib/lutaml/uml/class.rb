@@ -3,6 +3,7 @@
 require "lutaml/uml/has_members"
 require "lutaml/uml/classifier"
 require "lutaml/uml/association"
+require "lutaml/uml/constraint"
 require "lutaml/uml/top_element_attribute"
 
 module Lutaml
@@ -17,7 +18,8 @@ module Lutaml
       attr_reader :associations,
                   :attributes,
                   :members,
-                  :modifier
+                  :modifier,
+                  :constraints
 
       def initialize(attributes = {})
         @nested_classifier = []
@@ -40,6 +42,12 @@ module Lutaml
       def associations=(value)
         @associations = value.to_a.map do |attr|
           Association.new(attr.to_h.merge(owner_end: name))
+        end
+      end
+
+      def constraints=(value)
+        @constraints = value.to_a.map do |attr|
+          Constraint.new(attr)
         end
       end
 
