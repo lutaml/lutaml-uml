@@ -24,6 +24,10 @@ module Lutaml
         @packages = value.to_a.map { |attributes| Package.new(attributes) }
       end
 
+      def diagrams=(value)
+        @diagrams = value.to_a.map { |attributes| Diagram.new(attributes) }
+      end
+
       def classes
         @classes || []
       end
@@ -34,6 +38,10 @@ module Lutaml
 
       def packages
         @packages || []
+      end
+
+      def diagrams
+        @diagrams || []
       end
     end
   end
