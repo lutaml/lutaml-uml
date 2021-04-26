@@ -1,5 +1,11 @@
 # Lutaml::Uml
 
+image:https://badge.fury.io/rb/lutaml-uml.svg["Gem Version", link="https://badge.fury.io/rb/lutaml-uml"]
+
+image:https://github.com/lutaml/lutaml-uml/actions/workflows/macos.yml/badge.svg["macos", link="https://github.com/lutaml/lutaml-uml/actions/workflows/macos.yml"]
+image:https://github.com/lutaml/lutaml-uml/actions/workflows/ubuntu.yml/badge.svg["ubuntu", link="https://github.com/lutaml/lutaml-uml/actions/workflows/ubuntu.yml"]
+image:https://github.com/lutaml/lutaml-uml/actions/workflows/windows.yml/badge.svg["windows", link="https://github.com/lutaml/lutaml-uml/actions/workflows/windows.yml"]
+
 Lutaml is a language for specifying UML class diagrams and a tool for converting it into various different formats.
 
 ## Install
