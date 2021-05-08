@@ -19,7 +19,8 @@ module Lutaml
                   :attributes,
                   :members,
                   :modifier,
-                  :constraints
+                  :constraints,
+                  :operations
 
       def initialize(attributes = {})
         @nested_classifier = []
@@ -48,6 +49,12 @@ module Lutaml
       def constraints=(value)
         @constraints = value.to_a.map do |attr|
           Constraint.new(attr)
+        end
+      end
+
+      def operations=(value)
+        @operations = value.to_a.map do |attr|
+          Operation.new(attr)
         end
       end
 

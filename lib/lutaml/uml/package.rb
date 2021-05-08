@@ -6,10 +6,11 @@ module Lutaml
       include HasAttributes
 
       attr_accessor :imports, :contents
-      attr_reader :classes, :enums
+      attr_reader :classes, :enums, :data_types, :children_packages
 
       def initialize(attributes)
         update_attributes(attributes)
+        @children_packages ||= packages.map { |pkg| [pkg, pkg.packages.map(&:children_packages)] }.flatten
       end
 
       def classes=(value)
@@ -18,6 +19,10 @@ module Lutaml
 
       def enums=(value)
         @enums = value.to_a.map { |attributes| Enum.new(attributes) }
+      end
+
+      def data_types=(value)
+        @data_types = value.to_a.map { |attributes| DataType.new(attributes) }
       end
 
       def packages=(value)
