@@ -6,10 +6,10 @@ module Lutaml
       include HasAttributes
       include HasMembers
 
-      attr_accessor :name,
+      attr_accessor :definition,
+                    :name,
                     :return_type,
-                    :parameter_type,
-                    :definition
+                    :parameter_type
 
       # rubocop:disable Rails/ActiveRecordAliases
       def initialize(attributes = {})
