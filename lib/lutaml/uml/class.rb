@@ -16,7 +16,8 @@ module Lutaml
 
       attr_accessor :nested_classifier,
                     :is_abstract,
-                    :type
+                    :type,
+                    :package
 
       attr_reader :associations,
                   :attributes,
