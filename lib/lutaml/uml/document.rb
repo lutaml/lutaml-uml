@@ -3,6 +3,7 @@
 require "lutaml/uml/class"
 require "lutaml/uml/data_type"
 require "lutaml/uml/enum"
+require "lutaml/uml/diagram"
 require "lutaml/uml/package"
 require "lutaml/uml/primitive_type"
 
