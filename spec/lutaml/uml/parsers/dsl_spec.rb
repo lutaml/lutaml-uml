@@ -287,5 +287,15 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
       it_behaves_like "the correct graphviz formatting"
     end
+
+    context "when defninition is blank" do
+      let(:content) do
+        File.new(fixtures_path("dsl/diagram_blank_definion.lutaml"))
+      end
+
+      it "successfully renders" do
+        expect { parse }.to_not(raise_error)
+      end
+    end
   end
 end
