@@ -27,7 +27,7 @@ ASSOCIATION_MAPPINGS = {
 in_comment_block = false
 
 def transform_line(line)
-  line = line.gsub(/^\s*'/, '** ').gsub(/\|[\sa-zA-Z]+$/, '')
+  line = line.gsub(/^\s*'/, '** ').gsub(/\|[\sa-zA-Z]+$/, '').gsub(/\r/, '')
   return sync_puts(line, 2) if ASSOCIATION_MAPPINGS.keys.none? { |key| line =~ key }
 
   owner_type, member_type = ASSOCIATION_MAPPINGS.detect { |(key, _value)| line =~ key }.last.split(",")
