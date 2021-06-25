@@ -292,7 +292,7 @@ module Lutaml
             str("definition") >>
             whitespace? >>
             str("{") >>
-            ((str('\\') >> any) | (str('}').absent? >> any)).repeat.maybe.as(:definition) >>
+            ((str("\\") >> any) | (str("}").absent? >> any)).repeat.maybe.as(:definition) >>
             str('}')
         end
 
