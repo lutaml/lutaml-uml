@@ -317,5 +317,19 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
         expect { parse }.to_not(raise_error)
       end
     end
+
+    context "when broken lutaml file passed" do
+      let(:content) do
+        File.new(fixtures_path("dsl/broken_diagram.lutaml"))
+      end
+      let(:stdout) { StringIO.new }
+
+      it "returns error object and prints line number" do
+        expect { described_class.parse(content, {}, stdout) }
+          .to(raise_error(Parslet::ParseFailed))
+        stdout.rewind
+        expect(stdout.read).to(match('but got ":" at line 25 char 32'))
+      end
+    end
   end
 end

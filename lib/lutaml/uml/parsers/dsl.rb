@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "parslet"
+require 'parslet/convenience'
 require "lutaml/uml/parsers/dsl_preprocessor"
 require "lutaml/uml/parsers/dsl_transform"
 require "lutaml/uml/node/document"
@@ -14,13 +15,21 @@ module Lutaml
         #        [Hash] options - options for parsing
         #
         # @return [Lutaml::Uml::Document]
-        def self.parse(io, options = {})
-          new.parse(io, options)
+        def self.parse(io, options = {}, stdout = STDOUT)
+          new.parse(io, options, stdout)
         end
 
-        def parse(input_file, _options = {})
+        def parse(input_file, _options = {}, stdout = STDOUT)
           data = Lutaml::Uml::Parsers::DslPreprocessor.call(input_file)
-          ::Lutaml::Uml::Document.new(DslTransform.new.apply(super(data)))
+          # https://kschiess.github.io/parslet/tricks.html#Reporter engines
+          # Parslet::ErrorReporter::Deepest allows more detailed display of error
+          ::Lutaml::Uml::Document
+            .new(DslTransform
+                  .new
+                  .apply(super(data, reporter: Parslet::ErrorReporter::Deepest.new)))
+        rescue Parslet::ParseFailed => error
+          stdout.puts(error.parse_failure_cause.ascii_tree)
+          raise
         end
 
         KEYWORDS = %w[
@@ -385,12 +394,11 @@ module Lutaml
             diagram_inner_definition.repeat.as(:members) >>
             str("}")
         end
-        rule(:diagram_body?) { diagram_body.maybe }
         rule(:diagram_definition) do
           diagram_keyword >>
             spaces? >>
             class_name.as(:name) >>
-            diagram_body? >>
+            diagram_body >>
             whitespace?
         end
         rule(:diagram_definitions) { diagram_definition >> whitespace? }
