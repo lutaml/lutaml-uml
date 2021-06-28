@@ -30,7 +30,7 @@ module Lutaml
             .new(DslTransform.new.apply(super(data, reporter: reporter)))
         rescue Parslet::ParseFailed => e
           raise(ParsingError,
-            "#{e.message}\ncause: \#{e.parse_failure_cause.ascii_tree}")
+                "#{e.message}\ncause: #{e.parse_failure_cause.ascii_tree}")
         end
 
         KEYWORDS = %w[
