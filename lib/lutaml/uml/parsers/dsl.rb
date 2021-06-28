@@ -9,17 +9,18 @@ require "lutaml/uml/node/document"
 module Lutaml
   module Uml
     module Parsers
+      class ParsingError < StandardError; end
       # Class for parsing LutaML dsl into Lutaml::Uml::Document
       class Dsl < Parslet::Parser
         # @param [String] io - LutaML string representation
         #        [Hash] options - options for parsing
         #
         # @return [Lutaml::Uml::Document]
-        def self.parse(io, options = {}, stdout = STDOUT)
-          new.parse(io, options, stdout)
+        def self.parse(io, options = {})
+          new.parse(io, options)
         end
 
-        def parse(input_file, _options = {}, stdout = STDOUT)
+        def parse(input_file, _options = {})
           data = Lutaml::Uml::Parsers::DslPreprocessor.call(input_file)
           # https://kschiess.github.io/parslet/tricks.html#Reporter engines
           # Parslet::ErrorReporter::Deepest allows more detailed display of error
@@ -28,8 +29,7 @@ module Lutaml
                   .new
                   .apply(super(data, reporter: Parslet::ErrorReporter::Deepest.new)))
         rescue Parslet::ParseFailed => error
-          stdout.puts(error.parse_failure_cause.ascii_tree)
-          raise
+          raise ParsingError, "#{error.message}\ncause: #{error.parse_failure_cause.ascii_tree}"
         end
 
         KEYWORDS = %w[
