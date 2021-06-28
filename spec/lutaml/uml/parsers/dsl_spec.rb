@@ -325,7 +325,8 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
       it "returns error object and prints line number" do
         expect { described_class.parse(content, {}) }
-          .to(raise_error(Lutaml::Uml::Parsers::ParsingError, /but got ":" at line 25 char 32/))
+          .to(raise_error(Lutaml::Uml::Parsers::ParsingError,
+              /but got ":" at line 25 char 32/))
       end
     end
   end

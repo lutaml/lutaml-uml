@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "parslet"
-require 'parslet/convenience'
+require "parslet/convenience"
 require "lutaml/uml/parsers/dsl_preprocessor"
 require "lutaml/uml/parsers/dsl_transform"
 require "lutaml/uml/node/document"
@@ -23,13 +23,14 @@ module Lutaml
         def parse(input_file, _options = {})
           data = Lutaml::Uml::Parsers::DslPreprocessor.call(input_file)
           # https://kschiess.github.io/parslet/tricks.html#Reporter engines
-          # Parslet::ErrorReporter::Deepest allows more detailed display of error
+          # Parslet::ErrorReporter::Deepest allows more
+          # detailed display of error
+          reporter = Parslet::ErrorReporter::Deepest.new
           ::Lutaml::Uml::Document
-            .new(DslTransform
-                  .new
-                  .apply(super(data, reporter: Parslet::ErrorReporter::Deepest.new)))
-        rescue Parslet::ParseFailed => error
-          raise ParsingError, "#{error.message}\ncause: #{error.parse_failure_cause.ascii_tree}"
+            .new(DslTransform.new.apply(super(data, reporter: reporter)))
+        rescue Parslet::ParseFailed => e
+          raise(ParsingError,
+            "#{e.message}\ncause: \#{e.parse_failure_cause.ascii_tree}")
         end
 
         KEYWORDS = %w[
