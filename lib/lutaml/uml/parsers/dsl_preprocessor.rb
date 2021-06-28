@@ -28,7 +28,7 @@ module Lutaml
 
         def process_include_line(include_root, line)
           include_path_match = line.match(/^\s*include\s+(.+)/)
-          return line if include_path_match.nil?
+          return line if include_path_match.nil? || line =~ /^\s\*\*/
 
           path_to_file = include_path_match[1].strip
           path_to_file = if path_to_file.match?(/^\//)
