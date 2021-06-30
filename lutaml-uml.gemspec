@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.executables   = %w[lutaml-wsd2uml lutaml-yaml2uml]
 
   spec.add_runtime_dependency "hashie", "~> 4.1.0"
-  spec.add_runtime_dependency "parslet"
+  spec.add_runtime_dependency "parslet", "~> 2.0.0"
   spec.add_runtime_dependency "ruby-graphviz", "~> 1.2"
   spec.add_runtime_dependency "thor", "~> 1.0"
   spec.add_runtime_dependency "nokogiri", "~> 1.10"
