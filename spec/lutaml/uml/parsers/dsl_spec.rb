@@ -308,6 +308,16 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
       end
     end
 
+    context "when its a non existing include file" do
+      let(:content) do
+        File.new(fixtures_path("dsl/diagram_non_existing_include.lutaml"))
+      end
+
+      it "successfully renders" do
+        expect { parse }.to_not(raise_error)
+      end
+    end
+
     context "when there are commented preprocessor lines" do
       let(:content) do
         File.new(fixtures_path("dsl/diagram_commented_includes.lutaml"))
