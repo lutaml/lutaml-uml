@@ -34,7 +34,9 @@ RSpec.describe Lutaml::Uml::Parsers::Dsl do
 
       it "creates Lutaml::Uml::Document object and sets its attributes" do
         expect(parse).to be_instance_of(Lutaml::Uml::Document)
-        expect(parse.title).to eq("my diagram")
+        expect(parse.title).to eq("my diagram, another symbols: text.")
+        expect(parse.caption)
+          .to(eq("Block elements of StandardDocument, adapted from BasicDocument. Another - symbol"))
         expect(parse.fontname).to eq("Arial")
       end
 

@@ -151,14 +151,14 @@ module Lutaml
         rule(:title_keyword) { kw_title >> spaces }
         rule(:title_text) do
           match['"\''].maybe >>
-            match['a-zA-Z0-9_\- '].repeat(1).as(:title) >>
+            match['a-zA-Z0-9_\- ,.:;'].repeat(1).as(:title) >>
             match['"\''].maybe
         end
         rule(:title_definition) { title_keyword >> title_text }
         rule(:caption_keyword) { kw_caption >> spaces }
         rule(:caption_text) do
           match['"\''].maybe >>
-            match['a-zA-Z0-9_\- '].repeat(1).as(:caption) >>
+            match['a-zA-Z0-9_\- ,.:;'].repeat(1).as(:caption) >>
             match['"\''].maybe
         end
         rule(:caption_definition) { caption_keyword >> caption_text }
