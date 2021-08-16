@@ -21,7 +21,9 @@ where:
 
 == DataTypes
 
-Lutaml supports 3 types of data_types: `data_type`, `primitive` and `enum`. Example of data types declaration:
+Lutaml supports 3 types of data_types: `data_type`, `primitive` and `enum`.
+
+Example of data types declaration:
 
 [source,java]
 ----
@@ -67,8 +69,8 @@ association name {
 
 where:
 
-* `owned_type` - optional, use to define bidirectional association(association|composition|aggregation|generalization|uses)
-* `member_type` - association type(association|composition|aggregation|generalization|uses)
+* `owned_type` - optional, use to define a bidirectional association (`association`|`composition`|`aggregation`|`generalization`|`uses`)
+* `member_type` - association type (`association`|`composition`|`aggregation`|`generalization`|`uses`)
 * `owned|member` - end of association, use `\#attribute_name` to set a role name
 * `property_string` - property string for attibutes associations
 * `cardinality` - examples: '1..*', '*'
@@ -142,7 +144,12 @@ Full syntax:
 
 where:
 
-* `visibility` can be equal to `-` - private, `+` - public, `#` - protected, `~` - friendly
+* `visibility` can be equal to
+** `-`: private
+** `+`: public
+** `#`: protected
+** `~`: friendly
+
 * `attribute` - attrbute keyword
 * `/` - symbolizes a derived attribute.
 * `multiplicity` -  Multiplicity is in square brackets (e.g. [1..*]).
@@ -178,14 +185,17 @@ enum A {
 }
 ----
 
+[[attribute-visibility]]
 === Attribute visibility
 
-Syntax for defining visibility: [+|-|#|~] [attribute] attribute_name. LutaML uses these modificators to define attribute(entry) visbility:
+Syntax for defining visibility: `[+|-|#|~] [attribute] attribute_name`.
 
-+ => public
-- => private
-# => protected
-~ => package
+LutaML uses these modificators to define attribute (entry) visbility:
+
+`+`:: public
+`-`:: private
+`#`:: protected
+`~`:: package
 
 example:
 
@@ -226,9 +236,20 @@ Syntax for defining methods:
 ----
 
 where:
-- `visibility` can be equal to `-` - private, `+` - public, `#` - protected, `~` - friendly
-- `parameter-list` - parameter list
-- `property-modifier` - can be equal to `redefines`, `query`, `ordered`(`unordered`), `unique`(`nonunique`)
+
+* `visibility` can be equal to
+** `-`: private
+** `+`: public
+** `#`: protected
+** `~`: friendly
+
+* `parameter-list`: parameter list
+
+* `property-modifier`: can be equal to
+** `redefines`
+** `query`
+** `ordered` (defaults to `unordered`)
+** `unique`(defaults to `nonunique`)
 
 Syntax for a `parameter-list`:
 
@@ -238,7 +259,12 @@ Syntax for a `parameter-list`:
 ----
 
 where:
-- `direction` - can be equal to `in`, `out`, `inout` or `return`
+
+* `direction` can be equal to
+** `in`
+** `out`
+** `inout`
+** `return`
 
 == import files
 
@@ -252,7 +278,8 @@ include path/to/file
 == Package syntax
 
 Namespaces
-Def.-A named element is an element that can have a name and a defined visibility (public, private, protected, package):
+
+A named element is an element that can have a name and a defined visibility (public, private, protected, package):
 
 [source,java]
 ----
@@ -286,7 +313,8 @@ abstract class Pet {}
 == Comment objects diagram
 
 Use `\**`(one line comment) or `*| |*`(multiline comment) to create comment object for diagram entry.
-If this syntax used inside class/enum/association block it will be created for owner of this block.
+
+If this syntax is used inside a `class`/`enum`/`association` block, it will be created for owner of this block.
 
 [source,java]
 ----
@@ -313,7 +341,7 @@ enum B {
 
 == Syntax comments
 
-Use `//` to create syntax comment, chars after // will be ignored during processing
+Use `//` to create syntax comment, chars after `//` will be ignored during processing.
 
 [source,java]
 ----
@@ -328,7 +356,7 @@ enum B {
 
 == Value specification
 
-A value specification indicates one or several values in a model. Examples for value specifications include simple, mathematical expressions, such as 4+2, and expressions with values from the object model, Integer::MAX_INT-1
+A value specification indicates one or several values in a model. Examples for value specifications include simple, mathematical expressions, such as `4+2`, and expressions with values from the object model, `Integer::MAX_INT-1`
 
 [source,java]
 ----
