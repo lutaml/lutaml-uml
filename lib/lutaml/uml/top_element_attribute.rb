@@ -9,6 +9,7 @@ module Lutaml
       attr_accessor :name,
                     :visibility,
                     :type,
+                    :xmi_id,
                     :definition,
                     :contain,
                     :static,
