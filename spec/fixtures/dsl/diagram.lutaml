@@ -1,3 +1,4 @@
 diagram MyView {
+  // <article>
   class Foo {}
 }
