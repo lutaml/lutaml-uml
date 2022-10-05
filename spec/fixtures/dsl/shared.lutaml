@@ -1,3 +1,5 @@
-class Foo {}
+class Foo {
+  // <article>
+}
 class Doo {}
 class Koo {}

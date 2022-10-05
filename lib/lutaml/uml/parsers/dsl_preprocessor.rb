@@ -48,7 +48,7 @@ module Lutaml
                          else
                            File.join(include_root, path_to_file)
                          end
-          File.read(path_to_file).split("\n")
+          File.read(path_to_file).split("\n").map { |line| process_comment_line(line) }
         rescue Errno::ENOENT
           puts("No such file or directory @ rb_sysopen - #{path_to_file}, \
             include file paths need to be supplied relative to the main document")
