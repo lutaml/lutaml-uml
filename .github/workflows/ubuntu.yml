@@ -2,7 +2,8 @@ name: ubuntu
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - main
     tags:
       - '*'
   pull_request:
@@ -18,22 +19,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '3.2', '3.1', '2.7' ]
+        ruby: [ '2.7', '3.0', '3.1' ]
         experimental: [false]
-        # include:
-        #   - ruby: '2.7'
-        #     experimental: true
+        include:
+          - ruby: '3.2'
+            experimental: true
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - name: Use Ruby
-        uses: ruby/setup-ruby@v1.143.0
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Update gems
-        run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3
-      - name: Install Grpahviz Ubuntu
+          bundler-cache: true
+      - name: Install GraphViz
         run: sudo apt-get install graphviz
       - name: Run specs
         run: |
