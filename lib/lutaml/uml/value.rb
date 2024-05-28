@@ -8,6 +8,7 @@ module Lutaml
 
       attr_accessor :definition,
                     :name,
+                    :id,
                     :type
 
       # rubocop:disable Rails/ActiveRecordAliases
