@@ -1,40 +1,24 @@
-# frozen_string_literal: true
+# -*- encoding: utf-8 -*-
 
-require_relative "lib/lutaml/uml/version"
+Gem::Specification.new do |s|
+  s.name        = "lutaml-uml"
+  s.version     = "1.0.0"
+  s.authors       = ["Ribose Inc."]
+  s.email         = ["open.source@ribose.com"]
 
-Gem::Specification.new do |spec|
-  spec.name          = "lutaml-uml"
-  spec.version       = Lutaml::Uml::VERSION
-  spec.authors       = ["Ribose Inc."]
-  spec.email         = ["open.source@ribose.com'"]
+  s.homepage    = "http://github.com/lutaml/lutaml"
+  s.summary     = "Lutaml stub gem for lutaml-uml"
+  s.description = "Lutaml stub gem for lutaml-uml"
+  s.license       = "BSD-2-Clause"
 
-  spec.summary       = "UML model module for LutaML."
-  spec.description   = "UML model module for LutaML."
-  spec.homepage      = "https://github.com/lutaml/lutaml-uml"
-  spec.license       = "MIT"
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- exe/*`.split("\n").map do |f|
+    File.basename(f)
+  end
+  s.bindir        = "exe"
+  s.require_paths = ["lib"]
+  s.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = "https://github.com/lutaml/lutaml-uml/releases"
-
-  spec.files         = `git ls-files`.split("\n")
-  spec.test_files    = `git ls-files -- {spec}/*`.split("\n")
-
-  spec.bindir        = "exe"
-  spec.require_paths = ["lib"]
-  spec.executables   = %w[lutaml-wsd2uml lutaml-yaml2uml]
-
-  spec.required_ruby_version = '>= 2.7.0'
-
-  spec.add_runtime_dependency "hashie", "~> 4.1.0"
-  spec.add_runtime_dependency "parslet", "~> 2.0.0"
-  spec.add_runtime_dependency "ruby-graphviz", "~> 1.2"
-  spec.add_runtime_dependency "thor", "~> 1.0"
-  spec.add_runtime_dependency "nokogiri", "~> 1.10"
-
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "pry", "~> 0.12.2"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "rubocop", "~> 0.54.0"
+  s.add_dependency "lutaml", "> 0.7.7"
 end
