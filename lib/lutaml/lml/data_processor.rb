@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Lutaml
   module Lml
-    module Dataprocessor
+    module DataProcessor
       def process_data(obj)
         case obj
         when Array
