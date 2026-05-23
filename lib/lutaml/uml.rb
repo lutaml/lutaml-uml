@@ -83,12 +83,6 @@ module Lutaml
     autoload :Instance, "lutaml/uml/instance"
     autoload :Document, "lutaml/uml/document"
 
-    # Node — moved to lutaml-lml gem
-    module Node; end
-
-    # Parsers — moved to lutaml-lml gem
-    module Parsers; end
-
     # Validation
     module Validation
       autoload :DocumentStructureValidator,
