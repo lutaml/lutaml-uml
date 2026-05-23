@@ -1,6 +1,33 @@
 = lutaml-uml
 
-This repository has been merged into LutaML. See:
+UML domain models, repository pattern, format converters, and SPA generator for LutaML.
 
-* https://github.com/lutaml/lutaml/
-* https://github.com/lutaml/lutaml/tree/main/lib/lutaml/uml
+== Overview
+
+This gem provides:
+
+* `Lutaml::Uml` — UML domain model classes (Class, Association, Package, DataType, Enum, etc.)
+* `Lutaml::UmlRepository` — Repository pattern for querying and presenting UML documents
+* `Lutaml::Converter` — Format converters (XMI to UML, DSL to UML)
+* `Lutaml::Ea` — Enterprise Architect diagram SVG rendering
+* SPA static site generator with Vue.js frontend
+
+== Installation
+
+Add to your Gemfile:
+
+[source,ruby]
+gem "lutaml-uml"
+
+== Usage
+
+[source,ruby]
+require "lutaml/uml"
+
+== Architecture
+
+* `lib/lutaml/uml/` — UML domain models
+* `lib/lutaml/uml_repository/` — Repository, queries, presenters, exporters, SPA
+* `lib/lutaml/converter/` — XMI→UML and DSL→UML converters
+* `lib/lutaml/ea/` — EA diagram SVG rendering
+* `frontend/` — Vue 3 SPA frontend (pre-built dist included)

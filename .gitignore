@@ -1,0 +1,8 @@
+/.bundle/
+/vendor/
+/pkg/
+*.gem
+Gemfile.lock
+.rspec_status
+node_modules/
+frontend/node_modules/
