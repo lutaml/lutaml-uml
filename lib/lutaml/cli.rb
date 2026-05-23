@@ -4,7 +4,6 @@ require "thor"
 require "lutaml/uml"
 require "lutaml/uml_repository"
 require "lutaml/converter"
-require "lutaml/formatter"
 
 module Lutaml
   module Cli
@@ -15,19 +14,11 @@ module Lutaml
     autoload :InteractiveShell, "lutaml/cli/interactive_shell"
     autoload :TreeViewFormatter, "lutaml/cli/tree_view_formatter"
     autoload :UmlCommands, "lutaml/cli/uml_commands"
-    autoload :LmlCommands, "lutaml/cli/lml_commands"
     autoload :Uml, "lutaml/cli/uml"
   end
 end
 
 module Lutaml
-  # Main CLI entry point for LutaML
-  #
-  # This is a pure Thor implementation with no custom routing logic.
-  # All commands are organized into subcommands:
-  # - uml: UML repository operations (XMI/QEA/LUR files)
-  # - diagram: DSL diagram generation (LutaML textual notation)
-  # - xmi: Deprecated alias for 'uml'
   class CLI < Thor
     desc "uml SUBCOMMAND", "UML repository operations (XMI/QEA/LUR files)"
     long_desc <<-DESC
@@ -56,28 +47,10 @@ module Lutaml
     DESC
     subcommand "uml", Cli::UmlCommands
 
-    desc "lml SUBCOMMAND", "LutaML textual notation operations"
-    long_desc <<-DESC
-      Perform operations on LutaML textual DSL notation (.lutaml files).
-
-      Available subcommands:
-        generate  - Generate diagram from .lutaml DSL file
-        validate  - Validate DSL syntax
-
-      Examples:
-        lutaml lml generate model.lutaml -o diagram.png
-        lutaml lml validate model.lutaml
-    DESC
-    subcommand "lml", Cli::LmlCommands
-
-    desc "xmi SUBCOMMAND", "UML repository operations (⚠ deprecated, use 'uml')"
+    desc "xmi SUBCOMMAND", "UML repository operations (deprecated, use 'uml')"
     long_desc <<-DESC
       DEPRECATED: This is an alias for 'uml' and will be removed in a future version.
       Please use 'lutaml uml' instead.
-
-      Examples:
-        lutaml xmi build model.qea    # Use: lutaml uml build model.qea
-        lutaml xmi validate model.lur # Use: lutaml uml validate model.lur
     DESC
     subcommand "xmi", Cli::UmlCommands
 
