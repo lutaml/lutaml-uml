@@ -7,8 +7,6 @@ require "lutaml/converter"
 require "lutaml/ea"
 require "lutaml/xmi"
 require "lutaml/qea"
-require "lutaml/formatter"
-require "lutaml/layout"
 require "lutaml/model_transformations"
 
 RSpec.configure do |config|

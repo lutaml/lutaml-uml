@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ribose Inc."]
   spec.email         = ["open.source@ribose.com"]
 
-  spec.summary       = "UML domain models, parsers, CLI, and SPA generator for LutaML"
-  spec.description   = "Provides UML domain model classes, XMI/QEA/DSL parsers, CLI, " \
+  spec.summary       = "UML domain models, repository, CLI, and SPA generator for LutaML"
+  spec.description   = "Provides UML domain model classes, XMI/QEA parsers, CLI, " \
                         "a repository pattern for querying and presenting UML documents, " \
                         "EA diagram rendering, and a static site generator with a Vue.js SPA frontend."
   spec.homepage      = "https://github.com/lutaml/lutaml-uml"
@@ -38,8 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "lutaml-path"
   spec.add_dependency "nokogiri", "~> 1.18"
   spec.add_dependency "paint"
-  spec.add_dependency "parslet", "~> 2.0"
-  spec.add_dependency "ruby-graphviz"
   spec.add_dependency "rubyzip", "~> 2.3"
   spec.add_dependency "sinatra", "~> 4.2"
   spec.add_dependency "sqlite3"

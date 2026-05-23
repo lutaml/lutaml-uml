@@ -83,28 +83,11 @@ module Lutaml
     autoload :Instance, "lutaml/uml/instance"
     autoload :Document, "lutaml/uml/document"
 
-    # Node (DSL AST nodes)
-    module Node
-      autoload :Base, "lutaml/uml/node/base"
-      autoload :HasName, "lutaml/uml/node/has_name"
-      autoload :HasType, "lutaml/uml/node/has_type"
-      autoload :Attribute, "lutaml/uml/node/attribute"
-      autoload :ClassNode, "lutaml/uml/node/class_node"
-      autoload :ClassRelationship, "lutaml/uml/node/class_relationship"
-      autoload :Document, "lutaml/uml/node/document"
-      autoload :MethodArgument, "lutaml/uml/node/method_argument"
-      autoload :Operation, "lutaml/uml/node/operation"
-      autoload :Relationship, "lutaml/uml/node/relationship"
-    end
+    # Node — moved to lutaml-lml gem
+    module Node; end
 
-    # Parsers
-    module Parsers
-      autoload :Dsl, "lutaml/uml/parsers/dsl"
-      autoload :DslPreprocessor, "lutaml/uml/parsers/dsl_preprocessor"
-      autoload :DslTransform, "lutaml/uml/parsers/dsl_transform"
-      autoload :Yaml, "lutaml/uml/parsers/yaml"
-      autoload :Attribute, "lutaml/uml/parsers/attribute"
-    end
+    # Parsers — moved to lutaml-lml gem
+    module Parsers; end
 
     # Validation
     module Validation
@@ -113,5 +96,3 @@ module Lutaml
     end
   end
 end
-
-require "lutaml/lml"
