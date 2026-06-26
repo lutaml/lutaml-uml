@@ -12,14 +12,14 @@ module Lutaml
     #
     # @example Generate single-file SPA
     #   repository = UmlRepository.from_package("model.lur")
-    #   Lutaml::Xmi::StaticSite.generate(repository,
+    #   Lutaml::UmlRepository::StaticSite.generate(repository,
     #     mode: :single_file,
     #     output: "browser.html"
     #   )
     #
     # @example Generate with custom configuration
-    #   config = Lutaml::Xmi::StaticSite::Configuration.load("custom.yml")
-    #   Lutaml::Xmi::StaticSite.generate(repository,
+    #   config = Lutaml::UmlRepository::StaticSite::Configuration.load("custom.yml")
+    #   Lutaml::UmlRepository::StaticSite.generate(repository,
     #     config: config,
     #     mode: :multi_file,
     #     output: "dist/"

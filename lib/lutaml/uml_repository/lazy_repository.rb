@@ -10,15 +10,16 @@ module Lutaml
     # than upfront. Indexes are built only when first accessed, reducing the
     # initial load time significantly.
     #
-    # @example Using lazy loading from XMI
-    #   repo = Lutaml::Xmi::Repository.from_xmi_lazy('large-model.xmi')
+    # @example Using lazy loading from a parsed document
+    #   document = # ... obtained from an external parser such as the `ea` gem ...
+    #   repo = Lutaml::UmlRepository::LazyRepository.new(document: document, lazy: true)
     #   # Only metadata loaded at this point
     #
     #   klass = repo.find_class("ModelRoot::MyClass")
     #   # Now qualified_names index is built
     #
     # @example Building all indexes manually
-    #   repo = Lutaml::Xmi::Repository.from_xmi_lazy('model.xmi')
+    #   repo = Lutaml::UmlRepository::LazyRepository.new(document: document, lazy: true)
     #   repo.build_all_indexes
     #   # All indexes are now available
     class LazyRepository < Repository

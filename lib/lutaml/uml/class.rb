@@ -14,7 +14,8 @@ module Lutaml
       attribute :constraints, Constraint, collection: true
       attribute :operations, Operation, collection: true
       attribute :data_types, DataType, collection: true
-      attribute :associations, Association, collection: true
+      attribute :associations, Association, collection: true,
+                                            default: -> { [] }
       attribute :generalization, Generalization
 
       yaml do

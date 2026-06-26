@@ -14,11 +14,12 @@ module Lutaml
     # - Diagram metadata for visualization
     # - Search capabilities across all model elements
     #
-    # Repository can be built from XMI files or loaded from pre-serialized
-    # LUR (LutaML UML Repository) packages for instant loading.
+    # Repository can be loaded from pre-serialized LUR (LutaML UML Repository)
+    # packages for instant loading, or constructed in-memory from a
+    # {Lutaml::Uml::Document} via {.from_document}.
     #
-    # @example Building from XMI
-    #   repo = Lutaml::Xmi::Repository.from_xmi('model.xmi')
+    # @example Building from a parsed document
+    #   repo = Lutaml::UmlRepository::Repository.from_document(document)
     #   klass = repo.find_class("ModelRoot::i-UR::urf::Building")
     #
     # @example Navigating package hierarchy
@@ -29,7 +30,6 @@ module Lutaml
     #   parent = repo.supertype_of("ModelRoot::Child")
     #   descendants = repo.descendants_of("ModelRoot::Parent", max_depth: 2)
     class Repository
-      autoload :Loader, "lutaml/uml_repository/repository/loader"
       autoload :Deprecated, "lutaml/uml_repository/repository/deprecated"
 
       include Deprecated
