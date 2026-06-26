@@ -17,7 +17,7 @@ RSpec.describe Lutaml::Ea::Diagram::Configuration do
            else
              (stereotype ? [stereotype] : [])
            end
-      el = Lutaml::Uml::Class.new(name: name, stereotype: st)
+      el = Lutaml::Uml::UmlClass.new(name: name, stereotype: st)
     end
     el
   end

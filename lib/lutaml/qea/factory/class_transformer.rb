@@ -8,7 +8,7 @@ module Lutaml
           return nil if ea_object.nil?
           return nil unless transformable?(ea_object)
 
-          Lutaml::Uml::Class.new.tap do |klass|
+          Lutaml::Uml::UmlClass.new.tap do |klass|
             assign_basic_properties(klass, ea_object)
             assign_features(klass, ea_object)
             assign_relationships(klass, ea_object)

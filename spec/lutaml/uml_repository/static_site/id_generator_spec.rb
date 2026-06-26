@@ -7,9 +7,9 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::IdGenerator do
   let(:generator) { described_class.new }
 
   let(:package) { Lutaml::Uml::Package.new(xmi_id: "pkg_xmi_123", name: "Pkg") }
-  let(:klass) { Lutaml::Uml::Class.new(xmi_id: "cls_xmi_456", name: "Cls") }
+  let(:klass) { Lutaml::Uml::UmlClass.new(xmi_id: "cls_xmi_456", name: "Cls") }
   let(:attribute) { Lutaml::Uml::TopElementAttribute.new(name: "testAttr") }
-  let(:owner) { Lutaml::Uml::Class.new(xmi_id: "owner_xmi_789", name: "Owner") }
+  let(:owner) { Lutaml::Uml::UmlClass.new(xmi_id: "owner_xmi_789", name: "Owner") }
   let(:association) { Lutaml::Uml::Association.new(xmi_id: "assoc_xmi_012") }
   let(:operation) { Lutaml::Uml::Operation.new(name: "testOp", xmi_id: "op_1") }
   let(:diagram) { Lutaml::Uml::Diagram.new(xmi_id: "diag_xmi_345") }
@@ -66,7 +66,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::IdGenerator do
     end
 
     it "generates different IDs for different classes" do
-      klass2 = Lutaml::Uml::Class.new(xmi_id: "cls_xmi_999", name: "C2")
+      klass2 = Lutaml::Uml::UmlClass.new(xmi_id: "cls_xmi_999", name: "C2")
 
       id1 = generator.class_id(klass)
       id2 = generator.class_id(klass2)
@@ -83,7 +83,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::IdGenerator do
     end
 
     it "uses combination of owner and attribute name" do
-      owner2 = Lutaml::Uml::Class.new(xmi_id: "owner_xmi_999", name: "O2")
+      owner2 = Lutaml::Uml::UmlClass.new(xmi_id: "owner_xmi_999", name: "O2")
 
       id1 = generator.attribute_id(attribute, owner)
       id2 = generator.attribute_id(attribute, owner2)
@@ -120,7 +120,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::IdGenerator do
     end
 
     it "uses combination of owner and operation name" do
-      owner2 = Lutaml::Uml::Class.new(xmi_id: "owner_xmi_999", name: "O2")
+      owner2 = Lutaml::Uml::UmlClass.new(xmi_id: "owner_xmi_999", name: "O2")
 
       id1 = generator.operation_id(operation, owner)
       id2 = generator.operation_id(operation, owner2)

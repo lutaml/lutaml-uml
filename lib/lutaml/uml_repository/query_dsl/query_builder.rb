@@ -228,13 +228,13 @@ module Lutaml
 
         # Fetch all classes from the repository
         #
-        # @return [Array<Lutaml::Uml::Class>] Array of class objects
+        # @return [Array<Lutaml::Uml::UmlClass>] Array of class objects
         def fetch_classes
           indexes = @repository.indexes
           qnames_index = indexes[:qualified_names] || {}
 
           qnames_index.values.select do |obj|
-            obj.is_a?(Lutaml::Uml::Class) ||
+            obj.is_a?(Lutaml::Uml::UmlClass) ||
               obj.is_a?(Lutaml::Uml::DataType) ||
               obj.is_a?(Lutaml::Uml::Enum)
           end

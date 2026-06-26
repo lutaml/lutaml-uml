@@ -2,7 +2,7 @@
 
 module Lutaml
   module Uml
-    class Class < Classifier
+    class UmlClass < UmlClassifier
       skip_reference_registration
 
       attribute :nested_classifier, :string, collection: true,

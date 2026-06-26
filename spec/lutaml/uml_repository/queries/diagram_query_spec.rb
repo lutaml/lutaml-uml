@@ -76,7 +76,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::DiagramQuery do
 
   describe "#find_containing_class" do
     it "finds diagrams containing specific class" do
-      classes = indexes[:qualified_names].values.grep(Lutaml::Uml::Class)
+      classes = indexes[:qualified_names].values.grep(Lutaml::Uml::UmlClass)
 
       classes.each do |klass|
         diagrams = query.find_containing_class(klass.xmi_id)

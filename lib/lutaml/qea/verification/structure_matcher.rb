@@ -32,8 +32,8 @@ module Lutaml
 
         # Match attributes between classes
         #
-        # @param xmi_class [Lutaml::Uml::Class] XMI class
-        # @param qea_class [Lutaml::Uml::Class] QEA class
+        # @param xmi_class [Lutaml::Uml::UmlClass] XMI class
+        # @param qea_class [Lutaml::Uml::UmlClass] QEA class
         # @return [Hash] Hash with :matches, :xmi_only, :qea_only
         def match_attributes(xmi_class, qea_class)
           xmi_attrs = index_by_name(xmi_class.attributes || [])
@@ -44,8 +44,8 @@ module Lutaml
 
         # Match operations between classes
         #
-        # @param xmi_class [Lutaml::Uml::Class] XMI class
-        # @param qea_class [Lutaml::Uml::Class] QEA class
+        # @param xmi_class [Lutaml::Uml::UmlClass] XMI class
+        # @param qea_class [Lutaml::Uml::UmlClass] QEA class
         # @return [Hash] Hash with :matches, :xmi_only, :qea_only
         def match_operations(xmi_class, qea_class)
           xmi_ops = index_by_signature(xmi_class.operations || [])

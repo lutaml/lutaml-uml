@@ -129,7 +129,7 @@ RSpec.describe Lutaml::Cli::EnhancedFormatter do
 
   describe ".format_class_details_enhanced" do
     let(:mock_class) do
-      Lutaml::Uml::Class.new(
+      Lutaml::Uml::UmlClass.new(
         name: "TestClass",
         xmi_id: "test-123",
         stereotype: ["entity"],
@@ -164,7 +164,7 @@ RSpec.describe Lutaml::Cli::EnhancedFormatter do
     end
 
     it "handles classes without attributes", :aggregate_failures do
-      empty_class = Lutaml::Uml::Class.new(
+      empty_class = Lutaml::Uml::UmlClass.new(
         name: "EmptyClass",
         attributes: [],
         operations: [],

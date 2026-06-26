@@ -22,6 +22,7 @@ module Lutaml
     autoload :Value, "lutaml/uml/value"
     autoload :Fontname, "lutaml/uml/fontname"
     autoload :TaggedValue, "lutaml/uml/tagged_value"
+    autoload :Group, "lutaml/uml/group"
 
     # Core elements
     autoload :TopElement, "lutaml/uml/top_element"
@@ -37,8 +38,8 @@ module Lutaml
     autoload :Realization, "lutaml/uml/realization"
 
     # Classifiers
-    autoload :Classifier, "lutaml/uml/classifier"
-    autoload :Class, "lutaml/uml/class"
+    autoload :UmlClassifier, "lutaml/uml/classifier"
+    autoload :UmlClass, "lutaml/uml/class"
     autoload :DataType, "lutaml/uml/data_type"
     autoload :Enum, "lutaml/uml/enum"
     autoload :PrimitiveType, "lutaml/uml/primitive_type"
@@ -71,7 +72,6 @@ module Lutaml
     # Composite elements
     autoload :Connector, "lutaml/uml/connector"
     autoload :ConnectorEnd, "lutaml/uml/connector_end"
-    autoload :Group, "lutaml/uml/group"
     autoload :Package, "lutaml/uml/package"
     autoload :Model, "lutaml/uml/model"
 
@@ -85,6 +85,7 @@ module Lutaml
 
     # Validation
     module Validation
+      autoload :BaseValidator, "lutaml/uml/validation/base_validator"
       autoload :DocumentStructureValidator,
                "lutaml/uml/validation/document_structure_validator"
     end

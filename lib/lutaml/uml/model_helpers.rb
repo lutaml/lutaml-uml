@@ -54,7 +54,7 @@ module Lutaml
           "DataType"
         when Lutaml::Uml::PrimitiveType
           "PrimitiveType"
-        when Lutaml::Uml::Class
+        when Lutaml::Uml::UmlClass
           "Class"
         when Class
           uml_class.name.split("::").last

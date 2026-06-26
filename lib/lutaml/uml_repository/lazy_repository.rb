@@ -64,7 +64,7 @@ module Lutaml
       #
       # @param qualified_name [String] The qualified name
       # @param raise_on_error [Boolean] Whether to raise an error if not found
-      # @return [Lutaml::Uml::Class, Lutaml::Uml::DataType,
+      # @return [Lutaml::Uml::UmlClass, Lutaml::Uml::DataType,
       # Lutaml::Uml::Enum, nil]
       def find_class(qualified_name, raise_on_error: false)
         ensure_index(:qualified_names)
@@ -98,9 +98,9 @@ module Lutaml
       #
       # Ensures the qualified_names and inheritance_graph indexes are built.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
-      # @return [Lutaml::Uml::Class, nil] The parent class, or nil if no parent
+      # @return [Lutaml::Uml::UmlClass, nil] The parent class, or nil if no parent
       def supertype_of(class_or_qname)
         ensure_index(:qualified_names)
         ensure_index(:inheritance_graph)
@@ -111,7 +111,7 @@ module Lutaml
       #
       # Ensures the inheritance_graph index is built before querying.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @param recursive [Boolean] Whether to include all descendants
       # @return [Array] Array of child class objects
@@ -124,7 +124,7 @@ module Lutaml
       #
       # Ensures the qualified_names and inheritance_graph indexes are built.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @return [Array] Array of ancestor class objects
       def ancestors_of(class_or_qname)
@@ -137,7 +137,7 @@ module Lutaml
       #
       # Ensures the inheritance_graph index is built before querying.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @param max_depth [Integer, nil] Maximum depth to traverse
       # @return [Array] Array of descendant class objects

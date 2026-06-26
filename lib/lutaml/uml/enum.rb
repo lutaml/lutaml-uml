@@ -2,7 +2,7 @@
 
 module Lutaml
   module Uml
-    class Enum < Classifier
+    class Enum < UmlClassifier
       skip_reference_registration
 
       attribute :attributes, TopElementAttribute, collection: true,

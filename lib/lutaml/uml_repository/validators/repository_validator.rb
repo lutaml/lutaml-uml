@@ -71,7 +71,7 @@ module Lutaml
           @external_references = []
 
           @indexes[:qualified_names].each do |qname, klass|
-            next unless klass.is_a?(Lutaml::Uml::Class) && klass.attributes
+            next unless klass.is_a?(Lutaml::Uml::UmlClass) && klass.attributes
 
             package_path = extract_package_path(qname, default: "ModelRoot")
             class_details = { class_name: qname, attributes: [] } if @verbose
@@ -158,7 +158,7 @@ module Lutaml
         # Check that all association ends reference existing classes
         def check_association_references # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
           @indexes[:qualified_names].each do |qname, klass|
-            next unless klass.is_a?(Lutaml::Uml::Class)
+            next unless klass.is_a?(Lutaml::Uml::UmlClass)
             next unless klass.associations
 
             klass.associations.each do |assoc|
@@ -199,7 +199,7 @@ module Lutaml
         # Check multiplicity values are valid
         def check_multiplicities # rubocop:disable Metrics/CyclomaticComplexity
           @indexes[:qualified_names].each do |qname, klass|
-            next unless klass.is_a?(Lutaml::Uml::Class)
+            next unless klass.is_a?(Lutaml::Uml::UmlClass)
             next unless klass.attributes
 
             klass.attributes.each do |attr|

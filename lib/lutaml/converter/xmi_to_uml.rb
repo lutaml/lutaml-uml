@@ -55,7 +55,7 @@ module Lutaml
       end
 
       def create_uml_class(klass) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
-        ::Lutaml::Uml::Class.new.tap do |k| # rubocop:disable Metrics/BlockLength
+        ::Lutaml::Uml::UmlClass.new.tap do |k| # rubocop:disable Metrics/BlockLength
           k.xmi_id = klass.id
           k.name = klass.name
           k.type = klass.type.split(":").last

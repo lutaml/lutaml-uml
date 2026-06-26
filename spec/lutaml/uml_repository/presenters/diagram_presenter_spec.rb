@@ -351,8 +351,8 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
         allow(repository).to receive_messages(
           associations_index: [mock_assoc], classes_index: [mock_class_gen],
         )
-        allow(mock_class_gen).to receive(:is_a?).with(Lutaml::Uml::Class).and_return(true)
-        allow(mock_class_gen).to receive(:is_a?).with(Lutaml::Uml::Classifier).and_return(true)
+        allow(mock_class_gen).to receive(:is_a?).with(Lutaml::Uml::UmlClass).and_return(true)
+        allow(mock_class_gen).to receive(:is_a?).with(Lutaml::Uml::UmlClassifier).and_return(true)
         allow(mock_class_gen).to receive(:is_a?).with(Lutaml::Uml::TopElement).and_return(true)
         allow(mock_class_gen).to receive(:is_a?).with(Lutaml::Uml::DataType).and_return(false)
       end
@@ -379,9 +379,9 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
 
         before do
           allow(repository).to receive(:classes_index).and_return([mcwa])
-          allow(mcwa).to receive(:is_a?).with(Lutaml::Uml::Class).and_return(false)
+          allow(mcwa).to receive(:is_a?).with(Lutaml::Uml::UmlClass).and_return(false)
           allow(mcwa).to receive(:is_a?).with(Lutaml::Uml::DataType).and_return(true)
-          allow(mcwa).to receive(:is_a?).with(Lutaml::Uml::Classifier).and_return(true)
+          allow(mcwa).to receive(:is_a?).with(Lutaml::Uml::UmlClassifier).and_return(true)
           allow(mcwa).to receive(:is_a?).with(Lutaml::Uml::TopElement).and_return(true)
           allow(mcwa).to receive(:generalization).and_return(nil)
         end
@@ -505,7 +505,7 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
       end
 
       it "returns 'class' for Class" do
-        el = double("Element", class: double(name: "Lutaml::Uml::Class"))
+        el = double("Element", class: double(name: "Lutaml::Uml::UmlClass"))
         expect(presenter.send(:determine_element_type, el)).to eq("class")
       end
 
@@ -555,22 +555,22 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
 
     describe "#extract_stereotype" do
       it "extracts stereotype string" do
-        el = Lutaml::Uml::Class.new(stereotype: ["entity"])
+        el = Lutaml::Uml::UmlClass.new(stereotype: ["entity"])
         expect(presenter.send(:extract_stereotype, el)).to eq("entity")
       end
 
       it "handles array of stereotypes" do
-        el = Lutaml::Uml::Class.new(stereotype: ["entity", "feature"])
+        el = Lutaml::Uml::UmlClass.new(stereotype: ["entity", "feature"])
         expect(presenter.send(:extract_stereotype, el)).to eq("entity")
       end
 
       it "returns nil for empty stereotype" do
-        el = Lutaml::Uml::Class.new(stereotype: [])
+        el = Lutaml::Uml::UmlClass.new(stereotype: [])
         expect(presenter.send(:extract_stereotype, el)).to be_nil
       end
 
       it "returns nil for nil stereotype" do
-        el = Lutaml::Uml::Class.new
+        el = Lutaml::Uml::UmlClass.new
         el.stereotype = []
         expect(presenter.send(:extract_stereotype, el)).to be_nil
       end
@@ -583,7 +583,7 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
       end
 
       let(:element) do
-        Lutaml::Uml::Class.new(attributes: [mock_attr])
+        Lutaml::Uml::UmlClass.new(attributes: [mock_attr])
       end
 
       let(:attrs) { presenter.send(:extract_attributes, element) }
@@ -600,7 +600,7 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
       end
 
       it "returns empty array for nil attributes" do
-        el = Lutaml::Uml::Class.new
+        el = Lutaml::Uml::UmlClass.new
         el.attributes = []
         expect(presenter.send(:extract_attributes, el)).to eq([])
       end
@@ -615,7 +615,7 @@ RSpec.describe Lutaml::UmlRepository::Presenters::DiagramPresenter do
       end
 
       let(:element) do
-        Lutaml::Uml::Class.new(operations: [mock_op])
+        Lutaml::Uml::UmlClass.new(operations: [mock_op])
       end
 
       let(:ops) { presenter.send(:extract_operations, element) }

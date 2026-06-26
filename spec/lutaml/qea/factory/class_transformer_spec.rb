@@ -45,7 +45,7 @@ RSpec.describe Lutaml::Qea::Factory::ClassTransformer do
 
       result = transformer.transform(ea_obj)
 
-      expect(result).to be_a(Lutaml::Uml::Class)
+      expect(result).to be_a(Lutaml::Uml::UmlClass)
       expect(result.name).to eq("Building")
       expect(result.xmi_id).to eq("EAID_CLASS_GUID")
       expect(result.is_abstract).to be false

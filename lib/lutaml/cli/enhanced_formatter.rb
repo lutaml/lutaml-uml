@@ -144,13 +144,13 @@ module Lutaml
           st_str = st.is_a?(Array) ? st.join(", ") : st
           lines << "  Stereotype:  #{st_str}"
         end
-        if klass.is_a?(Lutaml::Uml::Classifier)
+        if klass.is_a?(Lutaml::Uml::UmlClassifier)
           lines << "  Abstract:    #{klass.is_abstract ? 'Yes' : 'No'}"
         end
         lines << ""
 
         # Attributes
-        if klass.is_a?(Lutaml::Uml::Classifier) && klass.attributes &&
+        if klass.is_a?(Lutaml::Uml::UmlClassifier) && klass.attributes &&
             !klass.attributes.empty?
           lines << colorize(
             "#{ICONS[:attribute]} Attributes (#{klass.attributes.size}):",
@@ -168,7 +168,7 @@ module Lutaml
         end
 
         # Operations
-        if klass.is_a?(Lutaml::Uml::Classifier) && klass.operations &&
+        if klass.is_a?(Lutaml::Uml::UmlClassifier) && klass.operations &&
             !klass.operations.empty?
           lines << colorize(
             "#{ICONS[:operation]} Operations (#{klass.operations.size}):",

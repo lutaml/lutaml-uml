@@ -23,11 +23,11 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Serializers::InheritanceResolv
     end
 
     it "uses generalization map when available" do
-      parent = Lutaml::Uml::Class.new
+      parent = Lutaml::Uml::UmlClass.new
       parent.name = "Parent"
       parent.xmi_id = "parent_xmi"
 
-      child = Lutaml::Uml::Class.new
+      child = Lutaml::Uml::UmlClass.new
       child.name = "Child"
       child.xmi_id = "child_xmi"
 

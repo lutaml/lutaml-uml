@@ -131,7 +131,7 @@ module Lutaml
 
         # Serialize a class to a hash.
         #
-        # @param klass [Lutaml::Uml::Class, Lutaml::Uml::DataType,
+        # @param klass [Lutaml::Uml::UmlClass, Lutaml::Uml::DataType,
         #   Lutaml::Uml::Enum] The class object
         # @return [Hash] Class data
         def serialize_class(klass) # rubocop:disable Metrics/MethodLength
@@ -227,7 +227,7 @@ module Lutaml
         # @param klass [Object] The class object
         # @return [Array<Hash>] Array of operation hashes
         def serialize_operations(klass)
-          return [] unless klass.is_a?(Lutaml::Uml::Classifier) && klass.operations
+          return [] unless klass.is_a?(Lutaml::Uml::UmlClassifier) && klass.operations
 
           klass.operations.map do |op|
             {

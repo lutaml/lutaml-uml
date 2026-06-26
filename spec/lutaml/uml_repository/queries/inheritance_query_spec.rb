@@ -13,7 +13,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
     it "finds direct children of a class" do
       parent_ids.each do |parent_id|
         children = query.find_children(parent_id)
-        expect(children).to all(be_a(Lutaml::Uml::Class))
+        expect(children).to all(be_a(Lutaml::Uml::UmlClass))
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
     it "finds parent class" do
       child_classes.each do |klass|
         parent = query.find_parent(klass.xmi_id)
-        expect(parent).to be_a(Lutaml::Uml::Class) if parent
+        expect(parent).to be_a(Lutaml::Uml::UmlClass) if parent
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
     it "finds all ancestors" do
       child_classes.each do |klass|
         ancestors = query.find_ancestors(klass.xmi_id)
-        expect(ancestors).to all(be_a(Lutaml::Uml::Class))
+        expect(ancestors).to all(be_a(Lutaml::Uml::UmlClass))
       end
     end
 
@@ -111,7 +111,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
     end
 
     it "returns false for valid hierarchy" do
-      indexes[:qualified_names].values.grep(Lutaml::Uml::Class).each do |klass|
+      indexes[:qualified_names].values.grep(Lutaml::Uml::UmlClass).each do |klass|
         expect(query.has_circular_inheritance?(klass.xmi_id)).to be false
       end
     end

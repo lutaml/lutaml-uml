@@ -80,7 +80,7 @@ module Lutaml
         end
 
         # Transform all classes
-        # @return [Array<Lutaml::Uml::Class>] All UML classes
+        # @return [Array<Lutaml::Uml::UmlClass>] All UML classes
         def transform_classes # rubocop:disable Metrics/MethodLength
           class_transformer = get_transformer(:class)
 
@@ -226,7 +226,7 @@ module Lutaml
         def collect_package_associations(package, associations) # rubocop:disable Metrics/CyclomaticComplexity
           # Collect from classes in this package
           package.classes&.each do |klass|
-            if (klass.is_a?(Lutaml::Uml::Class) ||
+            if (klass.is_a?(Lutaml::Uml::UmlClass) ||
                 klass.is_a?(Lutaml::Uml::DataType)) && klass.associations
               associations.concat(klass.associations)
             end

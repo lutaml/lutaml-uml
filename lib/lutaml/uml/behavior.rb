@@ -5,7 +5,7 @@
 ##
 module Lutaml
   module Uml
-    class Behavior < Class
+    class Behavior < UmlClassifier
       skip_reference_registration
     end
   end

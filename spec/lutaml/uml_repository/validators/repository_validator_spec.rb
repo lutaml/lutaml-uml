@@ -51,11 +51,11 @@ RSpec.describe Lutaml::UmlRepository::Validators::RepositoryValidator do
         pkg.xmi_id = "pkg1"
 
         # Create two classes with circular inheritance
-        class1 = Lutaml::Uml::Class.new
+        class1 = Lutaml::Uml::UmlClass.new
         class1.name = "Class1"
         class1.xmi_id = "class1"
 
-        class2 = Lutaml::Uml::Class.new
+        class2 = Lutaml::Uml::UmlClass.new
         class2.name = "Class2"
         class2.xmi_id = "class2"
 

@@ -147,7 +147,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::SearchIndexBuilder do
       pkg = Lutaml::Uml::Package.new
       pkg.name = "Pkg"
       pkg.xmi_id = "pkg_na"
-      klass = Lutaml::Uml::Class.new
+      klass = Lutaml::Uml::UmlClass.new
       klass.name = "NoAttrs"
       klass.xmi_id = "cls_na"
       pkg.classes << klass
@@ -170,7 +170,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::SearchIndexBuilder do
       pkg.xmi_id = "pkg_big"
 
       100.times do |i|
-        klass = Lutaml::Uml::Class.new
+        klass = Lutaml::Uml::UmlClass.new
         klass.name = "Class#{i}"
         klass.xmi_id = "cls_#{i}"
         pkg.classes << klass

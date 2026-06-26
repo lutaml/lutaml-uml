@@ -85,15 +85,15 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Serializers::PackageTreeBuilde
       pkg.name = "Pkg"
       pkg.xmi_id = "pkg_f"
 
-      valid_class = Lutaml::Uml::Class.new
+      valid_class = Lutaml::Uml::UmlClass.new
       valid_class.name = "Valid"
       valid_class.xmi_id = "cls_v"
 
-      empty_class = Lutaml::Uml::Class.new
+      empty_class = Lutaml::Uml::UmlClass.new
       empty_class.name = ""
       empty_class.xmi_id = "cls_e"
 
-      nil_class = Lutaml::Uml::Class.new
+      nil_class = Lutaml::Uml::UmlClass.new
       nil_class.name = nil
       nil_class.xmi_id = "cls_n"
 

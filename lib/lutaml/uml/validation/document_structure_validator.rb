@@ -6,7 +6,7 @@ module Lutaml
       # Validates UML document tree structure
       # This validator ensures proper nesting, no duplicate names within same
       # parent, and valid type references in the transformed UML tree
-      class DocumentStructureValidator < Qea::Validation::BaseValidator
+      class DocumentStructureValidator < BaseValidator
         def validate
           return unless document
 
@@ -210,7 +210,7 @@ module Lutaml
 
           # Check attribute type references
           all_classes.each do |cls, path|
-            next unless cls.is_a?(Lutaml::Uml::Class) || cls.is_a?(Lutaml::Uml::DataType)
+            next unless cls.is_a?(Lutaml::Uml::UmlClass) || cls.is_a?(Lutaml::Uml::DataType)
 
             (cls.attributes || []).each do |attr|
               next unless attr.type

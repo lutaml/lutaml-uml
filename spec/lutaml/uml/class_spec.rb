@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Lutaml::Uml::Class do
+RSpec.describe Lutaml::Uml::UmlClass do
   describe ".from_yaml" do
     subject(:test_model) { described_class.from_yaml(yaml_content) }
 

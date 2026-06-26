@@ -76,56 +76,48 @@ module Lutaml
       # @example
       #   repo = Repository.from_xmi('model.xmi')
       #   repo = Repository.from_xmi('model.xmi', validate: true)
-      def self.from_xmi(xmi_path, options = {})
-        document = Lutaml::Xmi::Parsers::Xml.parse(File.new(xmi_path))
-
-        # Build indexes
+      # Build a Repository from any registered file format.
+      #
+      # Uses the loader registry to find the right parser for the file
+      # extension. Parser gems (e.g. `ea`) register their loaders at load
+      # time. This avoids hard-coding any specific parser.
+      #
+      # @param xmi_path [String] Path to the file
+      # @param options [Hash] Options for parsing
+      # @return [Repository] A new repository instance
+      # Build a Repository from a pre-parsed UML Document.
+      #
+      # This is the composition point — parse the file with the appropriate
+      # parser gem (e.g. `Ea::Qea.parse` for QEA, an XMI parser for XMI),
+      # then wrap the resulting document here.
+      #
+      # @param document [Lutaml::Uml::Document] Pre-parsed document
+      # @param options [Hash] Options
+      # @return [Repository]
+      # @example
+      #   document = Ea::Qea.parse("model.qea")
+      #   repo = Repository.from_document(document)
+      def self.from_document(document, options = {})
         indexes = IndexBuilder.build_all(document)
-
-        # Optionally validate (placeholder for future validation logic)
-        # if options[:validate]
-        #   validate_model(document, indexes)
-        # end
-
         new(document: document, indexes: indexes, options: options)
       end
 
-      # Build a Repository from an XMI file with lazy index loading.
+      # Build a Repository from a LUR package file (native format).
       #
-      # This method creates a LazyRepository that builds indexes on-demand
-      # rather than upfront. Useful for very large models (1000+ classes)
-      # to reduce initial load time and memory usage.
-      #
-      # @param xmi_path [String] Path to the XMI file
-      # @param options [Hash] Options for parsing
-      # @return [LazyRepository] A new lazy repository instance
-      # @example
-      #   repo = Repository.from_xmi_lazy('large-model.xmi')
-      #   # Only document loaded, indexes built on first access
-      def self.from_xmi_lazy(xmi_path, _options = {})
-        document = Lutaml::Xmi::Parsers::Xml.parse(File.new(xmi_path))
-
-        LazyRepository.new(document: document, lazy: true)
-      end
-
-      # Auto-detect file type and load appropriately.
-      #
-      # Detects whether the file is an XMI file (.xmi) or a LUR package (.lur)
-      # and loads it using the appropriate method.
-      #
-      # @param path [String] Path to the file (.xmi or .lur)
-      # @return [Repository] A new or loaded repository instance
-      # @raise [ArgumentError] If the file type is unknown
-      # @example
-      #   repo = Repository.from_file('model.xmi')
-      #   repo = Repository.from_file('model.lur')
-      def self.from_file(path)
+      # @param lur_path [String] Path to the .lur package file
+      # @param options [Hash] Options
+      # @return [Repository]
+      def self.from_file(path, options = {})
         case File.extname(path).downcase
-        when ".xmi" then from_xmi(path)
-        when ".lur" then from_package(path)
+        when ".lur"
+          from_package(path)
         else
           raise ArgumentError,
-                "Unknown file type: #{path}. Expected .xmi or .lur"
+                "Repository.from_file only supports .lur packages. " \
+                "For other formats, parse first and use " \
+                "Repository.from_document(document). " \
+                "Example: doc = Ea::Qea.parse('#{path}'); " \
+                "repo = Repository.from_document(doc)"
         end
       end
 
@@ -146,16 +138,26 @@ module Lutaml
       # @example Using custom cache path
       #   repo = Repository.from_file_cached('model.xmi',
       #                                          lur_path: 'cache/model.lur')
-      def self.from_file_cached(xmi_path, lur_path: nil) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-        lur_path ||= xmi_path.sub(/\.xmi$/i, ".lur")
+      # Smart caching - use LUR if newer than source, otherwise rebuild.
+      #
+      # @param source_path [String] Path to the source file
+      # @param lur_path [String, nil] Path to the LUR package
+      # @yield [source_path] Block that parses the source into a Document
+      # @return [Repository]
+      def self.from_file_cached(source_path, lur_path: nil) # rubocop:disable Metrics/MethodLength
+        lur_path ||= source_path.sub(/\.[^.]+$/i, ".lur")
 
-        if File.exist?(lur_path) && File.mtime(lur_path) >= File.mtime(xmi_path)
+        if File.exist?(lur_path) && File.mtime(lur_path) >= File.mtime(source_path)
           puts "Using cached LUR package: #{lur_path}" if $VERBOSE
           from_package(lur_path)
         else
-          puts "Building repository from XMI..." if $VERBOSE
-          repo = from_xmi(xmi_path)
+          raise ArgumentError,
+                "A block is required to parse '#{source_path}' for caching" \
+                unless block_given?
 
+          puts "Building repository from source..." if $VERBOSE
+          document = yield(source_path)
+          repo = from_document(document)
           puts "Caching as LUR package: #{lur_path}" if $VERBOSE
           repo.export_to_package(lur_path)
           repo
@@ -196,13 +198,21 @@ module Lutaml
       # @example
       #   repo = Repository.from_file_lazy('large-model.xmi')
       #   repo = Repository.from_file_lazy('large-model.lur')
+      # Auto-detect file type and load with lazy loading.
+      #
+      # Only supports .lur files for lazy loading. For other formats, parse
+      # first and use Repository.from_document(document).
+      #
+      # @param path [String] Path to the file (.lur)
+      # @return [LazyRepository]
       def self.from_file_lazy(path)
         case File.extname(path).downcase
-        when ".xmi" then from_xmi_lazy(path)
         when ".lur" then from_package_lazy(path)
         else
           raise ArgumentError,
-                "Unknown file type: #{path}. Expected .xmi or .lur"
+                "Lazy loading only supports .lur packages. " \
+                "For other formats, parse first and use " \
+                "Repository.from_document(document)."
         end
       end
 
@@ -294,7 +304,7 @@ module Lutaml
       #   (e.g., "ModelRoot::i-UR::urf::Building")
       # @param raise_on_error [Boolean] Whether to raise an error if not found
       #   (default: false)
-      # @return [Lutaml::Uml::Class, Lutaml::Uml::DataType,
+      # @return [Lutaml::Uml::UmlClass, Lutaml::Uml::DataType,
       # Lutaml::Uml::Enum, nil]
       #   The class object, or nil if not found
       # @raise [NameError] If class not found and raise_on_error is true
@@ -336,7 +346,7 @@ module Lutaml
       # @return [Array<Lutaml::Uml::Attribute>] All attribute objects
       def all_attributes
         indexes[:qualified_names].flat_map do |_qname, entity|
-          next [] unless entity.is_a?(Lutaml::Uml::Classifier) && entity.attributes
+          next [] unless entity.is_a?(Lutaml::Uml::UmlClassifier) && entity.attributes
 
           entity.attributes
         end
@@ -368,9 +378,9 @@ module Lutaml
 
       # Get the direct parent class (supertype).
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
-      # @return [Lutaml::Uml::Class, nil] The parent class, or nil if no parent
+      # @return [Lutaml::Uml::UmlClass, nil] The parent class, or nil if no parent
       # @example
       #   parent = repo.supertype_of("ModelRoot::Child")
       #   parent = repo.supertype_of(child_class)
@@ -380,7 +390,7 @@ module Lutaml
 
       # Get direct child classes (subtypes).
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @param recursive [Boolean] Whether to include all descendants
       #   (default: false)
@@ -397,7 +407,7 @@ module Lutaml
       #
       # Returns ancestors in order from immediate parent to root.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @return [Array] Array of ancestor class objects, ordered from nearest
       #   to furthest
@@ -409,7 +419,7 @@ module Lutaml
 
       # Get all descendant classes.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @param max_depth [Integer, nil] Maximum depth to traverse (nil for
       #   unlimited)
@@ -422,7 +432,7 @@ module Lutaml
 
       # Get associations involving a class.
       #
-      # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+      # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
       #   or qualified name string
       # @param options [Hash] Query options
       # @option options [Symbol] :direction (:both) Filter by direction:
@@ -601,7 +611,7 @@ module Lutaml
         end
 
         classes_index.each do |klass|
-          next unless (klass.is_a?(Lutaml::Uml::Class) || klass.is_a?(Lutaml::Uml::DataType)) && klass.associations
+          next unless (klass.is_a?(Lutaml::Uml::UmlClass) || klass.is_a?(Lutaml::Uml::DataType)) && klass.associations
 
           klass.associations.each do |assoc|
             if assoc.xmi_id && !seen.include?(assoc.xmi_id)

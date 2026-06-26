@@ -20,7 +20,7 @@ module Lutaml
       class AssociationQuery < BaseQuery
         # Find associations for a specific class.
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
         # @param options [Hash] Query options
         # @option options [Boolean] :owned_only Return only associations owned
@@ -54,7 +54,7 @@ module Lutaml
           results = []
 
           # Get owned associations from the class itself
-          if (klass.is_a?(Lutaml::Uml::Class) || klass.is_a?(Lutaml::Uml::DataType)) && klass.associations
+          if (klass.is_a?(Lutaml::Uml::UmlClass) || klass.is_a?(Lutaml::Uml::DataType)) && klass.associations
             results.concat(klass.associations)
           end
 
@@ -122,7 +122,7 @@ module Lutaml
           indexes[:qualified_names].values.filter_map do |entity|
             if entity.is_a?(Lutaml::Uml::Association)
               entity
-            elsif entity.is_a?(Lutaml::Uml::Class) && entity.associations
+            elsif entity.is_a?(Lutaml::Uml::UmlClass) && entity.associations
               entity.associations
             end
           end.flatten
@@ -130,9 +130,9 @@ module Lutaml
 
         # Resolve a class or qualified name to a class object
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
-        # @return [Lutaml::Uml::Class, nil] The class object,
+        # @return [Lutaml::Uml::UmlClass, nil] The class object,
         # or nil if not found
         def resolve_class(class_or_qname)
           if class_or_qname.is_a?(String)

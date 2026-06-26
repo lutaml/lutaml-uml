@@ -37,7 +37,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Models::SpaAttribute do
         visibility: "public",
         definition: "A test attr"
       )
-      owner = Lutaml::Uml::Class.new(name: "TestClass", xmi_id: "cls_1")
+      owner = Lutaml::Uml::UmlClass.new(name: "TestClass", xmi_id: "cls_1")
       id_gen = Lutaml::UmlRepository::StaticSite::IdGenerator.new
 
       result = described_class.from_uml(
@@ -61,7 +61,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Models::SpaAttribute do
         is_static: true, is_read_only: true,
         default: "0"
       )
-      owner = Lutaml::Uml::Class.new(name: "Widget", xmi_id: "cls_2")
+      owner = Lutaml::Uml::UmlClass.new(name: "Widget", xmi_id: "cls_2")
       id_gen = Lutaml::UmlRepository::StaticSite::IdGenerator.new
 
       result = described_class.from_uml(

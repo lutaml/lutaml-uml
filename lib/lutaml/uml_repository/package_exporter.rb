@@ -276,7 +276,7 @@ module Lutaml
       # @param klass [Object] The class object
       # @return [Array<Hash>] List of attributes
       def build_attributes_list(klass)
-        return [] unless klass.is_a?(Lutaml::Uml::Classifier) && klass.attributes
+        return [] unless klass.is_a?(Lutaml::Uml::UmlClassifier) && klass.attributes
 
         klass.attributes.map do |attr|
           {
@@ -313,7 +313,7 @@ module Lutaml
       def count_all_attributes
         total = 0
         @repository.indexes[:qualified_names].each_value do |klass|
-          if klass.is_a?(Lutaml::Uml::Classifier) && klass.attributes
+          if klass.is_a?(Lutaml::Uml::UmlClassifier) && klass.attributes
             total += klass.attributes.size
           end
         end

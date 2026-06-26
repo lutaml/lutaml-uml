@@ -224,7 +224,7 @@ module Lutaml
         # Extract all classes from document hierarchy
         #
         # @param document [Lutaml::Uml::Document]
-        # @return [Array<Lutaml::Uml::Class>]
+        # @return [Array<Lutaml::Uml::UmlClass>]
         def extract_all_classes(document)
           classes = []
 
@@ -242,7 +242,7 @@ module Lutaml
         # Extract classes from a package recursively
         #
         # @param package [Lutaml::Uml::Package]
-        # @return [Array<Lutaml::Uml::Class>]
+        # @return [Array<Lutaml::Uml::UmlClass>]
         def extract_classes_from_package(package)
           classes = []
 

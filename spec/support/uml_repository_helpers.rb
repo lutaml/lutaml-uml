@@ -25,7 +25,7 @@ module UmlRepositoryHelpers
     root_package.packages << nested_package
 
     # Create a class
-    test_class = Lutaml::Uml::Class.new
+    test_class = Lutaml::Uml::UmlClass.new
     test_class.name = "TestClass"
     test_class.xmi_id = "test_class_id"
     test_class.stereotype = "TestStereotype"

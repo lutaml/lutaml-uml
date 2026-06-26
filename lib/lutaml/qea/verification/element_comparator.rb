@@ -40,8 +40,8 @@ module Lutaml
 
         # Compare class properties
         #
-        # @param xmi_class [Lutaml::Uml::Class] XMI class
-        # @param qea_class [Lutaml::Uml::Class] QEA class
+        # @param xmi_class [Lutaml::Uml::UmlClass] XMI class
+        # @param qea_class [Lutaml::Uml::UmlClass] QEA class
         # @return [Hash] Comparison result with :equal and :differences
         def compare_classes(xmi_class, qea_class) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
           differences = []

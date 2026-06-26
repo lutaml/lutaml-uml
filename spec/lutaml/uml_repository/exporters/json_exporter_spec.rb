@@ -13,10 +13,10 @@ RSpec.describe Lutaml::UmlRepository::Exporters::JsonExporter do
 
   let(:mock_class) do
     instance_double(
-      Lutaml::Uml::Class,
+      Lutaml::Uml::UmlClass,
       xmi_id: "class1",
       name: "Building",
-      class: Lutaml::Uml::Class,
+      class: Lutaml::Uml::UmlClass,
       stereotype: ["featureType"],
       attributes: [],
       operations: nil,

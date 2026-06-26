@@ -37,7 +37,7 @@ module Lutaml
 
         # Get style for a specific element
         #
-        # @param element [Lutaml::Uml::Class, Object] UML element
+        # @param element [Lutaml::Uml::UmlClass, Object] UML element
         # @param property [String] Style property path (e.g., "colors.fill")
         # @return [Object] Style value
         def style_for(element, property) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
