@@ -66,7 +66,7 @@ module Lutaml
       end
 
       # Register with factory
-      PresenterFactory.register(Lutaml::Uml::Class, ClassPresenter)
+      PresenterFactory.register(Lutaml::Uml::UmlClass, ClassPresenter)
     end
   end
 end

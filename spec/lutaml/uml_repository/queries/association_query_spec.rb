@@ -10,7 +10,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::AssociationQuery do
 
   describe "#find_for_class" do
     it "finds associations for a class", :aggregate_failures do
-      classes = indexes[:qualified_names].values.grep(Lutaml::Uml::Class)
+      classes = indexes[:qualified_names].values.grep(Lutaml::Uml::UmlClass)
 
       classes.each do |klass|
         associations = query.find_for_class(klass.xmi_id)
@@ -26,7 +26,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::AssociationQuery do
 
     it "finds all association types" do
       classes = indexes[:qualified_names].values.select do |e|
-        e.is_a?(Lutaml::Uml::Class) && !e.associations.empty?
+        e.is_a?(Lutaml::Uml::UmlClass) && !e.associations.empty?
       end
 
       classes.each do |klass|
@@ -57,7 +57,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::AssociationQuery do
     it "handles various association types" do
       all_types = Set.new
       indexes[:qualified_names].each_value do |entity|
-        next unless entity.is_a?(Lutaml::Uml::Class)
+        next unless entity.is_a?(Lutaml::Uml::UmlClass)
 
         entity.associations.each do |assoc|
           all_types << assoc.member_end_type if assoc.member_end_type
@@ -74,7 +74,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::AssociationQuery do
   describe "#find_between_classes" do
     it "finds associations between two classes" do
       classes_with_assocs = indexes[:qualified_names].values.select do |e|
-        e.is_a?(Lutaml::Uml::Class) && !e.associations.empty?
+        e.is_a?(Lutaml::Uml::UmlClass) && !e.associations.empty?
       end
 
       classes_with_assocs.each do |klass|
@@ -97,7 +97,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::AssociationQuery do
 
     it "finds bidirectional associations", :aggregate_failures do
       classes_with_assocs = indexes[:qualified_names].values.select do |e|
-        e.is_a?(Lutaml::Uml::Class) && !e.associations.empty?
+        e.is_a?(Lutaml::Uml::UmlClass) && !e.associations.empty?
       end
 
       classes_with_assocs.each do |klass|
@@ -132,7 +132,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::AssociationQuery do
 
       all_class_associations = []
       indexes[:qualified_names].each_value do |entity|
-        next unless entity.is_a?(Lutaml::Uml::Class)
+        next unless entity.is_a?(Lutaml::Uml::UmlClass)
 
         all_class_associations.concat(entity.associations)
       end

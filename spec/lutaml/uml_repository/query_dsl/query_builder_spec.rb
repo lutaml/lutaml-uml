@@ -32,7 +32,7 @@ RSpec.describe Lutaml::UmlRepository::QueryDSL::QueryBuilder do
 
   def create_test_classes # rubocop:disable Metrics/AbcSize
     [
-      Lutaml::Uml::Class.new.tap do |klass|
+      Lutaml::Uml::UmlClass.new.tap do |klass|
         klass.name = "Building"
         klass.stereotype = ["featureType"]
         klass.attributes = [
@@ -40,14 +40,14 @@ RSpec.describe Lutaml::UmlRepository::QueryDSL::QueryBuilder do
           Lutaml::Uml::TopElementAttribute.new(name: "height"),
         ]
       end,
-      Lutaml::Uml::Class.new.tap do |klass|
+      Lutaml::Uml::UmlClass.new.tap do |klass|
         klass.name = "Person"
         klass.stereotype = ["dataType"]
         klass.attributes = [
           Lutaml::Uml::TopElementAttribute.new(name: "name"),
         ]
       end,
-      Lutaml::Uml::Class.new.tap do |klass|
+      Lutaml::Uml::UmlClass.new.tap do |klass|
         klass.name = "Vehicle"
         klass.stereotype = ["featureType"]
         klass.attributes = Array.new(15) do |i|
@@ -60,7 +60,7 @@ RSpec.describe Lutaml::UmlRepository::QueryDSL::QueryBuilder do
   describe "#classes" do
     it "sets scope to classes" do
       builder = repository.query(&:classes)
-      expect(builder.execute).to all(be_a(Lutaml::Uml::Class))
+      expect(builder.execute).to all(be_a(Lutaml::Uml::UmlClass))
     end
   end
 

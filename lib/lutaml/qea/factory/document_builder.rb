@@ -27,7 +27,7 @@ module Lutaml
         end
 
         # Add classes to document
-        # @param classes [Array<Lutaml::Uml::Class>] Classes to add
+        # @param classes [Array<Lutaml::Uml::UmlClass>] Classes to add
         # @return [self] For method chaining
         def add_classes(classes)
           return self if classes.nil? || classes.empty?

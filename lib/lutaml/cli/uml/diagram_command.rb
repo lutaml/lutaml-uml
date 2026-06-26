@@ -85,7 +85,7 @@ module Lutaml
 
         def determine_element_type(uml_element) # rubocop:disable Metrics/MethodLength
           case uml_element
-          when Lutaml::Uml::Class
+          when Lutaml::Uml::UmlClass
             "class"
           when Lutaml::Uml::Package
             "package"
@@ -149,7 +149,7 @@ module Lutaml
         end
 
         def add_classifier_members(data, uml_element)
-          return unless uml_element.is_a?(Lutaml::Uml::Classifier)
+          return unless uml_element.is_a?(Lutaml::Uml::UmlClassifier)
 
           if uml_element.attributes
             data[:attributes] =

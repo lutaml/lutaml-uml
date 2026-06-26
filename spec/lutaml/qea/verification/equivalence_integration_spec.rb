@@ -252,16 +252,16 @@ RSpec.describe "XMI/QEA Equivalence Integration" do
     end
 
     it "compares classes" do
-      klass1 = Lutaml::Uml::Class.new(name: "TestClass", is_abstract: false)
-      klass2 = Lutaml::Uml::Class.new(name: "TestClass", is_abstract: false)
+      klass1 = Lutaml::Uml::UmlClass.new(name: "TestClass", is_abstract: false)
+      klass2 = Lutaml::Uml::UmlClass.new(name: "TestClass", is_abstract: false)
 
       result = comparator.compare_classes(klass1, klass2)
       expect(result[:equal]).to be(true)
     end
 
     it "detects class differences" do
-      klass1 = Lutaml::Uml::Class.new(name: "TestClass", is_abstract: false)
-      klass2 = Lutaml::Uml::Class.new(name: "TestClass", is_abstract: true)
+      klass1 = Lutaml::Uml::UmlClass.new(name: "TestClass", is_abstract: false)
+      klass2 = Lutaml::Uml::UmlClass.new(name: "TestClass", is_abstract: true)
 
       result = comparator.compare_classes(klass1, klass2)
       expect(result[:equal]).to be(false)

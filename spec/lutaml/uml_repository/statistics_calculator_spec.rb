@@ -46,7 +46,7 @@ RSpec.describe Lutaml::UmlRepository::StatisticsCalculator do
 
     it "calculates correct total classes" do
       total_classes = indexes[:qualified_names].values.count do |e|
-        e.is_a?(Lutaml::Uml::Class)
+        e.is_a?(Lutaml::Uml::UmlClass)
       end
       expect(stats[:total_classes]).to eq(total_classes)
     end
@@ -91,7 +91,7 @@ RSpec.describe Lutaml::UmlRepository::StatisticsCalculator do
         expect(item).to be_a(Hash)
         expect(item).to have_key(:class)
         expect(item).to have_key(:complexity)
-        expect(item[:class]).to be_a(Lutaml::Uml::Class)
+        expect(item[:class]).to be_a(Lutaml::Uml::UmlClass)
         expect(item[:complexity]).to be_an(Integer)
       end
     end
@@ -154,7 +154,7 @@ RSpec.describe Lutaml::UmlRepository::StatisticsCalculator do
   describe "#class_complexity" do
     it "calculates complexity for a class", :aggregate_failures do
       klass = indexes[:qualified_names].values.find do |e|
-        e.is_a?(Lutaml::Uml::Class)
+        e.is_a?(Lutaml::Uml::UmlClass)
       end
 
       if klass
@@ -165,7 +165,7 @@ RSpec.describe Lutaml::UmlRepository::StatisticsCalculator do
     end
 
     it "includes attributes in complexity" do
-      klass = Lutaml::Uml::Class.new
+      klass = Lutaml::Uml::UmlClass.new
       klass.name = "TestClass"
       klass.attributes = [
         Lutaml::Uml::TopElementAttribute.new,

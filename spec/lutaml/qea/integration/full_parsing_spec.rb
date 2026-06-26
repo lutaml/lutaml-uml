@@ -75,7 +75,7 @@ RSpec.describe "QEA Full Parsing Integration", :integration do
         next if document.classes.empty?
 
         klass = document.classes.first
-        expect(klass).to be_a(Lutaml::Uml::Class)
+        expect(klass).to be_a(Lutaml::Uml::UmlClass)
         expect(klass.name).not_to be_nil
         expect(klass.xmi_id).not_to be_nil
         expect(klass.attributes).to be_an(Array)

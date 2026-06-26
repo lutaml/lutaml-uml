@@ -30,7 +30,7 @@ module Lutaml
         end
 
         def klassifiable?(klass)
-          klass.is_a?(Lutaml::Uml::Class) || klass.is_a?(Lutaml::Uml::DataType)
+          klass.is_a?(Lutaml::Uml::UmlClass) || klass.is_a?(Lutaml::Uml::DataType)
         end
 
         # Build the inheritance graph index
@@ -55,7 +55,7 @@ module Lutaml
 
         # Process generalization relationships to build inheritance graph
         #
-        # @param classes [Array<Lutaml::Uml::Class>] Classes to process
+        # @param classes [Array<Lutaml::Uml::UmlClass>] Classes to process
         # @param package_path [String] Package path for these classes
         def process_generalizations(classes, package_path)
           return unless classes

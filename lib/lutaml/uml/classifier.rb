@@ -2,7 +2,7 @@
 
 module Lutaml
   module Uml
-    class Classifier < TopElement
+    class UmlClassifier < TopElement
       skip_reference_registration
 
       attribute :association_generalization,

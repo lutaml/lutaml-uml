@@ -34,7 +34,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Serializers::OperationSerializ
       doc.name = "Empty"
       pkg = Lutaml::Uml::Package.new
       pkg.name = "Pkg"
-      klass = Lutaml::Uml::Class.new
+      klass = Lutaml::Uml::UmlClass.new
       klass.name = "NoOps"
       klass.xmi_id = "no_ops_cls"
       pkg.classes << klass

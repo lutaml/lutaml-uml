@@ -2,7 +2,7 @@
 
 module Lutaml
   module Uml
-    class Action < Lutaml::Model::Serializable
+    class Action < Behavior
       skip_reference_registration
 
       attribute :verb, :string

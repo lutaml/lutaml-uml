@@ -93,7 +93,7 @@ RSpec.describe Lutaml::Ea::Diagram::StyleResolver do
 
     context "with element having stereotype" do
       let(:stereotyped_element) do
-        Lutaml::Uml::Class.new(name: "MyType", stereotype: ["DataType"])
+        Lutaml::Uml::UmlClass.new(name: "MyType", stereotype: ["DataType"])
       end
 
       it "applies stereotype-specific fill color" do
@@ -195,7 +195,7 @@ RSpec.describe Lutaml::Ea::Diagram::StyleResolver do
 
   describe "#resolve_fill_color" do
     let(:element) do
-      Lutaml::Uml::Class.new(name: "TestClass")
+      Lutaml::Uml::UmlClass.new(name: "TestClass")
     end
 
     it "returns configuration fill color", :aggregate_failures do
@@ -230,7 +230,7 @@ RSpec.describe Lutaml::Ea::Diagram::StyleResolver do
 
   describe "#resolve_stroke_color" do
     let(:element) do
-      Lutaml::Uml::Class.new(name: "TestClass")
+      Lutaml::Uml::UmlClass.new(name: "TestClass")
     end
 
     it "returns configuration stroke color", :aggregate_failures do

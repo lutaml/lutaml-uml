@@ -17,7 +17,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
 
       results.each do |result|
         expect(result).to be_a(Lutaml::UmlRepository::SearchResult)
-        expect(result.element).to be_a(Lutaml::Uml::Class)
+        expect(result.element).to be_a(Lutaml::Uml::UmlClass)
         expect(result.element_type).to eq("class")
         expect(result.qualified_name)
           .to eq("ModelRoot::requirement type class diagram::RequirementType")
@@ -33,7 +33,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
       expect(results).to be_an(Array)
       results.each do |result|
         expect(result).to be_a(Lutaml::UmlRepository::SearchResult)
-        expect(result.element).to be_a(Lutaml::Uml::Class)
+        expect(result.element).to be_a(Lutaml::Uml::UmlClass)
       end
       expect(results.count).to eq(8)
     end
@@ -44,7 +44,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
       expect(results).to be_an(Array)
       results.each do |result|
         expect(result).to be_a(Lutaml::UmlRepository::SearchResult)
-        expect(result.element).to be_a(Lutaml::Uml::Class)
+        expect(result.element).to be_a(Lutaml::Uml::UmlClass)
         expect(result.element.name).to match(/.*Type/)
       end
       # ClassificationType and RequirementType
@@ -57,7 +57,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
       expect(results).to be_an(Array)
       results.each do |result|
         expect(result).to be_a(Lutaml::UmlRepository::SearchResult)
-        expect(result.element).to be_a(Lutaml::Uml::Class)
+        expect(result.element).to be_a(Lutaml::Uml::UmlClass)
         expect(result.element.name).to match(/.*Type/)
       end
       # ClassificationType and RequirementType
@@ -256,7 +256,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
 
       expect(results[:classes][0]).to be_a(Lutaml::UmlRepository::SearchResult)
       expect(results[:classes][0].element)
-        .to be_a(Lutaml::Uml::Class)
+        .to be_a(Lutaml::Uml::UmlClass)
       expect(results[:packages][0]).to be_a(Lutaml::UmlRepository::SearchResult)
       expect(results[:packages][0].element)
         .to be_a(Lutaml::Uml::Package)
@@ -295,7 +295,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
       results = query.search_classes("TestClass")
       expect(results.length).to eq(1)
       expect(results[0]).to be_a(Lutaml::UmlRepository::SearchResult)
-      expect(results[0].element).to be_a(Lutaml::Uml::Class)
+      expect(results[0].element).to be_a(Lutaml::Uml::UmlClass)
       expect(results[0].element.name).to eq("TestClass")
     end
 
@@ -311,7 +311,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery do
       results = query.search_by_stereotype("TestStereotype")
       expect(results.length).to eq(1)
       expect(results[0]).to be_a(Lutaml::UmlRepository::SearchResult)
-      expect(results[0].element).to be_a(Lutaml::Uml::Class)
+      expect(results[0].element).to be_a(Lutaml::Uml::UmlClass)
       expect(results[0].element.name).to eq("TestClass")
     end
 

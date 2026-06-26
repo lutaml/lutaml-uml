@@ -6,7 +6,7 @@ module Lutaml
       skip_reference_registration
 
       attribute :contents, :string, collection: true, default: -> { [] }
-      attribute :classes, Class, collection: true, default: -> { [] }
+      attribute :classes, UmlClass, collection: true, default: -> { [] }
       attribute :enums, Enum, collection: true, default: -> { [] }
       attribute :data_types, DataType, collection: true, default: -> { [] }
       attribute :instances, Instance, collection: true, default: -> { [] }

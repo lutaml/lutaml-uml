@@ -5,7 +5,7 @@
 ##
 module Lutaml
   module Uml
-    class Actor < Classifier
+    class Actor < UmlClassifier
       skip_reference_registration
     end
   end

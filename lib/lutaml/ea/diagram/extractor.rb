@@ -489,7 +489,7 @@ module Lutaml
         # Determine element type from UML element
         def element_type(uml_element)
           case uml_element
-          when Lutaml::Uml::Class then "class"
+          when Lutaml::Uml::UmlClass then "class"
           when Lutaml::Uml::Package then "package"
           when Lutaml::Uml::DataType then "datatype"
           when Lutaml::Uml::Enum then "enumeration"

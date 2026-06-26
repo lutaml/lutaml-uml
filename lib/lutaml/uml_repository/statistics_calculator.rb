@@ -79,7 +79,7 @@ module Lutaml
       #
       # @return [Integer] Number of classes
       def class_count
-        @indexes[:qualified_names].count { |_, obj| obj.is_a?(Lutaml::Uml::Class) }
+        @indexes[:qualified_names].count { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
       end
 
       # Get total data type count
@@ -154,7 +154,7 @@ module Lutaml
       # @return [Array<Hash>] Array of complexity information hashes with
       # :class and :complexity keys
       def most_complex_classes(limit: 10)
-        classes = @indexes[:qualified_names].select { |_, obj| obj.is_a?(Lutaml::Uml::Class) }
+        classes = @indexes[:qualified_names].select { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
 
         complexities = classes.map do |_qname, klass|
           {
@@ -170,7 +170,7 @@ module Lutaml
       #
       # @return [Float] Average complexity score
       def avg_class_complexity
-        classes = @indexes[:qualified_names].select { |_, obj| obj.is_a?(Lutaml::Uml::Class) }
+        classes = @indexes[:qualified_names].select { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
         return 0.0 if classes.empty?
 
         total_complexity = classes.sum { |_, klass| class_complexity(klass) }
@@ -181,7 +181,7 @@ module Lutaml
       #
       # Complexity is the sum of attributes, associations, and operations
       #
-      # @param klass [Lutaml::Uml::Class] The class to calculate complexity for
+      # @param klass [Lutaml::Uml::UmlClass] The class to calculate complexity for
       # @return [Integer] Complexity score
       def class_complexity(klass) # rubocop:disable Metrics/CyclomaticComplexity
         (klass.attributes&.size || 0) +
@@ -194,7 +194,7 @@ module Lutaml
       # @return [Integer] Total number of attributes
       def attribute_count
         @indexes[:qualified_names].sum do |_, obj|
-          next 0 unless obj.is_a?(Lutaml::Uml::Class)
+          next 0 unless obj.is_a?(Lutaml::Uml::UmlClass)
           next 0 unless obj.attributes
 
           obj.attributes.size
@@ -209,7 +209,7 @@ module Lutaml
       # @return [Integer] Total number of operations
       def total_operations
         @indexes[:qualified_names].sum do |_, obj|
-          next 0 unless obj.is_a?(Lutaml::Uml::Class)
+          next 0 unless obj.is_a?(Lutaml::Uml::UmlClass)
           next 0 unless obj.operations
 
           obj.operations.size
@@ -223,7 +223,7 @@ module Lutaml
         types = Hash.new(0)
 
         @indexes[:qualified_names].each_value do |obj|
-          next unless obj.is_a?(Lutaml::Uml::Class)
+          next unless obj.is_a?(Lutaml::Uml::UmlClass)
           next unless obj.attributes
 
           obj.attributes.each do |attr|
@@ -240,7 +240,7 @@ module Lutaml
       # @return [Integer] Total number of associations
       def association_count
         @indexes[:qualified_names].sum do |_, obj|
-          next 0 unless obj.is_a?(Lutaml::Uml::Class)
+          next 0 unless obj.is_a?(Lutaml::Uml::UmlClass)
           next 0 unless obj.associations
 
           obj.associations.size
@@ -309,7 +309,7 @@ module Lutaml
       # @return [Integer] Number of abstract classes
       def abstract_class_count
         @indexes[:qualified_names].count do |_, obj|
-          next false unless obj.is_a?(Lutaml::Uml::Class)
+          next false unless obj.is_a?(Lutaml::Uml::UmlClass)
 
           obj.is_abstract
         end
@@ -320,7 +320,7 @@ module Lutaml
       # @return [Integer] Number of undocumented classes
       def undocumented_classes_count
         @indexes[:qualified_names].count do |_, obj|
-          next false unless obj.is_a?(Lutaml::Uml::Class)
+          next false unless obj.is_a?(Lutaml::Uml::UmlClass)
 
           documentation = obj.definition
           documentation.nil? || documentation.to_s.strip.empty?
@@ -332,7 +332,7 @@ module Lutaml
       # @return [Integer] Number of classes with no attributes
       def classes_without_attributes_count
         @indexes[:qualified_names].count do |_, obj|
-          next false unless obj.is_a?(Lutaml::Uml::Class)
+          next false unless obj.is_a?(Lutaml::Uml::UmlClass)
 
           obj.attributes.nil? || obj.attributes.empty?
         end

@@ -236,7 +236,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
         qname = repo.indexes[:qualified_names].keys.first
         if qname
           result = repo.find_class(qname)
-          expect(result).to be_a(Lutaml::Uml::Class)
+          expect(result).to be_a(Lutaml::Uml::UmlClass)
             .or be_a(Lutaml::Uml::DataType)
             .or be_a(Lutaml::Uml::Enum)
             .or be_nil
@@ -259,7 +259,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
           next unless qname
 
           result = repo.find_class(qname, raise_on_error: true)
-          expect(result).to be_a(Lutaml::Uml::Class)
+          expect(result).to be_a(Lutaml::Uml::UmlClass)
             .or be_a(Lutaml::Uml::DataType)
             .or be_a(Lutaml::Uml::Enum)
         end
@@ -293,7 +293,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
     describe "#find_associations" do
       it "delegates to AssociationQuery" do
         class_id = repo.indexes[:qualified_names].values
-          .find { |e| e.is_a?(Lutaml::Uml::Class) }&.xmi_id
+          .find { |e| e.is_a?(Lutaml::Uml::UmlClass) }&.xmi_id
         if class_id
           results = repo.find_associations(class_id)
           expect(results).to be_an(Array)
@@ -385,7 +385,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
 
     it "finds simple class", :aggregate_failures do
       klass = repo.find_class("ModelRoot::RootPackage::TestClass")
-      expect(klass).to be_a(Lutaml::Uml::Class)
+      expect(klass).to be_a(Lutaml::Uml::UmlClass)
       expect(klass.name).to eq("TestClass")
     end
 

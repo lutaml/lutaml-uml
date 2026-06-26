@@ -16,7 +16,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
       next unless qname
 
       klass = query.find_by_qname(qname)
-      expect(klass).to be_a(Lutaml::Uml::Class)
+      expect(klass).to be_a(Lutaml::Uml::UmlClass)
     end
 
     it "found class has correct name" do
@@ -35,7 +35,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
       next unless qname
 
       klass = query.find_by_qname(qname)
-      expect(klass).to be_a(Lutaml::Uml::Class)
+      expect(klass).to be_a(Lutaml::Uml::UmlClass)
         .or be_a(Lutaml::Uml::DataType)
         .or be_a(Lutaml::Uml::Enum).or be_nil
     end
@@ -73,10 +73,10 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
       expect(query.in_package(pkg_path)).to be_an(Array)
     end
 
-    it "returns Lutaml::Uml::Class instances" do
+    it "returns Lutaml::Uml::UmlClass instances" do
       next unless pkg_path
 
-      expect(query.in_package(pkg_path)).to all(be_a(Lutaml::Uml::Class))
+      expect(query.in_package(pkg_path)).to all(be_a(Lutaml::Uml::UmlClass))
     end
 
     it { expect(query.in_package("NonExistent")).to eq([]) }
@@ -109,7 +109,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
     let(:document) { create_simple_test_document }
     let(:klass) { query.find_by_qname("ModelRoot::RootPackage::TestClass") }
 
-    it { expect(klass).to be_a(Lutaml::Uml::Class) }
+    it { expect(klass).to be_a(Lutaml::Uml::UmlClass) }
     it { expect(klass.name).to eq("TestClass") }
 
     it "finds class by stereotype" do

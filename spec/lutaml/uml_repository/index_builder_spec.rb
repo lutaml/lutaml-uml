@@ -67,7 +67,7 @@ RSpec.describe Lutaml::UmlRepository::IndexBuilder do
       qualified_names_index = indexes[:qualified_names]
       qualified_names_index.each do |qname, entity|
         expect(qname).to be_a(String)
-        expect(entity).to be_a(Lutaml::Uml::Class)
+        expect(entity).to be_a(Lutaml::Uml::UmlClass)
           .or be_a(Lutaml::Uml::DataType)
           .or be_a(Lutaml::Uml::Enum)
       end
@@ -108,7 +108,7 @@ RSpec.describe Lutaml::UmlRepository::IndexBuilder do
       stereotypes_index = indexes[:stereotypes]
 
       stereotypes_index.each_value do |classes|
-        expect(classes).to all(be_a(Lutaml::Uml::Class)
+        expect(classes).to all(be_a(Lutaml::Uml::UmlClass)
             .or(be_a(Lutaml::Uml::Enum)
             .or(be_a(Lutaml::Uml::DataType))))
       end
@@ -171,7 +171,7 @@ RSpec.describe Lutaml::UmlRepository::IndexBuilder do
       pkg_to_classes.each do |path, classes|
         expect(path).to be_a(String)
         expect(classes).to be_an(Array)
-        expect(classes).to all(be_a(Lutaml::Uml::Class)
+        expect(classes).to all(be_a(Lutaml::Uml::UmlClass)
           .or(be_a(Lutaml::Uml::DataType))
           .or(be_a(Lutaml::Uml::Enum)))
       end

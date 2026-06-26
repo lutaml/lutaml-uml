@@ -163,7 +163,7 @@ module Lutaml
         children = []
 
         # Add attributes
-        if @show_attributes && klass.is_a?(Lutaml::Uml::Classifier) &&
+        if @show_attributes && klass.is_a?(Lutaml::Uml::UmlClassifier) &&
             klass.attributes
           children.concat(klass.attributes.map do |a|
             { type: :attribute, obj: a }
@@ -171,7 +171,7 @@ module Lutaml
         end
 
         # Add operations
-        if @show_operations && klass.is_a?(Lutaml::Uml::Classifier) &&
+        if @show_operations && klass.is_a?(Lutaml::Uml::UmlClassifier) &&
             klass.operations
           children.concat(klass.operations.map do |o|
             { type: :operation, obj: o }

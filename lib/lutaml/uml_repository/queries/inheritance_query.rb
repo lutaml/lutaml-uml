@@ -22,9 +22,9 @@ module Lutaml
       class InheritanceQuery < BaseQuery
         # Get the direct parent class (supertype).
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
-        # @return [Lutaml::Uml::Class, nil] The parent class,
+        # @return [Lutaml::Uml::UmlClass, nil] The parent class,
         # or nil if no parent
         # @example
         #   parent = query.supertype("ModelRoot::Child")
@@ -47,7 +47,7 @@ module Lutaml
 
         # Get direct child classes (subtypes).
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
         # @param recursive [Boolean] Whether to include all descendants
         #   (default: false)
@@ -74,7 +74,7 @@ module Lutaml
         #
         # Returns ancestors in order from immediate parent to root.
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
         # @return [Array] Array of ancestor class objects, ordered from nearest
         #   to furthest
@@ -109,7 +109,7 @@ module Lutaml
 
         # Get all descendant classes.
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
         # @param max_depth [Integer, nil] Maximum depth to traverse (nil for
         #   unlimited)
@@ -125,9 +125,9 @@ module Lutaml
 
         # Resolve a class or qualified name to a class object.
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
-        # @return [Lutaml::Uml::Class, nil] The class object,
+        # @return [Lutaml::Uml::UmlClass, nil] The class object,
         # or nil if not found
         def resolve_class(class_or_qname)
           if class_or_qname.is_a?(String)
@@ -139,7 +139,7 @@ module Lutaml
 
         # Resolve a class or qualified name to a qualified name string.
         #
-        # @param class_or_qname [Lutaml::Uml::Class, String] The class object
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
         # @return [String, nil] The qualified name string, or nil if not found
         def resolve_qname(class_or_qname)
@@ -158,7 +158,7 @@ module Lutaml
 
         # Build inheritance tree for a class.
         #
-        # @param class_or_id [Lutaml::Uml::Class, String] The class object,
+        # @param class_or_id [Lutaml::Uml::UmlClass, String] The class object,
         #   qualified name, or xmi_id
         # @return [Hash, nil] Tree structure with :class and :children keys
         def inheritance_tree(class_or_id)
@@ -181,7 +181,7 @@ module Lutaml
 
         # Check if a class has circular inheritance.
         #
-        # @param class_or_id [Lutaml::Uml::Class, String] The class object,
+        # @param class_or_id [Lutaml::Uml::UmlClass, String] The class object,
         #   qualified name, or xmi_id
         # @return [Boolean] true if circular inheritance detected
         def has_circular_inheritance?(class_or_id, visited: Set.new)
@@ -200,7 +200,7 @@ module Lutaml
 
         def valid_supertype_target?(klass)
           return false unless klass
-          return false unless klass.is_a?(Lutaml::Uml::Class)
+          return false unless klass.is_a?(Lutaml::Uml::UmlClass)
 
           klass.generalization ? true : false
         end
@@ -216,7 +216,7 @@ module Lutaml
         # Resolve a class by xmi_id or qualified name
         #
         # @param class_or_id [String] Qualified name or xmi_id
-        # @return [Lutaml::Uml::Class, nil] The resolved class
+        # @return [Lutaml::Uml::UmlClass, nil] The resolved class
         def resolve_by_id_or_qname(class_or_id)
           # Try as qualified name first
           klass = indexes[:qualified_names][class_or_id]

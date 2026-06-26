@@ -228,7 +228,7 @@ RSpec.describe Lutaml::Ea::Diagram::Extractor do
 
     describe "#element_type" do
       it "returns correct type for Class" do
-        klass = Lutaml::Uml::Class.new(name: "TestClass")
+        klass = Lutaml::Uml::UmlClass.new(name: "TestClass")
         result = extractor.send(:element_type, klass)
 
         expect(result).to eq("class")

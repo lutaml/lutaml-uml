@@ -8,7 +8,7 @@ require_relative "../../../../lib/lutaml/uml/class"
 RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
   let(:mock_class) do
     instance_double(
-      Lutaml::Uml::Class,
+      Lutaml::Uml::UmlClass,
       name: "TestClass",
       xmi_id: "CLASS_001",
       stereotype: "entity",
@@ -111,7 +111,7 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
   describe "factory registration" do
     it "registers with PresenterFactory" do
       factory = Lutaml::UmlRepository::Presenters::PresenterFactory
-      expect(factory.presenters[Lutaml::Uml::Class])
+      expect(factory.presenters[Lutaml::Uml::UmlClass])
         .to eq(described_class)
     end
   end

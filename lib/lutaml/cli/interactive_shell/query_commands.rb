@@ -173,7 +173,7 @@ module Lutaml
         end
 
         def has_displayable_attributes?(cls)
-          cls.is_a?(Lutaml::Uml::Classifier) && cls.attributes && !cls.attributes.empty?
+          cls.is_a?(Lutaml::Uml::UmlClassifier) && cls.attributes && !cls.attributes.empty?
         end
 
         def display_class_attributes(cls)

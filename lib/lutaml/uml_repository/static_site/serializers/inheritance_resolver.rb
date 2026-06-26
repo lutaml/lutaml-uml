@@ -48,7 +48,7 @@ module Lutaml
           private
 
           def walk_inheritance_chain(klass, visited, collector_method)
-            return [] unless klass.is_a?(Lutaml::Uml::Class) && klass.generalization
+            return [] unless klass.is_a?(Lutaml::Uml::UmlClass) && klass.generalization
             return [] if visited.include?(klass.xmi_id)
 
             visited.add(klass.xmi_id)

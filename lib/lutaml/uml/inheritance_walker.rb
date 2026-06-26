@@ -22,7 +22,7 @@ module Lutaml
 
       # Walk the generalization chain from a starting class.
       #
-      # @param klass [Lutaml::Uml::Class] The class to start from
+      # @param klass [Lutaml::Uml::UmlClass] The class to start from
       # @yield [ancestor, level] Yields each ancestor class and its depth (1-based)
       # @return [Array<[klass, level]>] Array of [ancestor_class, level] pairs in visiting order
       #
@@ -31,7 +31,7 @@ module Lutaml
       #     puts "#{'  ' * (level - 1)}Parent #{level}: #{parent.name}"
       #   end
       def walk(klass)
-        return [] unless klass.is_a?(Lutaml::Uml::Class) && klass.generalization
+        return [] unless klass.is_a?(Lutaml::Uml::UmlClass) && klass.generalization
 
         ancestors = []
         @visited.clear
@@ -41,16 +41,16 @@ module Lutaml
 
       # Get the direct supertype (immediate parent) of a class.
       #
-      # @param klass [Lutaml::Uml::Class]
-      # @return [Lutaml::Uml::Class, nil]
+      # @param klass [Lutaml::Uml::UmlClass]
+      # @return [Lutaml::Uml::UmlClass, nil]
       def supertype_of(klass)
         @repository.supertype_of(klass)
       end
 
       # Get all ancestors of a class in order (immediate parent first).
       #
-      # @param klass [Lutaml::Uml::Class]
-      # @return [Array<Lutaml::Uml::Class>]
+      # @param klass [Lutaml::Uml::UmlClass]
+      # @return [Array<Lutaml::Uml::UmlClass>]
       def ancestors_of(klass)
         result = []
         walk(klass) { |ancestor, _level| result << ancestor }
@@ -73,7 +73,7 @@ module Lutaml
       # Uses a trail set for cycle detection (avoids Set mutation issues across calls).
       def collect_ancestors(klass, result, trail = [])
         return [] if trail.include?(klass.xmi_id) # cycle guard
-        return [] unless klass.is_a?(Lutaml::Uml::Class) && klass.generalization
+        return [] unless klass.is_a?(Lutaml::Uml::UmlClass) && klass.generalization
 
         trail = trail.dup
         trail << klass.xmi_id

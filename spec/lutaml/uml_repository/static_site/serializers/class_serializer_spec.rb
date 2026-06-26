@@ -52,7 +52,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Serializers::ClassSerializer d
       pkg = Lutaml::Uml::Package.new
       pkg.name = "Pkg"
       pkg.xmi_id = "pkg_1"
-      klass = Lutaml::Uml::Class.new
+      klass = Lutaml::Uml::UmlClass.new
       klass.name = "Widget"
       klass.xmi_id = "cls_w"
       klass.namespace = pkg
@@ -80,7 +80,7 @@ RSpec.describe Lutaml::UmlRepository::StaticSite::Serializers::ClassSerializer d
     it "returns nil package for class without package namespace" do
       doc = Lutaml::Uml::Document.new
       doc.name = "NoPkg"
-      klass = Lutaml::Uml::Class.new
+      klass = Lutaml::Uml::UmlClass.new
       klass.name = "Orphan"
       klass.xmi_id = "orphan_cls"
       doc.classes << klass

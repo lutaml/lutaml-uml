@@ -13,7 +13,7 @@ module Lutaml
       attribute :fontname, :string
       attribute :comments, :string, collection: true
 
-      attribute :classes, Class, collection: true, default: -> { [] }
+      attribute :classes, UmlClass, collection: true, default: -> { [] }
       attribute :data_types, DataType, collection: true, default: -> { [] }
       attribute :enums, Enum, collection: true, default: -> { [] }
       attribute :packages, Package, collection: true, default: -> { [] }

@@ -3,7 +3,7 @@
 module Lutaml
   module Uml
     module HasMembers
-      class UnknownMemberTypeError < Lutaml::Error; end
+      class UnknownMemberTypeError < Lutaml::Uml::Error; end
 
       def members=(value) # rubocop:disable Metrics/AbcSize
         value.group_by { |member| member.keys.first }

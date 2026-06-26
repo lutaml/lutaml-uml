@@ -22,7 +22,7 @@ module Lutaml
         #
         # @param qualified_name_string [String] The qualified name
         #   (e.g., "ModelRoot::i-UR::urf::Building")
-        # @return [Lutaml::Uml::Class, Lutaml::Uml::DataType,
+        # @return [Lutaml::Uml::UmlClass, Lutaml::Uml::DataType,
         # Lutaml::Uml::Enum, nil]
         #   The class object, or nil if not found
         # @example

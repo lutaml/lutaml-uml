@@ -295,13 +295,13 @@ module Lutaml
           return connector if connector
 
           repository.classes_index.each do |klass|
-            if klass.is_a?(Lutaml::Uml::Class) && klass.generalization
+            if klass.is_a?(Lutaml::Uml::UmlClass) && klass.generalization
               gen = klass.generalization
               generalizations = gen.is_a?(Array) ? gen : [gen]
               generalizations.each do |g|
                 return g if g.xmi_id == xmi_id
               end
-            elsif (klass.is_a?(Lutaml::Uml::Class) ||
+            elsif (klass.is_a?(Lutaml::Uml::UmlClass) ||
                    klass.is_a?(Lutaml::Uml::DataType)) &&
                 klass.associations
               assoc = klass.associations.find do |a|
@@ -401,7 +401,7 @@ module Lutaml
         # @param uml_element [Object] UML element
         # @return [Array<Hash>] Array of attribute data
         def extract_attributes(uml_element)
-          return [] unless uml_element.is_a?(Lutaml::Uml::Classifier)
+          return [] unless uml_element.is_a?(Lutaml::Uml::UmlClassifier)
           return [] unless uml_element.attributes
 
           uml_element.attributes.map do |attr|
@@ -418,7 +418,7 @@ module Lutaml
         # @param uml_element [Object] UML element
         # @return [Array<Hash>] Array of operation data
         def extract_operations(uml_element)
-          return [] unless uml_element.is_a?(Lutaml::Uml::Classifier)
+          return [] unless uml_element.is_a?(Lutaml::Uml::UmlClassifier)
           return [] unless uml_element.operations
 
           uml_element.operations.map do |op|

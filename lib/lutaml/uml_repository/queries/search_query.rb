@@ -58,7 +58,7 @@ case_sensitive: false)
           pattern = pattern_from(query, case_sensitive)
 
           indexes[:qualified_names].filter_map do |qname, entity|
-            next unless entity.is_a?(Lutaml::Uml::Class)
+            next unless entity.is_a?(Lutaml::Uml::UmlClass)
 
             match_field = first_matching_field(entity, fields, pattern)
             next unless match_field
@@ -72,7 +72,7 @@ case_sensitive: false)
           pattern = pattern_from(query, case_sensitive)
 
           indexes[:qualified_names].filter_map do |class_qname, entity|
-            next unless entity.is_a?(Lutaml::Uml::Classifier) && entity.attributes
+            next unless entity.is_a?(Lutaml::Uml::UmlClassifier) && entity.attributes
 
             attr_match = find_matching_attribute(entity, fields, pattern)
             next unless attr_match
@@ -190,14 +190,14 @@ case_sensitive: false)
         end
 
         def classifiable_with_associations?(entity)
-          entity.is_a?(Lutaml::Uml::Class) || entity.is_a?(Lutaml::Uml::DataType)
+          entity.is_a?(Lutaml::Uml::UmlClass) || entity.is_a?(Lutaml::Uml::DataType)
         end
 
         def find_entities_by_stereotype_pattern(pattern)
           indexes[:stereotypes]
             .filter_map do |_stereotype, entities|
             entities.select do |entity|
-              entity.is_a?(Lutaml::Uml::Classifier) &&
+              entity.is_a?(Lutaml::Uml::UmlClassifier) &&
                 Array(entity.stereotype).any? { |s| s&.match?(pattern) }
             end.uniq
           end.uniq.flatten
