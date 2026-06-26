@@ -6,7 +6,7 @@ module Lutaml
   class Error < StandardError; end unless defined?(Error)
 
   module Uml
-    VERSION = "0.1.0" unless defined?(VERSION)
+    VERSION = "0.2.0" unless defined?(VERSION)
     class Error < StandardError; end
 
     autoload :HasAttributes, "lutaml/uml/has_attributes"

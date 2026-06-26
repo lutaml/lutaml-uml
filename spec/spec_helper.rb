@@ -3,11 +3,6 @@
 require "bundler/setup"
 require "lutaml/uml"
 require "lutaml/uml_repository"
-require "lutaml/converter"
-require "lutaml/ea"
-require "lutaml/xmi"
-require "lutaml/qea"
-require "lutaml/model_transformations"
 
 RSpec.configure do |config|
   config.disable_monkey_patching!

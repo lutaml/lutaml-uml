@@ -16,7 +16,8 @@ module Lutaml
       attribute :relationships, :string, collection: true, default: -> { [] }
       attribute :keyword, :string, default: "dataType"
 
-      attribute :associations, Association, collection: true
+      attribute :associations, Association, collection: true,
+                                            default: -> { [] }
 
       yaml do
         map "nested_classifier", to: :nested_classifier

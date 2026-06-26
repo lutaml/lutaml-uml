@@ -2,11 +2,11 @@
 
 module UmlRepositoryHelpers
   def create_test_document
-    cached_xmi_document
+    create_simple_test_document
   end
 
   def create_test_repository
-    cached_repository
+    Lutaml::UmlRepository::Repository.new(document: create_test_document)
   end
 
   def create_simple_test_document # rubocop:disable Metrics/AbcSize

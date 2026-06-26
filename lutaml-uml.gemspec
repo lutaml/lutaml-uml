@@ -8,10 +8,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ribose Inc."]
   spec.email         = ["open.source@ribose.com"]
 
-  spec.summary       = "UML domain models, repository, CLI, and SPA generator for LutaML"
-  spec.description   = "Provides UML domain model classes, XMI/QEA parsers, CLI, " \
-                        "a repository pattern for querying and presenting UML documents, " \
-                        "EA diagram rendering, and a static site generator with a Vue.js SPA frontend."
+  spec.summary       = "UML domain models, repository, and SPA generator for LutaML"
+  spec.description   = "Provides UML domain model classes, a repository pattern for " \
+                        "querying and presenting UML documents, LUR (.lur) package " \
+                        "serialization, and a static site generator with a Vue.js SPA " \
+                        "frontend. Use the companion `ea` gem to parse Sparx EA files " \
+                        "into Lutaml::Uml::Documents."
   spec.homepage      = "https://github.com/lutaml/lutaml-uml"
   spec.license       = "MIT"
 
@@ -32,16 +34,9 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 3.2.0"
 
-  spec.add_dependency "htmlentities"
   spec.add_dependency "liquid"
   spec.add_dependency "lutaml-model", "~> 0.8.0"
   spec.add_dependency "lutaml-path"
   spec.add_dependency "nokogiri", "~> 1.18"
-  spec.add_dependency "paint"
   spec.add_dependency "rubyzip", "~> 2.3"
-  spec.add_dependency "sinatra", "~> 4.2"
-  spec.add_dependency "sqlite3"
-  spec.add_dependency "table_tennis"
-  spec.add_dependency "thor", "~> 1.4"
-  spec.add_dependency "xmi", "~> 0.5", ">= 0.5.2"
 end

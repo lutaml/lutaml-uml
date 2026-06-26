@@ -5,7 +5,8 @@ require "spec_helper"
 RSpec.describe Lutaml::UmlRepository::Repository do
   let(:xmi_path) { fixtures_path("ea-xmi-2.5.1.xmi") }
 
-  describe ".from_xmi" do
+  xdescribe ".from_xmi",
+           "XMI parsing moved to the ea gem; Repository.from_xmi was removed. Use Ea::Xmi::Parser + Repository.from_document instead." do
     it "creates repository from XMI file" do
       repo = described_class.from_xmi(xmi_path)
       expect(repo).to be_a(described_class)
@@ -40,7 +41,8 @@ RSpec.describe Lutaml::UmlRepository::Repository do
     end
   end
 
-  describe ".from_file" do
+  xdescribe ".from_file",
+           "from_file no longer accepts .xmi (XMI parsing moved to the ea gem); .lur loading still works. Test fixtures would need to be regenerated via the ea gem." do
     let(:xmi_file) { xmi_path }
     let(:lur_file) { temp_lur_path(prefix: "test_package") }
 
@@ -78,7 +80,8 @@ RSpec.describe Lutaml::UmlRepository::Repository do
     end
   end
 
-  describe ".from_file_cached" do
+  xdescribe ".from_file_cached",
+           "from_file_cached no longer accepts .xmi (XMI parsing moved to the ea gem). Use the ea gem to build .lur packages, then load via from_package." do
     let(:xmi_file) { xmi_path }
     let(:lur_cache) { temp_lur_path(prefix: "cached_model") }
 
@@ -174,7 +177,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
   end
 
   describe "#document" do
-    let(:repo) { described_class.from_xmi(xmi_path) }
+    let(:repo) { described_class.new(document: create_test_document) }
 
     it "returns the document" do
       expect(repo.document).to be_a(Lutaml::Uml::Document)
@@ -186,7 +189,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
   end
 
   describe "#indexes" do
-    let(:repo) { described_class.from_xmi(xmi_path) }
+    let(:repo) { described_class.new(document: create_test_document) }
 
     it "returns frozen indexes hash" do
       expect(repo.indexes).to be_frozen
@@ -204,7 +207,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
   end
 
   describe "query delegation" do
-    let(:repo) { described_class.from_xmi(xmi_path) }
+    let(:repo) { described_class.new(document: create_test_document) }
 
     describe "#find_package" do
       it "delegates to PackageQuery" do
@@ -313,7 +316,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
   end
 
   describe "#statistics" do
-    let(:repo) { described_class.from_xmi(xmi_path) }
+    let(:repo) { described_class.new(document: create_test_document) }
 
     it "returns statistics hash" do
       stats = repo.statistics
@@ -336,7 +339,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
   end
 
   describe "#validate" do
-    let(:repo) { described_class.from_xmi(xmi_path) }
+    let(:repo) { described_class.new(document: create_test_document) }
 
     it "returns ValidationResult" do
       result = repo.validate
@@ -351,7 +354,7 @@ RSpec.describe Lutaml::UmlRepository::Repository do
   end
 
   describe "#export" do
-    let(:repo) { described_class.from_xmi(xmi_path) }
+    let(:repo) { described_class.new(document: create_test_document) }
     let(:output_path) { temp_lur_path(prefix: "test_export") }
 
     after do
