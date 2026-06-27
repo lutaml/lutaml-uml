@@ -46,13 +46,13 @@ module Lutaml
       # Initialize a new Repository.
       #
       # This is typically not called directly.
-      # Use [`from_xmi`](#from_xmi) instead.
+      # Use {.from_document} to wrap a parsed UML document.
       #
       # @param document [Lutaml::Uml::Document] The UML document to wrap
       # @param indexes [Hash, nil] Pre-built indexes, or nil to build them
       #   automatically
       # @param metadata [PackageMetadata, nil] Package metadata
-      # (if loaded from LUR)
+      #   (if loaded from LUR)
       # @return [Repository] A new frozen repository instance
       # @example
       #   indexes = IndexBuilder.build_all(document)
@@ -66,25 +66,6 @@ module Lutaml
         freeze
       end
 
-      # Build a Repository from an XMI file.
-      #
-      # @param xmi_path [String] Path to the XMI file
-      # @param options [Hash] Options for parsing
-      # @option options [Boolean] :validate (false) Validate model consistency
-      #   after building indexes
-      # @return [Repository] A new repository instance
-      # @example
-      #   repo = Repository.from_xmi('model.xmi')
-      #   repo = Repository.from_xmi('model.xmi', validate: true)
-      # Build a Repository from any registered file format.
-      #
-      # Uses the loader registry to find the right parser for the file
-      # extension. Parser gems (e.g. `ea`) register their loaders at load
-      # time. This avoids hard-coding any specific parser.
-      #
-      # @param xmi_path [String] Path to the file
-      # @param options [Hash] Options for parsing
-      # @return [Repository] A new repository instance
       # Build a Repository from a pre-parsed UML Document.
       #
       # This is the composition point — parse the file with the appropriate
@@ -121,27 +102,17 @@ module Lutaml
         end
       end
 
-      # Smart caching - use LUR if newer than XMI, otherwise rebuild.
-      #
-      # This method implements intelligent caching by checking if a LUR package
-      # exists and is newer than the source XMI file. If so, it loads from the
-      # cache. Otherwise, it builds from XMI and creates/updates the cache.
-      #
-      # @param xmi_path [String] Path to the XMI file
-      # @param lur_path [String, nil] Path to the LUR package (default: XMI path
-      #   with .lur extension)
-      # @return [Repository] A repository instance
-      # @example Using default cache path
-      #   repo = Repository.from_file_cached('model.xmi')
-      #   # Creates/uses model.lur
-      #
-      # @example Using custom cache path
-      #   repo = Repository.from_file_cached('model.xmi',
-      #                                          lur_path: 'cache/model.lur')
       # Smart caching - use LUR if newer than source, otherwise rebuild.
       #
-      # @param source_path [String] Path to the source file
-      # @param lur_path [String, nil] Path to the LUR package
+      # If a LUR package exists at `lur_path` and is at least as new as the
+      # source file, load it directly. Otherwise, invoke the supplied block to
+      # parse the source into a `Lutaml::Uml::Document`, wrap it, and write a
+      # new LUR cache.
+      #
+      # @param source_path [String] Path to the source file (any format the
+      #   caller's block can parse)
+      # @param lur_path [String, nil] Path to the LUR package (default: source
+      #   path with `.lur` extension)
       # @yield [source_path] Block that parses the source into a Document
       # @return [Repository]
       def self.from_file_cached(source_path, lur_path: nil) # rubocop:disable Metrics/MethodLength
@@ -187,24 +158,14 @@ module Lutaml
         PackageLoader.load_document_only(lur_path)
       end
 
-      # Auto-detect file type and load with lazy loading.
+      # Lazy-load from a LUR package or raise for unsupported formats.
       #
-      # Detects whether the file is an XMI file (.xmi) or a LUR package (.lur)
-      # and loads it using the appropriate lazy loading method.
+      # Only supports `.lur` packages for lazy loading. For other formats,
+      # parse first and use {.from_document}.
       #
-      # @param path [String] Path to the file (.xmi or .lur)
-      # @return [LazyRepository] A new or loaded lazy repository instance
-      # @raise [ArgumentError] If the file type is unknown
-      # @example
-      #   repo = Repository.from_file_lazy('large-model.xmi')
-      #   repo = Repository.from_file_lazy('large-model.lur')
-      # Auto-detect file type and load with lazy loading.
-      #
-      # Only supports .lur files for lazy loading. For other formats, parse
-      # first and use Repository.from_document(document).
-      #
-      # @param path [String] Path to the file (.lur)
+      # @param path [String] Path to the file (`.lur`)
       # @return [LazyRepository]
+      # @raise [ArgumentError] If the file extension is not `.lur`
       def self.from_file_lazy(path)
         case File.extname(path).downcase
         when ".lur" then from_package_lazy(path)

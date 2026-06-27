@@ -20,7 +20,6 @@ module Lutaml
     autoload :Cardinality, "lutaml/uml/cardinality"
     autoload :Fidelity, "lutaml/uml/fidelity"
     autoload :Value, "lutaml/uml/value"
-    autoload :Fontname, "lutaml/uml/fontname"
     autoload :TaggedValue, "lutaml/uml/tagged_value"
     autoload :Group, "lutaml/uml/group"
 
