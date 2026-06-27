@@ -69,15 +69,6 @@ module Lutaml
                "lutaml/uml_repository/presenters/datatype_presenter"
     end
 
-    # Repository components (loaded on demand by UmlRepository)
-    module UmlRepositoryComponents
-      autoload :IndexBuilder, "lutaml/uml_repository/index_builder"
-      autoload :StatisticsCalculator,
-               "lutaml/uml_repository/statistics_calculator"
-      autoload :PackageExporter, "lutaml/uml_repository/package_exporter"
-      autoload :PackageLoader, "lutaml/uml_repository/package_loader"
-    end
-
     # Query classes
     module Queries
       autoload :BaseQuery, "lutaml/uml_repository/queries/base_query"
@@ -95,11 +86,6 @@ module Lutaml
     module Validators
       autoload :RepositoryValidator,
                "lutaml/uml_repository/validators/repository_validator"
-    end
-
-    # Web UI
-    module WebUi
-      autoload :App, "lutaml/uml_repository/web_ui/app"
     end
 
     # Static Site Generator
