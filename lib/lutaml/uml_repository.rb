@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "liquid"
-require "lutaml/path"
-
 module Lutaml
   module UmlRepository
     # Core utilities
