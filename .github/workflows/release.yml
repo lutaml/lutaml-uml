@@ -1,5 +1,10 @@
 name: release
 
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -7,13 +12,13 @@ on:
         description: |
           Next release version. Possible values: x.y.z, major, minor, patch or pre|rc|etc
         required: true
-        default: 'skip'
+        default: "skip"
       acknowledge_breaking_in_patch:
         description: "Skip the release-breaking-check guard"
         required: false
         default: "true"
-  push:
-    tags: [ v* ]
+  repository_dispatch:
+    types: [do-release]
 
 jobs:
   release:
@@ -24,5 +29,4 @@ jobs:
       gated: false
     secrets:
       rubygems-api-key: ${{ secrets.LUTAML_CI_RUBYGEMS_API_KEY }}
-      pat_token: ${{ secrets.LUTAML_CI_PAT_TOKEN }}
-
+      pat_token: ${{ secrets.GITHUB_TOKEN }}
