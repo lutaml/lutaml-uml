@@ -1,7 +1,9 @@
 # CLAUDE.md — Lutaml::Uml Gem
 
 ## Project Overview
-`lutaml-uml` provides UML domain models, a repository pattern for querying/presenting UML documents, format converters, EA diagram rendering, and a Vue.js SPA static site generator. It is the core UML library used by the `lutaml` gem.
+`lutaml-uml` provides UML domain models, a repository pattern for querying/presenting UML documents, LUR (`.lur`) package serialization, and a Vue.js SPA static site generator. It is the core UML library used by the `lutaml` meta-bundle.
+
+Sparx EA parsing (QEA, XMI), EA diagram SVG rendering, and the EA → UML bridge live in the companion **`ea`** gem (`https://github.com/lutaml/ea`), which depends on this gem. The XMI schema models live in the **`xmi`** gem (`https://github.com/lutaml/xmi`), used solely by `ea`.
 
 ## Testing Constraints
 
@@ -27,20 +29,24 @@ require "lutaml/uml"
 require "lutaml/uml_repository"
 ```
 
-For code in the **lutaml** gem (xmi, formatter), use `require` — it's a dev dependency:
-```ruby
-require "lutaml/formatter"
-require "lutaml/xmi"
-```
-
 ## Architecture
 - `lib/lutaml/uml/` — UML domain models (Class, Association, Package, DataType, Enum, etc.)
 - `lib/lutaml/uml_repository/` — Repository pattern (queries, presenters, exporters, SPA, web UI)
-- `lib/lutaml/converter/` — Format converters (XMI→UML, DSL→UML)
-- `lib/lutaml/ea/` — EA diagram SVG rendering
 - `frontend/` — Vue 3 SPA frontend (pre-built dist checked in)
 - `templates/` — Liquid templates for web UI
 - `config/` — Default SPA configuration
+
+## Sibling gems (separate repos)
+
+| Gem | Direction | Purpose |
+|-----|-----------|---------|
+| `ea` | depends on us | Sparx EA parsing (QEA, XMI), diagram rendering, EA → UML bridge |
+| `xmi` | used only by `ea` | XMI/UML schema models (`Xmi::Sparx::Root`, `Xmi::Uml::*`) |
+| `lutaml-model` | we depend on it | Serialization framework |
+| `lutaml-lml` | depends on us | LML DSL for authoring UML models |
+| `lutaml` | meta-bundle | Bundles `lutaml-uml` + `lutaml-lml` + parsers |
+
+Local development: the `Gemfile` auto-detects `../ea` and uses the local checkout when present (monorepo-style workflow). Set `EA_FORCE_RUBYGEMS=1` to test against the published version.
 
 ## SPA Static Site Generator
 The SPA generator uses typed models + strategy pattern:
