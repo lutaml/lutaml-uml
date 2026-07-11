@@ -69,23 +69,23 @@ module Lutaml
           end
         end
 
+        # Map of output mode -> strategy class. Adding a new mode is a
+        # one-line entry here — no edit to {resolve_strategy} required.
+        OUTPUT_STRATEGIES = {
+          single_file: Output::VueInlinedStrategy,
+          multi_file:  Output::MultiFileStrategy,
+        }.freeze
+
         def resolve_strategy(options)
           strategy_class = options[:output_strategy]
-          if strategy_class
-            return strategy_class.new(@options[:output],
-                                      config: @config)
-          end
+          return strategy_class.new(@options[:output], config: @config) if strategy_class
 
-          case @options[:mode]
-          when :single_file
-            Output::VueInlinedStrategy.new(@options[:output], config: @config)
-          when :multi_file
-            Output::MultiFileStrategy.new(@options[:output], config: @config)
-          else
-            raise ArgumentError,
-                  "Invalid mode: #{@options[:mode]}. " \
-                  "Use :single_file or :multi_file"
-          end
+          resolved = OUTPUT_STRATEGIES[@options[:mode]]
+          raise ArgumentError,
+                "Invalid mode: #{@options[:mode]}. " \
+                "Use :single_file or :multi_file" unless resolved
+
+          resolved.new(@options[:output], config: @config)
         end
 
         def create_data_transformer
