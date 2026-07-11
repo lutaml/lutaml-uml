@@ -14,7 +14,7 @@ module Lutaml
 
           def build(klass, qname)
             type = klass.class.name.split("::").last
-            pkg_path = @link_resolver.extract_package_path(qname)
+            pkg_path = @link_resolver.extract_package_path(qname, default: "ModelRoot")
 
             <<~MARKDOWN
               # #{type}: #{klass.name}

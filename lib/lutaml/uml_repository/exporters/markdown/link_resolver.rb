@@ -5,6 +5,8 @@ module Lutaml
     module Exporters
       module Markdown
         class LinkResolver
+          include Lutaml::Uml::ModelHelpers
+
           def initialize(indexes)
             @indexes = indexes
           end
@@ -23,11 +25,6 @@ module Lutaml
 
           def qualified_name(klass)
             @indexes&.dig(:class_to_qname, klass.xmi_id) || klass.name
-          end
-
-          def extract_package_path(qname)
-            parts = qname.split("::")
-            parts.size > 1 ? parts[0..-2].join("::") : "ModelRoot"
           end
 
           def sanitize_filename(name)

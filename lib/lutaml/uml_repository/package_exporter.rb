@@ -37,6 +37,8 @@ module Lutaml
     #   )
     #   exporter.export("model.lur")
     class PackageExporter
+      include Lutaml::Uml::ModelHelpers
+
       # @return [UmlRepository] The repository being exported
       attr_reader :repository
 
@@ -265,7 +267,7 @@ module Lutaml
             "type" => klass.class.name.split("::").last, # Class, DataType, Enum
             "stereotype" => format_stereotype(klass.stereotype),
             "attributes" => build_attributes_list(klass),
-            "package_path" => extract_package_path(qname),
+            "package_path" => extract_package_path(qname, default: "ModelRoot"),
           }
         end
         classes
@@ -296,15 +298,6 @@ module Lutaml
         return stereotype if stereotype.is_a?(String)
 
         stereotype.is_a?(Array) && stereotype.empty? ? nil : stereotype
-      end
-
-      # Extract package path from qualified name
-      #
-      # @param qname [String] Qualified name
-      # @return [String] Package path
-      def extract_package_path(qname)
-        parts = qname.split("::")
-        parts.size > 1 ? parts[0..-2].join("::") : "ModelRoot"
       end
 
       # Count all attributes across all classes

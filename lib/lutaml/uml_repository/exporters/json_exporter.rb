@@ -21,6 +21,8 @@ module Lutaml
       # @example Export specific package
       #   exporter.export("model.json", package: "ModelRoot::i-UR::urf")
       class JsonExporter < BaseExporter
+        include Lutaml::Uml::ModelHelpers
+
         # Export repository to JSON format.
         #
         # @param output_path [String] Path to the output JSON file
@@ -150,23 +152,6 @@ module Lutaml
           }
         end
 
-        # Normalize stereotypes to array format.
-        #
-        # @param stereotype [String, Array, nil] The stereotype(s)
-        # @return [Array] Array of stereotypes
-        def normalize_stereotypes(stereotype)
-          return [] unless stereotype
-
-          case stereotype
-          when Array
-            stereotype
-          when String
-            [stereotype]
-          else
-            []
-          end
-        end
-
         # Get class type.
         #
         # @param klass [Object] The class object
@@ -181,15 +166,6 @@ module Lutaml
         # @return [String] The qualified name
         def qualified_name(klass)
           indexes&.dig(:class_to_qname, klass.xmi_id) || klass.name
-        end
-
-        # Extract package path from qualified name.
-        #
-        # @param qname [String] The qualified name
-        # @return [String] The package path
-        def extract_package_path(qname)
-          parts = qname.split("::")
-          parts.size > 1 ? parts[0..-2].join("::") : ""
         end
 
         # Serialize class attributes.

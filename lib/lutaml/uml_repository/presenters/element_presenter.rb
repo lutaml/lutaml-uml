@@ -10,6 +10,8 @@ module Lutaml
       #
       # Subclasses must implement: to_text, to_table_row, to_hash
       class ElementPresenter
+        include Lutaml::Uml::ModelHelpers
+
         attr_reader :element, :repository, :context
 
         # @param element [Object] The UML element to present
@@ -75,15 +77,6 @@ module Lutaml
           return text if text.length <= max_length
 
           "#{text[0...(max_length - 3)]}..."
-        end
-
-        # Extract package path from qualified name.
-        #
-        # @param qualified_name [String] Fully qualified name
-        # @return [String] Package path (everything except last component)
-        def extract_package_path(qualified_name)
-          parts = qualified_name.to_s.split("::")
-          parts[0..-2].join("::")
         end
       end
     end
