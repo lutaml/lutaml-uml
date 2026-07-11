@@ -207,21 +207,22 @@ case_sensitive: false)
           { classes: [], attributes: [], associations: [], total: 0 }
         end
 
+        # Map of searchable entity type -> search method. Adding a new
+        # type is a one-line entry here — no edit to {dispatch_search}
+        # required.
+        SEARCH_TYPES = {
+          class:       :search_classes,
+          attribute:   :search_attributes,
+          association: :search_associations,
+        }.freeze
+
         def dispatch_search(type, query_string, fields:, case_sensitive:)
-          case type
-          when :class
-            search_classes(query_string,
-                           fields: fields,
-                           case_sensitive: case_sensitive)
-          when :attribute
-            search_attributes(query_string,
-                              fields: fields,
-                              case_sensitive: case_sensitive)
-          when :association
-            search_associations(query_string,
-                                fields: fields,
-                                case_sensitive: case_sensitive)
-          end
+          method_name = SEARCH_TYPES[type]
+          return unless method_name
+
+          public_send(method_name, query_string,
+                      fields: fields,
+                      case_sensitive: case_sensitive)
         end
 
         def read_attribute(obj, field)

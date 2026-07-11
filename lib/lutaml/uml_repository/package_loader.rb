@@ -137,13 +137,24 @@ module Lutaml
       end
 
       # Load the Document from the package.
+      # Map of serialization format -> loader. Adding a new format is a
+      # one-line entry here — no edit to {load_document} required.
+      FORMAT_LOADERS = {
+        "yaml"   => ->(zip) { load_yaml_document(zip) },
+        ""       => ->(zip) { load_yaml_document(zip) },
+        "marshal" => ->(zip) { load_marshal_document(zip) },
+      }.freeze
+
+      # Load a Document from a LUR package's serialized form.
+      #
+      # Dispatch is by the format name recorded in +metadata+.
+      # Unrecognized formats raise.
       #
       # @param zip [Zip::File] The ZIP archive
-      # @param metadata [PackageMetadata] The package metadata
+      # @param metadata [PackageMetadata, Hash] The package metadata
       # @return [Lutaml::Uml::Document] The loaded document
       # @raise [RuntimeError] If document is missing or format is unknown
-      def self.load_document(zip, metadata) # rubocop:disable Metrics/MethodLength
-        # Handle both PackageMetadata object and Hash (backward compatibility)
+      def self.load_document(zip, metadata)
         format = if metadata.is_a?(Hash)
                    metadata["serialization_format"] ||
                      metadata[:serialization_format]
@@ -151,14 +162,10 @@ module Lutaml
                    metadata.serialization_format
                  end
 
-        case format.to_s
-        when "yaml", ""
-          load_yaml_document(zip)
-        when "marshal"
-          load_marshal_document(zip)
-        else
-          raise "Unknown serialization format: #{format}"
-        end
+        loader = FORMAT_LOADERS[format.to_s]
+        raise "Unknown serialization format: #{format}" unless loader
+
+        loader.call(zip)
       end
 
       # Load Document from Marshal format (legacy backward compatibility).

@@ -198,38 +198,39 @@ module Lutaml
 
       private
 
+      # Map of index_name -> [builder, prerequisites] describing how each
+      # lazy index is constructed. Adding a new index type is a one-line
+      # entry here — no edit to {ensure_index} required.
+      INDEX_BUILDERS = {
+        package_paths:     [->(doc, _idx) { IndexBuilder.build_package_paths(doc) }, []],
+        qualified_names:   [->(doc, _idx) { IndexBuilder.build_qualified_names(doc) }, []],
+        stereotypes:       [->(doc, _idx) { IndexBuilder.build_stereotypes(doc) }, []],
+        inheritance_graph: [->(doc, idx) { IndexBuilder.build_inheritance_graph(doc, idx) },
+                            [:qualified_names]],
+        diagram_index:     [->(doc, idx) { IndexBuilder.build_diagram_index(doc, idx) },
+                            [:package_paths]],
+      }.freeze
+
       # Ensure an index is built.
       #
       # If the index is already built, this method returns immediately.
-      # Otherwise, it builds the index and removes it from the pending list.
+      # Otherwise, it builds the index (and any prerequisites) and removes
+      # it from the pending list.
       #
       # @param index_name [Symbol] The name of the index to ensure
       # @return [void]
-      def ensure_index(index_name) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
+      # @raise [ArgumentError] if +index_name+ is not a registered index
+      def ensure_index(index_name)
         return if index_built?(index_name)
 
+        entry = INDEX_BUILDERS[index_name]
+        raise ArgumentError, "Unknown index: #{index_name.inspect}" unless entry
+
+        builder, prerequisites = entry
+        prerequisites.each { |pre| ensure_index(pre) }
+
         puts "Building #{index_name} index..." if $VERBOSE
-
-        case index_name
-        when :package_paths
-          @indexes[:package_paths] = IndexBuilder.build_package_paths(@document)
-        when :qualified_names
-          @indexes[:qualified_names] =
-            IndexBuilder.build_qualified_names(@document)
-        when :stereotypes
-          @indexes[:stereotypes] = IndexBuilder.build_stereotypes(@document)
-        when :inheritance_graph
-          # Requires qualified_names first
-          ensure_index(:qualified_names)
-          @indexes[:inheritance_graph] =
-            IndexBuilder.build_inheritance_graph(@document, @indexes)
-        when :diagram_index
-          # Requires package_paths first
-          ensure_index(:package_paths)
-          @indexes[:diagram_index] =
-            IndexBuilder.build_diagram_index(@document, @indexes)
-        end
-
+        @indexes[index_name] = builder.call(@document, @indexes)
         @index_builders_pending.delete(index_name)
       end
     end
