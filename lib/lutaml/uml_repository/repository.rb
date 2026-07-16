@@ -544,13 +544,13 @@ module Lutaml
       # Get all packages as an array (excluding root Document)
       # @return [Array<Lutaml::Uml::Package>] All packages
       def packages_index
-        (@indexes[:package_paths]&.values || []).grep(Lutaml::Uml::Package)
+        (@indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS]&.values || []).grep(Lutaml::Uml::Package)
       end
 
       # Get all classes (including datatypes and enums) as an array
       # @return [Array] All classifiers
       def classes_index
-        @indexes[:qualified_names]&.values || []
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES]&.values || []
       end
 
       # Get all associations as an array
@@ -558,7 +558,7 @@ module Lutaml
       # @return [Array<Lutaml::Uml::Association>] All associations
       def associations_index # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
         # Use cached index if available (built by IndexBuilder)
-        return @indexes[:associations].values if @indexes[:associations]
+        return @indexes[Lutaml::UmlRepository::IndexKeys::ASSOCIATIONS].values if @indexes[Lutaml::UmlRepository::IndexKeys::ASSOCIATIONS]
 
         # Fallback for edge cases: collect from document and classes
         seen = Set.new
@@ -585,9 +585,9 @@ module Lutaml
         associations
       end
 
-      # Get qualified name(key) by the object from @indexes[:qualified_names]
+      # Get qualified name(key) by the object from @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES]
       def qualified_name_for(obj)
-        @indexes[:qualified_names].key(obj)
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].key(obj)
       end
 
       # Get all diagrams as an array

@@ -200,15 +200,16 @@ module Lutaml
 
       # Map of index_name -> [builder, prerequisites] describing how each
       # lazy index is constructed. Adding a new index type is a one-line
-      # entry here — no edit to {ensure_index} required.
+      # entry here — no edit to {ensure_index} required. Keys are the
+      # named constants in {IndexKeys} — typos surface at load time.
       INDEX_BUILDERS = {
-        package_paths:     [->(doc, _idx) { IndexBuilder.build_package_paths(doc) }, []],
-        qualified_names:   [->(doc, _idx) { IndexBuilder.build_qualified_names(doc) }, []],
-        stereotypes:       [->(doc, _idx) { IndexBuilder.build_stereotypes(doc) }, []],
-        inheritance_graph: [->(doc, idx) { IndexBuilder.build_inheritance_graph(doc, idx) },
-                            [:qualified_names]],
-        diagram_index:     [->(doc, idx) { IndexBuilder.build_diagram_index(doc, idx) },
-                            [:package_paths]],
+        IndexKeys::PACKAGE_PATHS     => [->(doc, _idx) { IndexBuilder.build_package_paths(doc) }, []],
+        IndexKeys::QUALIFIED_NAMES   => [->(doc, _idx) { IndexBuilder.build_qualified_names(doc) }, []],
+        IndexKeys::STEREOTYPES       => [->(doc, _idx) { IndexBuilder.build_stereotypes(doc) }, []],
+        IndexKeys::INHERITANCE_GRAPH => [->(doc, idx) { IndexBuilder.build_inheritance_graph(doc, idx) },
+                                         [IndexKeys::QUALIFIED_NAMES]],
+        IndexKeys::DIAGRAM_INDEX     => [->(doc, idx) { IndexBuilder.build_diagram_index(doc, idx) },
+                                         [IndexKeys::PACKAGE_PATHS]],
       }.freeze
 
       # Ensure an index is built.
