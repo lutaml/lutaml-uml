@@ -9,11 +9,15 @@ module Lutaml
                                              default: -> { [] }
       attribute :stereotype, :string, collection: true, default: -> { [] }
       attribute :type, :string
-      attribute :attributes, TopElementAttribute, collection: true
+      attribute :attributes, TopElementAttribute, collection: true,
+                                                   default: -> { [] }
       attribute :modifier, :string
-      attribute :constraints, Constraint, collection: true
-      attribute :operations, Operation, collection: true
-      attribute :data_types, DataType, collection: true
+      attribute :constraints, Constraint, collection: true,
+                                          default: -> { [] }
+      attribute :operations, Operation, collection: true,
+                                        default: -> { [] }
+      attribute :data_types, DataType, collection: true,
+                                       default: -> { [] }
       attribute :associations, Association, collection: true,
                                             default: -> { [] }
       attribute :generalization, Generalization
