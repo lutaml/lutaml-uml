@@ -5,9 +5,22 @@ module Lutaml
     module Exporters
       # Base class for all exporters.
       #
-      # Exporters convert a UmlRepository to various formats such as CSV,
-      # JSON, Markdown, etc. All exporters inherit from this base class and
-      # implement the [`export`](#export) method.
+      # This is the seam at which the exporter contract lives: every
+      # exporter takes a repository in its constructor and exposes
+      # `#export(output_path, options = [])`. Two concrete adapters
+      # (JsonExporter, PackageExporter) satisfy this seam — a real
+      # seam by the "two adapters" rule.
+      #
+      # The class earns its keep by:
+      # 1. Declaring the constructor signature subclasses must honour.
+      # 2. Declaring the abstract `#export` method shape.
+      # 3. Providing two private accessors (`document`, `indexes`)
+      #    that delegate to the repository — every subclass would
+      #    otherwise re-roll these.
+      #
+      # Without this base, subclasses would drift on constructor
+      # signature and abstract-method shape; the contract would be
+      # implicit and untestable.
       #
       # @example Creating a custom exporter
       #   class MyExporter < BaseExporter
