@@ -19,8 +19,8 @@ module Lutaml
           lines << "Name:        #{element.name}"
           lines << "XMI ID:      #{element.xmi_id}" if
             element.xmi_id
-          lines << "Stereotype:  #{element.stereotype}" if
-            element.stereotype
+          lines << "Stereotype:  #{stereotype_string}" if
+            stereotype_string
           lines << "Abstract:    #{element.is_abstract}"
           lines.join("\n")
         end
@@ -47,21 +47,30 @@ module Lutaml
           }
 
           data[:xmi_id] = element.xmi_id if element.xmi_id
-          if element.stereotype
-            data[:stereotype] = element.stereotype
-          end
+          data[:stereotype] = stereotype_string if stereotype_string
 
           data
         end
 
         private
 
-        def stereotype_display
-          if element.stereotype && !element.stereotype.empty?
-            "<<#{element.stereotype}>>"
-          else
-            ""
+        # UML stereotype attribute may be a String, Array, or nil.
+        # Normalize to a single comma-joined string for display and
+        # for hash consumers that expect a scalar.
+        def stereotype_string
+          raw = element.stereotype
+          return nil if raw.nil? || raw.empty?
+
+          case raw
+          when Array then raw.join(", ")
+          else raw.to_s
           end
+        end
+
+        def stereotype_display
+          return "" unless stereotype_string
+
+          "<<#{stereotype_string}>>"
         end
       end
 
