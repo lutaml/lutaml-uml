@@ -55,4 +55,74 @@ RSpec.describe Lutaml::Uml::UmlClass do
       expect(output).to eq(expected_output)
     end
   end
+
+  describe "attribute management" do
+    let(:klass) { described_class.new(name: "Foo") }
+    let(:attr)  { Lutaml::Uml::TopElementAttribute.new(name: "bar", type: "String") }
+
+    it "starts with no attributes" do
+      expect(described_class.new.attributes.to_a).to eq([])
+    end
+
+    it "appends attributes in order" do
+      klass.attributes << attr
+      klass.attributes << Lutaml::Uml::TopElementAttribute.new(name: "baz")
+      expect(klass.attributes.map(&:name)).to eq(%w[bar baz])
+    end
+  end
+
+  describe "association management" do
+    let(:klass) { described_class.new(name: "Foo") }
+    let(:assoc) do
+      Lutaml::Uml::Association.new(owner_end: "Foo", member_end: "Bar")
+    end
+
+    it "starts with no associations" do
+      expect(described_class.new.associations.to_a).to eq([])
+    end
+
+    it "appends associations" do
+      klass.associations << assoc
+      expect(klass.associations.size).to eq(1)
+      expect(klass.associations.first.member_end).to eq("Bar")
+    end
+  end
+
+  describe "stereotype handling" do
+    it "accepts a single stereotype string" do
+      klass = described_class.new(stereotype: "entity")
+      # The model stores the value as given; the presenter normalizes
+      # to an array for display (see ClassPresenter#stereotype_string).
+      expect(Array(klass.stereotype)).to eq(["entity"])
+    end
+
+    it "accepts a stereotype array" do
+      klass = described_class.new(stereotype: %w[entity featureType])
+      expect(klass.stereotype).to eq(%w[entity featureType])
+    end
+
+    it "defaults to an empty array" do
+      expect(described_class.new.stereotype).to eq([])
+    end
+  end
+
+  describe "generalization" do
+    it "holds a Generalization reference" do
+      gen = Lutaml::Uml::Generalization.new(name: "Parent")
+      klass = described_class.new(name: "Child")
+      klass.generalization = gen
+      expect(klass.generalization).to be_a(Lutaml::Uml::Generalization)
+      expect(klass.generalization.name).to eq("Parent")
+    end
+  end
+
+  describe "abstract flag" do
+    it "defaults to false" do
+      expect(described_class.new.is_abstract).to be(false)
+    end
+
+    it "accepts true" do
+      expect(described_class.new(is_abstract: true).is_abstract).to be(true)
+    end
+  end
 end
