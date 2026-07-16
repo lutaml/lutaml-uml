@@ -6,18 +6,22 @@ require_relative "../../../../lib/lutaml/uml_repository/" \
 require_relative "../../../../lib/lutaml/uml/class"
 
 RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
-  let(:mock_class) do
-    instance_double(
-      Lutaml::Uml::UmlClass,
+  # Real model instance. UmlClass exposes name, xmi_id, stereotype
+  # (collection), is_abstract — the surface the presenter reads.
+  let(:uml_class) do
+    Lutaml::Uml::UmlClass.new(
       name: "TestClass",
       xmi_id: "CLASS_001",
-      stereotype: "entity",
+      stereotype: ["entity"],
       is_abstract: false,
     )
   end
 
-  let(:mock_repository) { double("Repository") }
-  let(:presenter) { described_class.new(mock_class, mock_repository) }
+  # Struct stands in for the repository. The presenter stores the
+  # reference but the base class never calls repository methods.
+  StubRepository = Struct.new(:marker)
+  let(:repository) { StubRepository.new(:test) }
+  let(:presenter) { described_class.new(uml_class, repository) }
 
   describe "#to_text" do
     it "generates formatted text output", :aggregate_failures do
@@ -31,13 +35,13 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
     end
 
     it "handles class with nil xmi_id" do
-      allow(mock_class).to receive(:xmi_id).and_return(nil)
+      uml_class.xmi_id = nil
       text = presenter.to_text
       expect(text).not_to include("XMI ID:")
     end
 
     it "handles class with nil stereotype" do
-      allow(mock_class).to receive(:stereotype).and_return(nil)
+      uml_class.stereotype = nil
       text = presenter.to_text
       expect(text).not_to include("Stereotype:")
     end
@@ -53,19 +57,19 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
     end
 
     it "handles unnamed class" do
-      allow(mock_class).to receive(:name).and_return(nil)
+      uml_class.name = nil
       row = presenter.to_table_row
       expect(row[:name]).to eq("(unnamed)")
     end
 
     it "handles class without stereotype" do
-      allow(mock_class).to receive(:stereotype).and_return([])
+      uml_class.stereotype = []
       row = presenter.to_table_row
       expect(row[:details]).to eq("")
     end
 
     it "handles class with nil stereotype" do
-      allow(mock_class).to receive(:stereotype).and_return(nil)
+      uml_class.stereotype = nil
       row = presenter.to_table_row
       expect(row[:details]).to eq("")
     end
@@ -83,19 +87,19 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
     end
 
     it "excludes xmi_id if not available" do
-      allow(mock_class).to receive(:xmi_id).and_return(nil)
+      uml_class.xmi_id = nil
       hash = presenter.to_hash
       expect(hash).not_to have_key(:xmi_id)
     end
 
     it "excludes stereotype if not available" do
-      allow(mock_class).to receive(:stereotype).and_return(nil)
+      uml_class.stereotype = nil
       hash = presenter.to_hash
       expect(hash).not_to have_key(:stereotype)
     end
 
     it "excludes is_abstract if not available", :aggregate_failures do
-      allow(mock_class).to receive(:is_abstract).and_return(nil)
+      uml_class.is_abstract = nil
       hash = presenter.to_hash
       expect(hash).to have_key(:is_abstract)
       expect(hash[:is_abstract]).to be(false)
@@ -123,11 +127,11 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ClassPresenter do
     end
 
     it "has access to element attribute" do
-      expect(presenter.element).to eq(mock_class)
+      expect(presenter.element).to eq(uml_class)
     end
 
     it "has access to repository attribute" do
-      expect(presenter.repository).to eq(mock_repository)
+      expect(presenter.repository).to eq(repository)
     end
   end
 end

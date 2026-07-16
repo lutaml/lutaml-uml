@@ -4,10 +4,13 @@ require "spec_helper"
 require_relative "../../../lib/lutaml/uml_repository/search_result"
 
 RSpec.describe Lutaml::UmlRepository::SearchResult do
-  let(:mock_element) { double("UML Element", name: "TestClass") }
+  # Real model instance — exercises the actual name reader the
+  # SearchResult stores. No doubles.
+  let(:element) { Lutaml::Uml::UmlClass.new(name: "TestClass") }
+
   let(:result) do
     described_class.new(
-      element: mock_element,
+      element: element,
       element_type: :class,
       qualified_name: "ModelRoot::Package::TestClass",
       package_path: "ModelRoot::Package",
@@ -22,7 +25,7 @@ RSpec.describe Lutaml::UmlRepository::SearchResult do
     end
 
     it "sets all attributes correctly", :aggregate_failures do
-      expect(result.element).to eq(mock_element)
+      expect(result.element).to eq(element)
       expect(result.element_type).to eq("class")
       expect(result.qualified_name).to eq("ModelRoot::Package::TestClass")
       expect(result.package_path).to eq("ModelRoot::Package")
@@ -32,7 +35,7 @@ RSpec.describe Lutaml::UmlRepository::SearchResult do
 
     it "allows nil match_context" do
       result_without_context = described_class.new(
-        element: mock_element,
+        element: element,
         element_type: :class,
         qualified_name: "TestClass",
         package_path: "",
@@ -61,14 +64,13 @@ RSpec.describe Lutaml::UmlRepository::SearchResult do
   end
 
   describe "immutability" do
-    it "cannot modify element after creation" do
-      expect { result.instance_variable_set(:@element, "new") }
-        .to raise_error(FrozenError)
-    end
-
-    it "cannot modify element_type after creation" do
-      expect { result.instance_variable_set(:@element_type, :other) }
-        .to raise_error(FrozenError)
+    # Test the frozen invariant directly. The prior spec used
+    # `instance_variable_set` to verify that mutation raises
+    # FrozenError — but `instance_variable_set` is forbidden by
+    # CLAUDE.md even in specs. `#frozen?` is the clean way to
+    # assert the same invariant.
+    it "is frozen after construction" do
+      expect(result).to be_frozen
     end
   end
 end
