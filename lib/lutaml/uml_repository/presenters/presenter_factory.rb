@@ -43,6 +43,13 @@ module Lutaml
             @presenters
           end
 
+          # Clear all registrations. Test-only — used by specs to
+          # isolate registry state between examples. Production code
+          # never resets.
+          def reset
+            @presenters = {}
+          end
+
           private
 
           # Find presenter class for element.
