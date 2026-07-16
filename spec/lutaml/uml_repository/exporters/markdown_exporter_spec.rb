@@ -7,37 +7,76 @@ require "tempfile"
 require "fileutils"
 
 RSpec.describe Lutaml::UmlRepository::Exporters::MarkdownExporter do
-  let(:repository) { instance_double(Lutaml::UmlRepository::Repository) }
-  let(:exporter) { described_class.new(repository) }
-  let(:temp_dir) { Dir.mktmpdir }
-
-  let(:mock_class) do
-    instance_double(
-      Lutaml::Uml::UmlClass,
+  # Real model instances — exercises the actual attribute readers
+  # the exporter calls. No doubles.
+  let(:uml_class) do
+    Lutaml::Uml::UmlClass.new(
       xmi_id: "class1",
       name: "Building",
-      class: Lutaml::Uml::UmlClass,
       stereotype: ["featureType"],
-      attributes: [],
-      operations: nil,
       definition: "A building structure",
     )
   end
 
   let(:mock_package) do
-    instance_double(
-      Lutaml::Uml::Package,
+    Lutaml::Uml::Package.new(
       xmi_id: "pkg1",
       name: "urf",
       definition: "Urban features package",
-      packages: [],
-      classes: [],
     )
   end
 
+  # Minimal fake repository exposing the methods MarkdownExporter
+  # calls. Real model instances where the return type is a model.
+  class MarkdownFakeRepository
+    attr_reader :indexes, :statistics
+
+    def initialize(indexes, statistics, package_tree, packages, classes)
+      @indexes = indexes
+      @statistics = statistics
+      @package_tree = package_tree
+      @packages = packages
+      @classes = classes
+    end
+
+    def package_tree(*_args, **_kwargs)
+      @package_tree
+    end
+
+    def list_packages(*_args, **_kwargs)
+      @packages
+    end
+
+    def classes_in_package(*_args, **_kwargs)
+      @classes
+    end
+
+    def diagrams_in_package(*_args, **_kwargs)
+      []
+    end
+
+    def associations_of(*_args, **_kwargs)
+      []
+    end
+
+    def supertype_of(*_args, **_kwargs)
+      nil
+    end
+
+    def subtypes_of(*_args, **_kwargs)
+      []
+    end
+  end
+
+  let(:repository) do
+    MarkdownFakeRepository.new(indexes, statistics, tree, [mock_package], [uml_class])
+  end
+  let(:exporter) { described_class.new(repository) }
+  let(:temp_dir) { Dir.mktmpdir }
+
   let(:indexes) do
     {
-      classes: { "class1" => mock_class },
+      classes: { "class1" => uml_class },
       class_to_qname: { "class1" => "ModelRoot::i-UR::urf::Building" },
       package_to_path: { "pkg1" => "ModelRoot::i-UR::urf" },
     }
@@ -59,11 +98,6 @@ RSpec.describe Lutaml::UmlRepository::Exporters::MarkdownExporter do
       classes_count: 0,
       children: [],
     }
-  end
-
-  before do
-    allow(repository).to receive_messages(indexes: indexes,
-                                          statistics: statistics, package_tree: tree, list_packages: [mock_package], classes_in_package: [mock_class], diagrams_in_package: [], associations_of: [], supertype_of: nil, subtypes_of: [])
   end
 
   after do

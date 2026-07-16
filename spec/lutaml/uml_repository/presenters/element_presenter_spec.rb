@@ -5,19 +5,28 @@ require_relative "../../../../lib/lutaml/uml_repository/presenters/" \
                  "element_presenter"
 
 RSpec.describe Lutaml::UmlRepository::Presenters::ElementPresenter do
-  let(:mock_element) { double("UML Element", name: "TestElement") }
-  let(:mock_repository) { double("Repository") }
-  let(:presenter) { described_class.new(mock_element, mock_repository) }
+  # Real model instance — exercises the actual name reader the
+  # presenter will call in production. No doubles.
+  let(:element) { Lutaml::Uml::UmlClass.new(name: "TestElement") }
+
+  # Struct stands in for the repository where a real Repository
+  # would require a full document + indexes. The presenter only
+  # stores the reference; it doesn't call repository methods in
+  # the abstract base class.
+  StubRepository = Struct.new(:marker)
+
+  let(:repository) { StubRepository.new(:test) }
+  let(:presenter) { described_class.new(element, repository) }
 
   describe "#initialize" do
     it "stores element and repository", :aggregate_failures do
-      expect(presenter.element).to eq(mock_element)
-      expect(presenter.repository).to eq(mock_repository)
+      expect(presenter.element).to eq(element)
+      expect(presenter.repository).to eq(repository)
     end
 
     it "allows nil repository", :aggregate_failures do
-      presenter_without_repo = described_class.new(mock_element)
-      expect(presenter_without_repo.element).to eq(mock_element)
+      presenter_without_repo = described_class.new(element)
+      expect(presenter_without_repo.element).to eq(element)
       expect(presenter_without_repo.repository).to be_nil
     end
   end
@@ -48,7 +57,7 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ElementPresenter do
 
   describe "#format_cardinality" do
     it "returns empty string for nil cardinality" do
-      attr = double("Attribute", cardinality: nil)
+      attr = Lutaml::Uml::TopElementAttribute.new
       result = presenter.send(:format_cardinality, attr)
       expect(result).to eq("")
     end
@@ -60,22 +69,22 @@ RSpec.describe Lutaml::UmlRepository::Presenters::ElementPresenter do
     end
 
     it "formats cardinality with min and max" do
-      cardinality = double("Cardinality", min: "1", max: "5")
-      attr = double("Attribute", cardinality: cardinality)
+      cardinality = Lutaml::Uml::Cardinality.new(min: "1", max: "5")
+      attr = Lutaml::Uml::TopElementAttribute.new(cardinality: cardinality)
       result = presenter.send(:format_cardinality, attr)
       expect(result).to eq("[1..5]")
     end
 
     it "uses 0 for nil min" do
-      cardinality = double("Cardinality", min: nil, max: "5")
-      attr = double("Attribute", cardinality: cardinality)
+      cardinality = Lutaml::Uml::Cardinality.new(min: nil, max: "5")
+      attr = Lutaml::Uml::TopElementAttribute.new(cardinality: cardinality)
       result = presenter.send(:format_cardinality, attr)
       expect(result).to eq("[0..5]")
     end
 
     it "uses * for nil max" do
-      cardinality = double("Cardinality", min: "1", max: nil)
-      attr = double("Attribute", cardinality: cardinality)
+      cardinality = Lutaml::Uml::Cardinality.new(min: "1", max: nil)
+      attr = Lutaml::Uml::TopElementAttribute.new(cardinality: cardinality)
       result = presenter.send(:format_cardinality, attr)
       expect(result).to eq("[1..*]")
     end

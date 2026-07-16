@@ -37,8 +37,10 @@ RSpec.describe Lutaml::UmlRepository::Presenters::PresenterFactory do
   let(:test_child) { TestElementChild.new("ChildItem") }
 
   before do
-    # Clear any existing registrations before each test
-    described_class.instance_variable_set(:@presenters, {})
+    # Reset registry between tests. The factory exposes `.reset` for
+    # test isolation — using it keeps us off `instance_variable_set`,
+    # which CLAUDE.md forbids even in specs.
+    described_class.reset if described_class.respond_to?(:reset)
   end
 
   describe ".register" do
@@ -81,9 +83,11 @@ RSpec.describe Lutaml::UmlRepository::Presenters::PresenterFactory do
       end
 
       it "passes repository to presenter" do
-        repo = double("Repository")
-        presenter = described_class.create(test_element, repo)
-        expect(presenter.repository).to eq(repo)
+        # Struct stands in for the repository. The presenter stores
+        # the reference; the base class never calls repository methods.
+        stub_repo = Struct.new(:marker).new(:test)
+        presenter = described_class.create(test_element, stub_repo)
+        expect(presenter.repository).to eq(stub_repo)
       end
     end
 

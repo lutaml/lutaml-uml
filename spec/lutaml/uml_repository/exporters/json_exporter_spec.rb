@@ -6,27 +6,47 @@ require "json"
 require "tempfile"
 
 RSpec.describe Lutaml::UmlRepository::Exporters::JsonExporter do
-  let(:repository) { instance_double(Lutaml::UmlRepository::Repository) }
-  let(:exporter) { described_class.new(repository) }
-  let(:temp_file) { Tempfile.new(["test", ".json"]) }
-  let(:output_path) { temp_file.path }
-
-  let(:mock_class) do
-    instance_double(
-      Lutaml::Uml::UmlClass,
+  # Real UmlClass instance — exercises the actual attribute readers
+  # the exporter calls. No doubles.
+  let(:uml_class) do
+    Lutaml::Uml::UmlClass.new(
       xmi_id: "class1",
       name: "Building",
-      class: Lutaml::Uml::UmlClass,
       stereotype: ["featureType"],
-      attributes: [],
-      operations: nil,
       definition: "A building structure",
     )
   end
 
+  # Minimal fake repository exposing the methods JsonExporter calls:
+  # `indexes`, `statistics`, `list_packages`, `all_diagrams`,
+  # `supertype_of`. Real model instances where the return type is a
+  # model; plain values otherwise.
+  class JsonFakeRepository
+    attr_reader :indexes, :statistics
+
+    def initialize(indexes, statistics)
+      @indexes = indexes
+      @statistics = statistics
+    end
+
+    def list_packages(*_args, **_kwargs)
+      []
+    end
+
+    def all_diagrams
+      []
+    end
+
+    def supertype_of(*_args, **_kwargs)
+      nil
+    end
+  end
+
+  let(:repository) { JsonFakeRepository.new(indexes, statistics) }
+
   let(:indexes) do
     {
-      classes: { "class1" => mock_class },
+      classes: { "class1" => uml_class },
       class_to_qname: { "class1" => "ModelRoot::i-UR::urf::Building" },
       associations: {},
       package_to_path: {},
@@ -42,10 +62,9 @@ RSpec.describe Lutaml::UmlRepository::Exporters::JsonExporter do
     }
   end
 
-  before do
-    allow(repository).to receive_messages(indexes: indexes,
-                                          statistics: statistics, list_packages: [], all_diagrams: [], supertype_of: nil)
-  end
+  let(:exporter) { described_class.new(repository) }
+  let(:temp_file) { Tempfile.new(["test", ".json"]) }
+  let(:output_path) { temp_file.path }
 
   after do
     temp_file.close
