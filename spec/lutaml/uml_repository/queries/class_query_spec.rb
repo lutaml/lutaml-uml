@@ -4,7 +4,7 @@ require "spec_helper"
 require_relative "../../../../lib/lutaml/uml_repository/index_builder"
 
 RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
-  let(:document) { create_test_document }
+  let(:document) { create_inheritance_test_document }
   let(:indexes) { Lutaml::UmlRepository::IndexBuilder.build_all(document) }
   let(:query) { described_class.new(document, indexes) }
 
@@ -13,7 +13,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
       qname = indexes[:qualified_names].keys.find do |n|
         n.to_s.include?("BibliographicItem")
       end
-      next unless qname
+      expect(qname).not_to be_nil, "fixture must include a BibliographicItem class"
 
       klass = query.find_by_qname(qname)
       expect(klass).to be_a(Lutaml::Uml::UmlClass)
@@ -23,7 +23,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
       qname = indexes[:qualified_names].keys.find do |n|
         n.to_s.include?("BibliographicItem")
       end
-      next unless qname
+      expect(qname).not_to be_nil, "fixture must include a BibliographicItem class"
 
       expect(query.find_by_qname(qname).name).to eq("BibliographicItem")
     end
@@ -32,7 +32,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
 
     it "accepts string names" do
       qname = indexes[:qualified_names].keys.first&.to_s
-      next unless qname
+      expect(qname).not_to be_nil, "fixture must have at least one qualified name"
 
       klass = query.find_by_qname(qname)
       expect(klass).to be_a(Lutaml::Uml::UmlClass)
@@ -68,13 +68,13 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
     let(:pkg_path) { indexes[:package_paths].keys.first }
 
     it "finds classes in specific package" do
-      next unless pkg_path
+      expect(pkg_path).not_to be_nil, "fixture must have at least one package"
 
       expect(query.in_package(pkg_path)).to be_an(Array)
     end
 
     it "returns Lutaml::Uml::UmlClass instances" do
-      next unless pkg_path
+      expect(pkg_path).not_to be_nil, "fixture must have at least one package"
 
       expect(query.in_package(pkg_path)).to all(be_a(Lutaml::Uml::UmlClass))
     end
@@ -83,14 +83,14 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
 
     it "accepts string paths" do
       path = indexes[:package_paths].keys.first&.to_s
-      next unless path
+      expect(path).not_to be_nil, "fixture must have at least one package"
 
       expect(query.in_package(path)).to be_an(Array)
     end
 
     context "with recursive option" do
       it "recursive includes more than non-recursive" do
-        next unless pkg_path
+        expect(pkg_path).not_to be_nil, "fixture must have at least one package"
 
         all = query.in_package(pkg_path, recursive: true)
         direct = query.in_package(pkg_path, recursive: false)
@@ -98,7 +98,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::ClassQuery do
       end
 
       it "non-recursive returns array" do
-        next unless pkg_path
+        expect(pkg_path).not_to be_nil, "fixture must have at least one package"
 
         expect(query.in_package(pkg_path, recursive: false)).to be_an(Array)
       end

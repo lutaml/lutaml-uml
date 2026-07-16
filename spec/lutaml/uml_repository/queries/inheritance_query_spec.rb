@@ -4,7 +4,7 @@ require "spec_helper"
 require_relative "../../../../lib/lutaml/uml_repository/index_builder"
 
 RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
-  let(:document) { create_test_document }
+  let(:document) { create_inheritance_test_document }
   let(:indexes) { Lutaml::UmlRepository::IndexBuilder.build_all(document) }
   let(:query) { described_class.new(document, indexes) }
   let(:parent_ids) { indexes[:inheritance_graph].keys }
@@ -23,14 +23,14 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
 
     it "returns array for non-recursive" do
       id = parent_ids.first
-      next unless id
+      expect(id).not_to be_nil, "fixture must have at least one parent in inheritance_graph"
 
       expect(query.find_children(id, recursive: false)).to be_an(Array)
     end
 
     it "recursive includes at least direct children" do
       id = parent_ids.first
-      next unless id
+      expect(id).not_to be_nil, "fixture must have at least one parent in inheritance_graph"
 
       all = query.find_children(id, recursive: true)
       direct = query.find_children(id, recursive: false)
@@ -84,7 +84,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
   describe "#inheritance_tree" do
     it "builds tree for a class", :aggregate_failures do
       id = parent_ids.first
-      next unless id
+      expect(id).not_to be_nil, "fixture must have at least one parent in inheritance_graph"
 
       tree = query.inheritance_tree(id)
       expect(tree).to have_key(:class)
@@ -93,7 +93,7 @@ RSpec.describe Lutaml::UmlRepository::Queries::InheritanceQuery do
 
     it "tree children have correct structure", :aggregate_failures do
       id = parent_ids.first
-      next unless id
+      expect(id).not_to be_nil, "fixture must have at least one parent in inheritance_graph"
 
       children = query.inheritance_tree(id)[:children]
       expect(children).to all(have_key(:class))
