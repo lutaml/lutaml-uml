@@ -72,35 +72,35 @@ module Lutaml
       #
       # @return [Integer] Number of packages
       def package_count
-        @indexes[:package_paths].size
+        @indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS].size
       end
 
       # Get total class count (excluding DataType and Enum)
       #
       # @return [Integer] Number of classes
       def class_count
-        @indexes[:qualified_names].count { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].count { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
       end
 
       # Get total data type count
       #
       # @return [Integer] Number of data types
       def data_type_count
-        @indexes[:qualified_names].count { |_, obj| obj.is_a?(Lutaml::Uml::DataType) }
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].count { |_, obj| obj.is_a?(Lutaml::Uml::DataType) }
       end
 
       # Get total enum count
       #
       # @return [Integer] Number of enumerations
       def enum_count
-        @indexes[:qualified_names].count { |_, obj| obj.is_a?(Lutaml::Uml::Enum) }
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].count { |_, obj| obj.is_a?(Lutaml::Uml::Enum) }
       end
 
       # Get total diagram count
       #
       # @return [Integer] Number of diagrams
       def diagram_count
-        @indexes[:diagram_index].values.flatten.size
+        @indexes[Lutaml::UmlRepository::IndexKeys::DIAGRAM_INDEX].values.flatten.size
       end
 
       # Get package count distribution by depth
@@ -108,7 +108,7 @@ module Lutaml
       # @return [Hash] Hash mapping depth to count
       def packages_by_depth
         depths = Hash.new(0)
-        @indexes[:package_paths].each_key do |path|
+        @indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS].each_key do |path|
           depth = path.split("::").size - 1
           depths[depth] += 1
         end
@@ -119,9 +119,9 @@ module Lutaml
       #
       # @return [Integer] Maximum depth level
       def max_depth
-        return 0 if @indexes[:package_paths].empty?
+        return 0 if @indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS].empty?
 
-        @indexes[:package_paths].keys.map do |path|
+        @indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS].keys.map do |path|
           path.split("::").size - 1
         end.max
       end
@@ -130,9 +130,9 @@ module Lutaml
       #
       # @return [Float] Average depth level
       def avg_package_depth
-        return 0.0 if @indexes[:package_paths].empty?
+        return 0.0 if @indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS].empty?
 
-        depths = @indexes[:package_paths].keys.map do |path|
+        depths = @indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS].keys.map do |path|
           path.split("::").size - 1
         end
         depths.sum.to_f / depths.size
@@ -142,7 +142,7 @@ module Lutaml
       #
       # @return [Hash] Hash mapping stereotype to count
       def classes_by_stereotype
-        @indexes[:stereotypes].transform_values(&:size)
+        @indexes[Lutaml::UmlRepository::IndexKeys::STEREOTYPES].transform_values(&:size)
       end
 
       # Get most complex classes by total element count
@@ -154,7 +154,7 @@ module Lutaml
       # @return [Array<Hash>] Array of complexity information hashes with
       # :class and :complexity keys
       def most_complex_classes(limit: 10)
-        classes = @indexes[:qualified_names].select { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
+        classes = @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].select { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
 
         complexities = classes.map do |_qname, klass|
           {
@@ -170,7 +170,7 @@ module Lutaml
       #
       # @return [Float] Average complexity score
       def avg_class_complexity
-        classes = @indexes[:qualified_names].select { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
+        classes = @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].select { |_, obj| obj.is_a?(Lutaml::Uml::UmlClass) }
         return 0.0 if classes.empty?
 
         total_complexity = classes.sum { |_, klass| class_complexity(klass) }
@@ -193,7 +193,7 @@ module Lutaml
       #
       # @return [Integer] Total number of attributes
       def attribute_count
-        @indexes[:qualified_names].sum do |_, obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].sum do |_, obj|
           next 0 unless obj.is_a?(Lutaml::Uml::UmlClass)
           next 0 unless obj.attributes
 
@@ -208,7 +208,7 @@ module Lutaml
       #
       # @return [Integer] Total number of operations
       def total_operations
-        @indexes[:qualified_names].sum do |_, obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].sum do |_, obj|
           next 0 unless obj.is_a?(Lutaml::Uml::UmlClass)
           next 0 unless obj.operations
 
@@ -222,7 +222,7 @@ module Lutaml
       def attribute_type_distribution # rubocop:disable Metrics/CyclomaticComplexity
         types = Hash.new(0)
 
-        @indexes[:qualified_names].each_value do |obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].each_value do |obj|
           next unless obj.is_a?(Lutaml::Uml::UmlClass)
           next unless obj.attributes
 
@@ -239,7 +239,7 @@ module Lutaml
       #
       # @return [Integer] Total number of associations
       def association_count
-        @indexes[:qualified_names].sum do |_, obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].sum do |_, obj|
           next 0 unless obj.is_a?(Lutaml::Uml::UmlClass)
           next 0 unless obj.associations
 
@@ -251,19 +251,19 @@ module Lutaml
       #
       # @return [Integer] Number of inheritance relationships
       def inheritance_count
-        @indexes[:inheritance_graph].values.flatten.size
+        @indexes[Lutaml::UmlRepository::IndexKeys::INHERITANCE_GRAPH].values.flatten.size
       end
 
       # Get maximum inheritance depth in the model
       #
       # @return [Integer] Maximum depth of inheritance hierarchy
       def max_inheritance_depth
-        return 0 if @indexes[:inheritance_graph].empty?
+        return 0 if @indexes[Lutaml::UmlRepository::IndexKeys::INHERITANCE_GRAPH].empty?
 
         @inheritance_depth_cache ||= {}
         max_depth = 0
 
-        @indexes[:qualified_names].each_key do |qname|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].each_key do |qname|
           depth = memoized_inheritance_depth(qname)
           max_depth = depth if depth > max_depth
         end
@@ -283,7 +283,7 @@ module Lutaml
       def child_to_parent_index
         @child_to_parent_index ||= begin
           idx = {}
-          @indexes[:inheritance_graph].each do |parent, children|
+          @indexes[Lutaml::UmlRepository::IndexKeys::INHERITANCE_GRAPH].each do |parent, children|
             children.each { |child| idx[child] = parent }
           end
           idx
@@ -308,7 +308,7 @@ module Lutaml
       #
       # @return [Integer] Number of abstract classes
       def abstract_class_count
-        @indexes[:qualified_names].count do |_, obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].count do |_, obj|
           next false unless obj.is_a?(Lutaml::Uml::UmlClass)
 
           obj.is_abstract
@@ -319,7 +319,7 @@ module Lutaml
       #
       # @return [Integer] Number of undocumented classes
       def undocumented_classes_count
-        @indexes[:qualified_names].count do |_, obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].count do |_, obj|
           next false unless obj.is_a?(Lutaml::Uml::UmlClass)
 
           documentation = obj.definition
@@ -331,7 +331,7 @@ module Lutaml
       #
       # @return [Integer] Number of classes with no attributes
       def classes_without_attributes_count
-        @indexes[:qualified_names].count do |_, obj|
+        @indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES].count do |_, obj|
           next false unless obj.is_a?(Lutaml::Uml::UmlClass)
 
           obj.attributes.nil? || obj.attributes.empty?
