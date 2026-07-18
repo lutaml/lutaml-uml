@@ -1,7 +1,28 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useDataStore } from '../stores/dataStore'
+import { useUiStore } from '../stores/uiStore'
 
 const data = useDataStore()
+const ui = useUiStore()
+
+const LUTAML_LOGO_LIGHT = 'https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-icon-light.svg'
+const LUTAML_LOGO_DARK = 'https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-icon-dark.svg'
+
+// Honour a user-defined square logo from the static-site config
+// (metadata.appearance.logos.square.{light,dark}) before falling back
+// to the default LutaML branding. Mirrors AppSidebar.vue so the
+// welcome screen and the sidebar never disagree about which logo to
+// show.
+const welcomeLogo = computed(() => {
+  const logos = data.metadata?.appearance?.logos
+  if (logos?.square) {
+    const variant = ui.darkMode ? logos.square.dark : logos.square.light
+    if (variant?.url) return variant.url
+    if (variant?.path) return variant.path
+  }
+  return ui.darkMode ? LUTAML_LOGO_DARK : LUTAML_LOGO_LIGHT
+})
 
 function formatDate(isoString?: string): string {
   if (!isoString) return ''
@@ -18,8 +39,8 @@ function formatDate(isoString?: string): string {
   <div class="view-welcome">
     <div class="welcome-logo">
       <img
-        :src="'https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-icon-light.svg'"
-        alt="LutaML"
+        :src="welcomeLogo"
+        :alt="data.metadata?.title || 'Logo'"
         width="48"
         height="48"
       />
