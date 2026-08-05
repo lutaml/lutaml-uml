@@ -21,6 +21,11 @@ module Lutaml
       ASSOCIATIONS      = :associations
       DIAGRAM_INDEX     = :diagram_index
 
+      # Auxiliary lookup maps (reverse indexes built alongside the
+      # primary indexes above).
+      CLASS_TO_QNAME  = :class_to_qname
+      PACKAGE_TO_PATH = :package_to_path
+
       ALL = [
         PACKAGE_PATHS,
         QUALIFIED_NAMES,
@@ -28,6 +33,8 @@ module Lutaml
         INHERITANCE_GRAPH,
         ASSOCIATIONS,
         DIAGRAM_INDEX,
+        CLASS_TO_QNAME,
+        PACKAGE_TO_PATH,
       ].freeze
     end
   end
