@@ -10,10 +10,12 @@ module Lutaml
     class Error < StandardError; end
 
     autoload :HasAttributes, "lutaml/uml/has_attributes"
+    autoload :HasAssociations, "lutaml/uml/has_associations"
     autoload :HasMembers, "lutaml/uml/has_members"
     autoload :ModelHelpers, "lutaml/uml/model_helpers"
     autoload :Namespace, "lutaml/uml/namespace"
     autoload :PackagePath, "lutaml/uml/package_path"
+    autoload :PrimitiveTypes, "lutaml/uml/primitive_types"
     autoload :QualifiedName, "lutaml/uml/qualified_name"
 
     # Value types
