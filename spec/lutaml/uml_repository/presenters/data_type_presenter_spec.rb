@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/presenters/datatype_presenter"
-require_relative "../../../../lib/lutaml/uml/data_type"
+require "lutaml/uml_repository/presenters/datatype_presenter"
+require "lutaml/uml/data_type"
 
 RSpec.describe Lutaml::UmlRepository::Presenters::DataTypePresenter do
   let(:attributes) do

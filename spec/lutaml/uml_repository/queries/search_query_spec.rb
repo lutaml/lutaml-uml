@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/index_builder"
+require "lutaml/uml_repository/index_builder"
 
 RSpec.describe Lutaml::UmlRepository::Queries::SearchQuery,
               :skip => "assertions are tied to specific EA XMI fixture data (counts, names like 'ClassificationType'); needs a richer programmatic fixture or a .lur fixture regenerated via the ea gem" do

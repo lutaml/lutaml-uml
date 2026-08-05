@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/presenters/" \
+require "lutaml/uml_repository/presenters/" \
                  "presenter_factory"
-require_relative "../../../../lib/lutaml/uml_repository/presenters/" \
+require "lutaml/uml_repository/presenters/" \
                  "element_presenter"
 
 RSpec.describe Lutaml::UmlRepository::Presenters::PresenterFactory do

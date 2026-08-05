@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/" \
-                 "static_site/data_transformer"
+require "lutaml/uml_repository/static_site/data_transformer"
 
 RSpec.describe Lutaml::UmlRepository::StaticSite::DataTransformer do
   let(:document) { create_simple_test_document }

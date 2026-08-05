@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/presenters/enum_presenter"
-require_relative "../../../../lib/lutaml/uml/enum"
+require "lutaml/uml_repository/presenters/enum_presenter"
+require "lutaml/uml/enum"
 
 RSpec.describe Lutaml::UmlRepository::Presenters::EnumPresenter do
   let(:values) do
