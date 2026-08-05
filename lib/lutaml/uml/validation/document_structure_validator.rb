@@ -7,6 +7,8 @@ module Lutaml
       # This validator ensures proper nesting, no duplicate names within same
       # parent, and valid type references in the transformed UML tree
       class DocumentStructureValidator < BaseValidator
+        include Lutaml::Uml::PrimitiveTypes
+
         def validate
           return unless document
 
@@ -231,155 +233,63 @@ module Lutaml
           end
         end
 
-        # Extracts all classes
-        #
-        # @param doc [Lutaml::Uml::Document] Document to extract from
-        # @return [Array<Array>] Array of [class]
-        def extract_all_classes(doc) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
-          # Top-level classes
-          classes = doc.classes || []
+        # Generic extractor: walks the document tree collecting every
+        # entity reachable via +reader_method+ (one of :classes,
+        # :data_types, :enums). Used by extract_all_classes /
+        # _data_types / _enums below — each is a one-liner that
+        # names the reader.
+        def extract_all_by(doc, reader_method)
+          entities = doc.public_send(reader_method) || []
 
-          # Classes in packages
           (doc.packages || []).each do |pkg|
-            cls_with_paths = extract_classes_from_package_with_path(pkg, "")
-            cls_with_paths.each do |cls_with_path|
-              classes << cls_with_path[0]
+            extract_from_package_by(pkg, "", reader_method).each do |entity,|
+              entities << entity
             end
           end
 
-          classes.flatten
+          entities
         end
 
-        # Extracts classes from package with path
-        #
-        # @param package [Lutaml::Uml::Package] Package to extract from
-        # @param parent_path [String] Parent path
-        # @return [Array<Array>] Array of [class, path] pairs
-        def extract_classes_from_package_with_path(package, parent_path) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-          classes = []
-          current_path = if parent_path.empty?
-                           package.name
-                         else
-                           "#{parent_path}::#{package.name}"
-                         end
+        # Recursive helper: yields [entity, full_path] pairs for every
+        # entity in +package+ (via +reader_method+) and recurses into
+        # sub-packages.
+        def extract_from_package_by(package, parent_path, reader_method)
+          current_path = parent_path.empty? ? package.name.to_s
+                                            : "#{parent_path}::#{package.name}"
 
-          (package.classes || []).each do |cls|
-            full_path = "#{current_path}::#{cls.name || 'Unnamed'}"
-            classes << [cls, full_path]
+          collected = (package.public_send(reader_method) || []).map do |entity|
+            [entity, "#{current_path}::#{entity.name || 'Unnamed'}"]
           end
 
           (package.packages || []).each do |child|
-            classes.concat(
-              extract_classes_from_package_with_path(child, current_path),
-            )
+            collected.concat(extract_from_package_by(child, current_path, reader_method))
           end
 
-          classes
+          collected
         end
 
-        # Extracts all data types
-        #
-        # @param doc [Lutaml::Uml::Document] Document to extract from
-        # @return [Array<Array>] Array of [data_type]
+        def extract_all_classes(doc)
+          extract_all_by(doc, :classes)
+        end
+
+        def extract_classes_from_package_with_path(package, parent_path)
+          extract_from_package_by(package, parent_path, :classes)
+        end
+
         def extract_all_data_types(doc)
-          data_types = doc.data_types || []
-
-          (doc.packages || []).each do |pkg|
-            dts_with_paths = extract_data_types_from_package_with_path(pkg, "")
-            dts_with_paths.each do |dt_with_path|
-              data_types << dt_with_path[0]
-            end
-          end
-
-          data_types.flatten
+          extract_all_by(doc, :data_types)
         end
 
-        # Extracts data types from package with path
-        #
-        # @param package [Lutaml::Uml::Package] Package to extract from
-        # @param parent_path [String] Parent path
-        # @return [Array<Array>] Array of [data_type, path] pairs
-        def extract_data_types_from_package_with_path(package, parent_path) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-          data_types = []
-          current_path = if parent_path.empty?
-                           package.name
-                         else
-                           "#{parent_path}::#{package.name}"
-                         end
-
-          (package.data_types || []).each do |dt|
-            full_path = "#{current_path}::#{dt.name || 'Unnamed'}"
-            data_types << [dt, full_path]
-          end
-
-          (package.packages || []).each do |child|
-            data_types.concat(
-              extract_data_types_from_package_with_path(child, current_path),
-            )
-          end
-
-          data_types
+        def extract_data_types_from_package_with_path(package, parent_path)
+          extract_from_package_by(package, parent_path, :data_types)
         end
 
-        # Extracts all enums with their paths
-        #
-        # @param doc [Lutaml::Uml::Document] Document to extract from
-        # @return [Array<Array>] Array of [enum, path] pairs
         def extract_all_enums(doc)
-          enums = doc.enums || []
-
-          (doc.packages || []).each do |pkg|
-            enums_with_paths = extract_enums_from_package_with_path(pkg, "")
-            enums_with_paths.each do |enum_with_path|
-              enums << enum_with_path[0]
-            end
-          end
-
-          enums.flatten
+          extract_all_by(doc, :enums)
         end
 
-        # Extracts enums from package with path
-        #
-        # @param package [Lutaml::Uml::Package] Package to extract from
-        # @param parent_path [String] Parent path
-        # @return [Array<Array>] Array of [enum, path] pairs
-        def extract_enums_from_package_with_path(package, parent_path) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-          enums = []
-          current_path = if parent_path.empty?
-                           package.name
-                         else
-                           "#{parent_path}::#{package.name}"
-                         end
-
-          (package.enums || []).each do |enum|
-            full_path = "#{current_path}::#{enum.name || 'Unnamed'}"
-            enums << [enum, full_path]
-          end
-
-          (package.packages || []).each do |child|
-            enums.concat(
-              extract_enums_from_package_with_path(child, current_path),
-            )
-          end
-
-          enums
-        end
-
-        # Checks if a type is a primitive type
-        #
-        # @param type [String] Type name
-        # @return [Boolean]
-        def primitive_type?(type)
-          return false unless type
-
-          primitive_types = %w[
-            String Integer Float Boolean Date Time DateTime
-            string integer float boolean date time datetime
-            int long short byte double char
-            void
-          ]
-
-          primitive_types.include?(type)
+        def extract_enums_from_package_with_path(package, parent_path)
+          extract_from_package_by(package, parent_path, :enums)
         end
       end
     end
