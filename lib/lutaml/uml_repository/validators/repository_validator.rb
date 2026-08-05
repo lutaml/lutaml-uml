@@ -23,13 +23,7 @@ module Lutaml
       #   end
       class RepositoryValidator
         include Lutaml::Uml::ModelHelpers
-
-        # Primitive types that don't need to be resolved
-        PRIMITIVE_TYPES = %w[
-          String Integer Boolean Date DateTime Float Double
-          Long Short Byte Char Time Decimal
-          UnlimitedNatural Real
-        ].freeze
+        include Lutaml::Uml::PrimitiveTypes
 
         # @param document [Lutaml::Uml::Document] The UML document
         # @param indexes [Hash] The repository indexes
@@ -305,14 +299,6 @@ module Lutaml
           end
 
           nil
-        end
-
-        # Check if a type is a primitive type
-        #
-        # @param type [String] Type name
-        # @return [Boolean] True if primitive type
-        def primitive_type?(type)
-          PRIMITIVE_TYPES.include?(type)
         end
       end
 
