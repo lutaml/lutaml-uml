@@ -3,16 +3,20 @@
 module Lutaml
   module Uml
     class DataType < UmlClassifier
+      include HasAssociations
+
       skip_reference_registration
 
       attribute :nested_classifier, :string, collection: true,
                                              default: -> { [] }
       attribute :type, :string
-      attribute :attributes, TopElementAttribute, collection: true
+      attribute :attributes, TopElementAttribute, collection: true,
+                                                   default: -> { [] }
       attribute :modifier, :string
-      attribute :constraints, Constraint, collection: true
-      attribute :operations, Operation, collection: true
-      attribute :data_types, DataType, collection: true
+      attribute :constraints, Constraint, collection: true,
+                                          default: -> { [] }
+      attribute :data_types, DataType, collection: true,
+                                       default: -> { [] }
       attribute :relationships, :string, collection: true, default: -> { [] }
       attribute :keyword, :string, default: "dataType"
 
@@ -35,22 +39,6 @@ module Lutaml
         map "associations", to: :associations, with: {
           to: :associations_to_yaml, from: :associations_from_yaml
         }
-      end
-
-      def associations_to_yaml(model, doc)
-        return unless model.associations
-
-        associations = model.associations.map(&:to_hash)
-        doc["associations"] = associations unless associations.empty?
-      end
-
-      def associations_from_yaml(model, values)
-        associations = values.map do |value|
-          value["owner_end"] = model.name if value["owner_end"].nil?
-          Association.from_yaml(value.to_yaml)
-        end
-
-        model.associations = associations
       end
     end
   end
