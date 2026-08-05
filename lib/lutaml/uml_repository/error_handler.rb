@@ -51,7 +51,7 @@ module Lutaml
           message += "\n\nDid you mean one of these?"
           suggestions.each { |s| message += "\n  - #{s}" }
         else
-          message += "\n\nTip: Use the 'search' or 'find' commands to " \
+          message += "\n\nTip: Use Repository#search or #find_class to " \
                      "explore available classes."
         end
 
@@ -76,8 +76,8 @@ module Lutaml
           message += "\n\nDid you mean one of these?"
           suggestions.each { |s| message += "\n  - #{s}" }
         else
-          message += "\n\nTip: Use the 'list' or 'tree' commands to explore " \
-                     "available packages."
+          message += "\n\nTip: Use PackageQuery#list or PackageQuery#tree " \
+                     "to explore available packages."
         end
 
         raise NameError, message
@@ -92,9 +92,9 @@ module Lutaml
       #   suggestions = handler.suggest_similar_classes("ModelRoot::Buildng")
       #   # => ["ModelRoot::Building", "ModelRoot::BuildingPart"]
       def suggest_similar_classes(attempted)
-        return [] unless repository.indexes[:class_to_qname]
+        return [] unless repository.indexes[Lutaml::UmlRepository::IndexKeys::CLASS_TO_QNAME]
 
-        all_qnames = repository.indexes[:class_to_qname].values
+        all_qnames = repository.indexes[Lutaml::UmlRepository::IndexKeys::CLASS_TO_QNAME].values
         find_similar_names(attempted, all_qnames)
       end
 
@@ -107,9 +107,9 @@ module Lutaml
       #   suggestions = handler.suggest_similar_packages("ModelRoot::i-UR")
       #   # => ["ModelRoot::i-UR::urf", "ModelRoot::i-UR::core"]
       def suggest_similar_packages(attempted)
-        return [] unless repository.indexes[:package_to_path]
+        return [] unless repository.indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_TO_PATH]
 
-        all_paths = repository.indexes[:package_to_path].values
+        all_paths = repository.indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_TO_PATH].values
         find_similar_names(attempted, all_paths)
       end
 

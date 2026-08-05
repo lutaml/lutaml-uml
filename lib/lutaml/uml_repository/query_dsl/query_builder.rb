@@ -231,7 +231,7 @@ module Lutaml
         # @return [Array<Lutaml::Uml::UmlClass>] Array of class objects
         def fetch_classes
           indexes = @repository.indexes
-          qnames_index = indexes[:qualified_names] || {}
+          qnames_index = indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES] || {}
 
           qnames_index.values.select do |obj|
             obj.is_a?(Lutaml::Uml::UmlClass) ||
@@ -245,7 +245,7 @@ module Lutaml
         # @return [Array<Lutaml::Uml::Package>] Array of package objects
         def fetch_packages
           indexes = @repository.indexes
-          package_paths_index = indexes[:package_paths] || {}
+          package_paths_index = indexes[Lutaml::UmlRepository::IndexKeys::PACKAGE_PATHS] || {}
           package_paths_index.values
         end
 
