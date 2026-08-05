@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/presenters/package_presenter"
-require_relative "../../../../lib/lutaml/uml/package"
+require "lutaml/uml_repository/presenters/package_presenter"
+require "lutaml/uml/package"
 
 RSpec.describe Lutaml::UmlRepository::Presenters::PackagePresenter do
   let(:package_element) do

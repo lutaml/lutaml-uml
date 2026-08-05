@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "../../../spec_helper"
-require_relative "../../../support/uml_repository_helpers"
-
-require_relative "../../../../lib/lutaml/uml_repository/static_site/output/strategy"
-require_relative "../../../../lib/lutaml/uml_repository/static_site/output/vue_inlined_strategy"
-require_relative "../../../../lib/lutaml/uml_repository/static_site/output/multi_file_strategy"
-require_relative "../../../../lib/lutaml/uml_repository/static_site/id_generator"
-require_relative "../../../../lib/lutaml/uml_repository/static_site/data_transformer"
-require_relative "../../../../lib/lutaml/uml_repository/static_site/search_index_builder"
+require "spec_helper"
+require "lutaml/uml_repository/static_site/output/strategy"
+require "lutaml/uml_repository/static_site/output/vue_inlined_strategy"
+require "lutaml/uml_repository/static_site/output/multi_file_strategy"
+require "lutaml/uml_repository/static_site/id_generator"
+require "lutaml/uml_repository/static_site/data_transformer"
+require "lutaml/uml_repository/static_site/search_index_builder"
 require "tempfile"
 
 RSpec.describe Lutaml::UmlRepository::StaticSite::Output::Strategy do

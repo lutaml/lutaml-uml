@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../lib/lutaml/uml_repository/search_result"
+require "lutaml/uml_repository/search_result"
 
 RSpec.describe Lutaml::UmlRepository::SearchResult do
   # Real model instance — exercises the actual name reader the

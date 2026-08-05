@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../lib/lutaml/uml_repository/statistics_calculator"
+require "lutaml/uml_repository/statistics_calculator"
 
 RSpec.describe Lutaml::UmlRepository::StatisticsCalculator do
   let(:document) { create_test_document }

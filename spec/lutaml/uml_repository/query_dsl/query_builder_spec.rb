@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../../lib/lutaml/uml_repository/repository"
+require "lutaml/uml_repository/repository"
 
 RSpec.describe Lutaml::UmlRepository::QueryDSL::QueryBuilder do
   let(:xmi_path) do

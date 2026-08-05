@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require_relative "../../../lib/lutaml/uml_repository/error_handler"
-require_relative "../../../lib/lutaml/uml_repository/repository"
+require "lutaml/uml_repository/error_handler"
+require "lutaml/uml_repository/repository"
 
 RSpec.describe Lutaml::UmlRepository::ErrorHandler,
               :skip => "requires refactoring to use programmatic documents or .lur fixtures — XMI parsing moved to the ea gem; spec_helper no longer provides cached_xmi_document/cached_repository" do
