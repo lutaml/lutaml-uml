@@ -24,7 +24,6 @@ module Lutaml
     # Exporters
     module Exporters
       autoload :BaseExporter, "lutaml/uml_repository/exporters/base_exporter"
-      autoload :CsvExporter, "lutaml/uml_repository/exporters/csv_exporter"
       autoload :JsonExporter, "lutaml/uml_repository/exporters/json_exporter"
       autoload :MarkdownExporter,
                "lutaml/uml_repository/exporters/markdown_exporter"
