@@ -4,10 +4,11 @@ require "spec_helper"
 require "lutaml/uml_repository/lazy_repository"
 require "lutaml/uml_repository/repository"
 
-RSpec.describe Lutaml::UmlRepository::LazyRepository,
-              :skip => "requires refactoring to use programmatic documents or .lur fixtures — XMI parsing moved to the ea gem; spec_helper no longer provides cached_xmi_document/cached_repository" do
-  let(:xmi_path) { "spec/fixtures/ea-xmi-2.5.1.xmi" }
-  let(:document) { cached_xmi_document("ea-xmi-2.5.1.xmi") }
+RSpec.describe Lutaml::UmlRepository::LazyRepository do
+  # Programmatic fixture (added during TODO.refactor/17) with a
+  # parent/child generalization — exercises qualified_names,
+  # stereotypes, and inheritance_graph with real data.
+  let(:document) { create_inheritance_test_document }
   let(:repo) { described_class.new(document: document, lazy: true) }
 
   describe "initialization" do
@@ -28,19 +29,19 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     describe "#find_class" do
       it "builds qualified_names index on first call", :aggregate_failures do
         expect(repo.index_built?(:qualified_names)).to be false
-        repo.find_class("ModelRoot")
+        repo.find_class("ModelRoot::RootPackage::BibliographicItem")
         expect(repo.index_built?(:qualified_names)).to be true
       end
 
       it "does not rebuild index on subsequent calls" do
-        repo.find_class("ModelRoot")
+        repo.find_class("ModelRoot::RootPackage::BibliographicItem")
         initial_index = repo.indexes[:qualified_names]
-        repo.find_class("ModelRoot")
+        repo.find_class("ModelRoot::RootPackage::BibliographicItem")
         expect(repo.indexes[:qualified_names]).to equal(initial_index)
       end
 
       it "removes qualified_names from pending indexes" do
-        repo.find_class("ModelRoot")
+        repo.find_class("ModelRoot::RootPackage::BibliographicItem")
         expect(repo.pending_indexes).not_to include(:qualified_names)
       end
     end
@@ -48,12 +49,12 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     describe "#find_package" do
       it "builds package_paths index on first call", :aggregate_failures do
         expect(repo.index_built?(:package_paths)).to be false
-        repo.find_package("ModelRoot")
+        repo.find_package("ModelRoot::RootPackage")
         expect(repo.index_built?(:package_paths)).to be true
       end
 
       it "removes package_paths from pending indexes" do
-        repo.find_package("ModelRoot")
+        repo.find_package("ModelRoot::RootPackage")
         expect(repo.pending_indexes).not_to include(:package_paths)
       end
     end
@@ -77,7 +78,7 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
         expect(repo.index_built?(:qualified_names)).to be false
         expect(repo.index_built?(:inheritance_graph)).to be false
 
-        # This will trigger index building even if no class is found
+        # Triggers index building even when the class is not found
         repo.supertype_of("NonExistentClass")
 
         expect(repo.index_built?(:qualified_names)).to be true
@@ -94,7 +95,7 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     describe "#subtypes_of" do
       it "builds inheritance_graph index on first call", :aggregate_failures do
         expect(repo.index_built?(:inheritance_graph)).to be false
-        repo.subtypes_of("ModelRoot")
+        repo.subtypes_of("BibliographicItem")
         expect(repo.index_built?(:inheritance_graph)).to be true
       end
     end
@@ -105,7 +106,7 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
         expect(repo.index_built?(:qualified_names)).to be false
         expect(repo.index_built?(:inheritance_graph)).to be false
 
-        repo.ancestors_of("SomeClass")
+        repo.ancestors_of("Book")
 
         expect(repo.index_built?(:qualified_names)).to be true
         expect(repo.index_built?(:inheritance_graph)).to be true
@@ -115,7 +116,7 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     describe "#descendants_of" do
       it "builds inheritance_graph index on first call", :aggregate_failures do
         expect(repo.index_built?(:inheritance_graph)).to be false
-        repo.descendants_of("ModelRoot")
+        repo.descendants_of("BibliographicItem")
         expect(repo.index_built?(:inheritance_graph)).to be true
       end
     end
@@ -123,12 +124,12 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     describe "#diagrams_in_package" do
       it "builds diagram_index on first call", :aggregate_failures do
         expect(repo.index_built?(:diagram_index)).to be false
-        repo.diagrams_in_package("ModelRoot")
+        repo.diagrams_in_package("ModelRoot::RootPackage")
         expect(repo.index_built?(:diagram_index)).to be true
       end
 
       it "removes diagram_index from pending indexes" do
-        repo.diagrams_in_package("ModelRoot")
+        repo.diagrams_in_package("ModelRoot::RootPackage")
         expect(repo.pending_indexes).not_to include(:diagram_index)
       end
     end
@@ -175,7 +176,7 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     end
 
     it "returns true for built indexes" do
-      repo.find_class("ModelRoot")
+      repo.find_class("ModelRoot::RootPackage::Book")
       expect(repo.index_built?(:qualified_names)).to be true
     end
 
@@ -193,7 +194,7 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
 
     it "updates as indexes are built" do
       initial_count = repo.pending_indexes.size
-      repo.find_class("ModelRoot")
+      repo.find_class("ModelRoot::RootPackage::Book")
       expect(repo.pending_indexes.size).to be < initial_count
     end
 
@@ -203,52 +204,28 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
     end
   end
 
-  describe "factory methods" do
-    describe ".from_xmi_lazy" do
-      it "creates a lazy repository from XMI file", :aggregate_failures do
-        lazy_repo = Lutaml::UmlRepository::Repository.from_xmi_lazy(xmi_path)
+  describe "functional equivalence to Repository" do
+    let(:normal_repo) { Lutaml::UmlRepository::Repository.new(document: document) }
 
-        expect(lazy_repo).to be_a(described_class)
-        expect(lazy_repo.pending_indexes).not_to be_empty
-      end
-    end
+    it "provides same find_class results", :aggregate_failures do
+      lazy_repo = described_class.new(document: document, lazy: true)
+      lazy_repo.build_all_indexes
 
-    describe ".from_file_lazy" do
-      it "creates a lazy repository from XMI file", :aggregate_failures do
-        lazy_repo = Lutaml::UmlRepository::Repository.from_file_lazy(xmi_path)
+      normal_result = normal_repo.find_class("ModelRoot::RootPackage::BibliographicItem")
+      lazy_result = lazy_repo.find_class("ModelRoot::RootPackage::BibliographicItem")
 
-        expect(lazy_repo).to be_a(described_class)
-        expect(lazy_repo.pending_indexes).not_to be_empty
-      end
-    end
-  end
-
-  describe "functional equivalence to UmlRepository" do
-    let(:normal_repo) { Lutaml::UmlRepository::Repository.from_xmi(xmi_path) }
-    let(:lazy_repo) { Lutaml::UmlRepository::Repository.from_xmi_lazy(xmi_path) }
-
-    it "provides same find_class results" do
-      # Build all indexes first
-      aggregate_failures do
-        lazy_repo.build_all_indexes
-
-        normal_result = normal_repo.find_class("ModelRoot")
-        lazy_result = lazy_repo.find_class("ModelRoot")
-
-        if normal_result && lazy_result
-          expect(lazy_result.name).to eq(normal_result.name)
-          expect(lazy_result.xmi_id).to eq(normal_result.xmi_id)
-        else
-          expect(lazy_result).to eq(normal_result)
-        end
-      end
+      expect(lazy_result).not_to be_nil
+      expect(normal_result).not_to be_nil
+      expect(lazy_result.name).to eq(normal_result.name)
+      expect(lazy_result.xmi_id).to eq(normal_result.xmi_id)
     end
 
     it "provides same find_package results", :aggregate_failures do
+      lazy_repo = described_class.new(document: document, lazy: true)
       lazy_repo.build_all_indexes
 
-      normal_result = normal_repo.find_package("ModelRoot")
-      lazy_result = lazy_repo.find_package("ModelRoot")
+      normal_result = normal_repo.find_package("ModelRoot::RootPackage")
+      lazy_result = lazy_repo.find_package("ModelRoot::RootPackage")
 
       expect(lazy_result).not_to be_nil
       expect(normal_result).not_to be_nil
@@ -260,9 +237,9 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
       expect(repo.index_built?(:qualified_names)).to be false
       expect(repo.index_built?(:inheritance_graph)).to be false
 
-      repo.subtypes_of("ModelRoot")
+      repo.subtypes_of("BibliographicItem")
 
-      # inheritance_graph requires qualified_names, so both should be built
+      # inheritance_graph requires qualified_names, so both get built
       expect(repo.index_built?(:qualified_names)).to be true
       expect(repo.index_built?(:inheritance_graph)).to be true
     end
@@ -271,42 +248,17 @@ RSpec.describe Lutaml::UmlRepository::LazyRepository,
       expect(repo.index_built?(:package_paths)).to be false
       expect(repo.index_built?(:diagram_index)).to be false
 
-      repo.diagrams_in_package("ModelRoot")
+      repo.diagrams_in_package("ModelRoot::RootPackage")
 
-      # diagram_index requires package_paths, so both should be built
+      # diagram_index requires package_paths, so both get built
       expect(repo.index_built?(:package_paths)).to be true
       expect(repo.index_built?(:diagram_index)).to be true
     end
   end
 
-  describe "performance characteristics" do
-    it "has faster initial load than normal repository", :aggregate_failures do
-      # load document first
-      document
-
-      # Run multiple iterations to reduce timing flakiness
-      lazy_times = Array.new(5) do
-        start_time = Time.now
-        described_class.new(document: document, lazy: true)
-        Time.now - start_time
-      end
-
-      normal_times = Array.new(5) do
-        start_time = Time.now
-        Lutaml::UmlRepository::Repository.new(document: document)
-        Time.now - start_time
-      end
-
-      avg_lazy = lazy_times.sum / lazy_times.size
-      avg_normal = normal_times.sum / normal_times.size
-
-      expect(avg_lazy).to be < avg_normal
-    end
-
-    it "uses less memory initially" do
+  describe "memory characteristics" do
+    it "holds no built indexes before first query" do
       lazy_repo = described_class.new(document: document, lazy: true)
-
-      # Check that indexes are empty or minimal
       expect(lazy_repo.indexes.values.compact.size).to eq(0)
     end
   end
