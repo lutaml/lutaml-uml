@@ -39,6 +39,20 @@ module Lutaml
             entity.is_a?(Lutaml::Uml::UmlClass) && entity.xmi_id == class_id
           end
         end
+
+        # Resolve a class object or qualified-name string to the
+        # class object. Strings are looked up via the
+        # qualified_names index; non-strings pass through.
+        #
+        # @param class_or_qname [Lutaml::Uml::UmlClass, String]
+        # @return [Lutaml::Uml::UmlClass, nil] The class object, or nil
+        def resolve_class(class_or_qname)
+          if class_or_qname.is_a?(String)
+            indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES][class_or_qname]
+          else
+            class_or_qname
+          end
+        end
       end
     end
   end

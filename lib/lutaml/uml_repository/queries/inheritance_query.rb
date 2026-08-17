@@ -127,15 +127,7 @@ module Lutaml
         #
         # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
         #   or qualified name string
-        # @return [Lutaml::Uml::UmlClass, nil] The class object,
-        # or nil if not found
-        def resolve_class(class_or_qname)
-          if class_or_qname.is_a?(String)
-            indexes[:qualified_names][class_or_qname]
-          else
-            class_or_qname
-          end
-        end
+        # resolve_class provided by BaseQuery.
 
         # Resolve a class or qualified name to a qualified name string.
         #
@@ -143,13 +135,17 @@ module Lutaml
         #   or qualified name string
         # @return [String, nil] The qualified name string, or nil if not found
         def resolve_qname(class_or_qname)
-          if class_or_qname.is_a?(String) &&
-              indexes[:qualified_names].key?(class_or_qname)
-            return class_or_qname
+          qualified = indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES]
+          return class_or_qname if class_or_qname.is_a?(String) && qualified.key?(class_or_qname)
+
+          # O(1) via the reverse index; linear scan only as a
+          # fallback for hand-built index hashes without it.
+          reverse = indexes[Lutaml::UmlRepository::IndexKeys::CLASS_TO_QNAME]
+          if reverse && class_or_qname.is_a?(Lutaml::Uml::TopElement)
+            return reverse[class_or_qname.xmi_id]
           end
 
-          # Search for the class in the index
-          qname, _klass = indexes[:qualified_names].find do |_name, entity|
+          qname, _klass = qualified.find do |_name, entity|
             entity == class_or_qname
           end
 
