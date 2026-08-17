@@ -128,19 +128,7 @@ module Lutaml
           end.flatten
         end
 
-        # Resolve a class or qualified name to a class object
-        #
-        # @param class_or_qname [Lutaml::Uml::UmlClass, String] The class object
-        #   or qualified name string
-        # @return [Lutaml::Uml::UmlClass, nil] The class object,
-        # or nil if not found
-        def resolve_class(class_or_qname)
-          if class_or_qname.is_a?(String)
-            indexes[:qualified_names][class_or_qname]
-          else
-            class_or_qname
-          end
-        end
+        # resolve_class provided by BaseQuery.
 
         # Check if an association matches the class name and direction
         #
