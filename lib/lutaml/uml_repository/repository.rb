@@ -634,26 +634,12 @@ module Lutaml
         freeze
       end
 
-      private
-
-      def init_services(skip_queries: false)
-        unless skip_queries
-          @package_query = Queries::PackageQuery.new(@document, @indexes)
-          @class_query = Queries::ClassQuery.new(@document, @indexes)
-          @inheritance_query = Queries::InheritanceQuery.new(
-            @document, @indexes
-          )
-          @association_query = Queries::AssociationQuery.new(
-            @document, @indexes
-          )
-          @diagram_query = Queries::DiagramQuery.new(@document, @indexes)
-          @search_query = Queries::SearchQuery.new(@document, @indexes)
-        end
-
-        @statistics_calculator = StatisticsCalculator.new(@document, @indexes)
-        @statistics = @statistics_calculator.calculate.freeze
-        @error_handler = ErrorHandler.new(self)
-      end
+      # ---- Query-service readers (public per ADR-0001) -----------------
+      # These are the composability seam: callers who want to combine
+      # queries directly (e.g. class_query + inheritance_query to walk a
+      # type hierarchy) reach the services here, without needing a new
+      # facade method for every combination. The ergonomic shortcuts
+      # above (find_class, supertype_of, ...) delegate to these.
 
       # Get package query service
       #
@@ -684,6 +670,27 @@ module Lutaml
       #
       # @return [Queries::SearchQuery] The search query service
       attr_reader :search_query
+
+      private
+
+      def init_services(skip_queries: false)
+        unless skip_queries
+          @package_query = Queries::PackageQuery.new(@document, @indexes)
+          @class_query = Queries::ClassQuery.new(@document, @indexes)
+          @inheritance_query = Queries::InheritanceQuery.new(
+            @document, @indexes
+          )
+          @association_query = Queries::AssociationQuery.new(
+            @document, @indexes
+          )
+          @diagram_query = Queries::DiagramQuery.new(@document, @indexes)
+          @search_query = Queries::SearchQuery.new(@document, @indexes)
+        end
+
+        @statistics_calculator = StatisticsCalculator.new(@document, @indexes)
+        @statistics = @statistics_calculator.calculate.freeze
+        @error_handler = ErrorHandler.new(self)
+      end
     end
   end
 end
