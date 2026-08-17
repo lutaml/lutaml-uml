@@ -3,7 +3,6 @@
 module Lutaml
   module UmlRepository
     # Core utilities
-    autoload :Configuration, "lutaml/uml_repository/configuration"
     autoload :ErrorHandler, "lutaml/uml_repository/error_handler"
     autoload :SearchResult, "lutaml/uml_repository/search_result"
     autoload :ClassLookupIndex, "lutaml/uml_repository/class_lookup_index"
