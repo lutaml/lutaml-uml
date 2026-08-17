@@ -138,7 +138,17 @@ module Lutaml
         end
 
         def resolve_qname_for(klass)
-          indexes[:qualified_names].find { |_, v| v == klass }&.first
+          qualified = indexes[Lutaml::UmlRepository::IndexKeys::QUALIFIED_NAMES]
+
+          # O(1) via the reverse index; linear scan only as a
+          # fallback for hand-built index hashes without it.
+          reverse = indexes[Lutaml::UmlRepository::IndexKeys::CLASS_TO_QNAME]
+          if reverse && klass.is_a?(Lutaml::Uml::TopElement) && klass.xmi_id
+            found = reverse[klass.xmi_id]
+            return found if found
+          end
+
+          qualified.find { |_, v| v == klass }&.first
         end
 
         def match_absolute_path?(qname, package_path, recursive)
