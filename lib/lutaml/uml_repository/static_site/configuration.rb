@@ -52,14 +52,28 @@ module Lutaml
           end
 
           def single_file
-            @single_file ||= parse_mode_config(modes["single_file"]) if modes
+            return unless modes
+
+            @single_file ||= begin
+              hash = parse_modes_hash
+              parse_mode_config(hash["single_file"])
+            end
           end
 
           def multi_file
-            @multi_file ||= parse_mode_config(modes["multi_file"]) if modes
+            return unless modes
+
+            @multi_file ||= begin
+              hash = parse_modes_hash
+              parse_mode_config(hash["multi_file"])
+            end
           end
 
           private
+
+          def parse_modes_hash
+            Configuration.parse_hash_attribute(modes)
+          end
 
           def parse_mode_config(config_hash) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
             return nil unless config_hash
@@ -339,66 +353,110 @@ module Lutaml
 
         private
 
-        def parse_hash_attribute(attr) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
-          case attr
-          when Hash
-            attr
-          when String
-            # Try to parse as YAML first.
+        def parse_hash_attribute(attr)
+          self.class.parse_hash_attribute(attr)
+        end
+
+        class << self
+          # Parse an attribute that may be a Hash, a plain String, or a
+          # Lutaml::Model::Type::String wrapping a Ruby-hash-literal
+          # representation.  Returns a Hash on success, empty Hash otherwise.
+          def parse_hash_attribute(attr) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+            return attr if attr.is_a?(Hash)
+
+            attr_str = attr.to_s
+            return {} if attr_str.empty?
+
+            # Try YAML first (handles valid YAML maps).
             begin
-              parsed = YAML.safe_load(attr, permitted_classes: [Symbol])
+              parsed = YAML.safe_load(attr_str, permitted_classes: [Symbol])
               return parsed if parsed.is_a?(Hash)
             rescue StandardError
               # Fall through to Ruby-hash-literal parsing.
             end
 
-            # Fall back to a focused parser for legacy Ruby hash syntax
-            # (e.g. +"key1 => value1, key2 => value2"+). Handles the
-            # common cases without evaluating arbitrary Ruby.
-            return parse_ruby_hash_literal(attr) if attr.include?("=>")
+            # Fall back for Ruby hash-rocket syntax emitted by lutaml-model
+            # when storing nested YAML hashes in a :string attribute.
+            return parse_ruby_hash_literal(attr_str) if attr_str.include?("=>")
 
             {}
-          else
+          end
+
+          private
+
+          # Parse a restricted subset of the Ruby hash literal: keys/values
+          # use Ruby scalar literals (String, Symbol, Integer, Float, true,
+          # false, nil). Quotes are honoured; braces are stripped.
+          def parse_ruby_hash_literal(attr)
+            body = attr.to_s.gsub(/\A\s*\{|\}\s*\z/, "")
+            return {} if body.empty?
+
+            parse_hash_body(body)
+          end
+
+          # Parse the inner body of a Ruby hash literal (no outer braces).
+          # Handles nested hashes by tracking brace depth so commas inside
+          # nested `{ ... }` blocks are not treated as pair separators.
+          def parse_hash_body(body)
+            pairs = split_top_level(body)
+            pairs.each_with_object({}) do |pair, hash|
+              key, value = pair.split("=>", 2)
+              next unless key && value
+
+              key_str = key.strip
+              value_str = value.strip
+
+              if value_str.start_with?("{")
+                hash[parse_literal(key_str)] = parse_hash_body(
+                  value_str.gsub(/\A\s*\{|\}\s*\z/, ""),
+                )
+              else
+                hash[parse_literal(key_str)] = parse_literal(value_str)
+              end
+            end
+          rescue StandardError
             {}
           end
-        end
 
-        # Parse a restricted subset of the Ruby hash literal: keys/values
-        # use Ruby scalar literals (String, Symbol, Integer, Float, true,
-        # false, nil). Quotes are honoured; braces are stripped. This
-        # replaces the prior +eval()+ fallback, which could evaluate
-        # arbitrary Ruby.
-        def parse_ruby_hash_literal(attr)
-          body = attr.to_s.gsub(/\A\s*\{|\}\s*\z/, "")
-          return {} if body.empty?
+          # Split a hash body on top-level commas, respecting nested braces.
+          def split_top_level(body)
+            parts = []
+            depth = 0
+            current = +""
 
-          body.split(",").each_with_object({}) do |pair, hash|
-            key, value = pair.split("=>", 2)
-            next unless key && value
-
-            hash[parse_literal(key.strip)] = parse_literal(value.strip)
+            body.each_char do |ch|
+              case ch
+              when "{" then depth += 1
+              when "}" then depth -= 1
+              when ","
+                if depth.zero?
+                  parts << current
+                  current = +""
+                  next
+                end
+              end
+              current << ch
+            end
+            parts << current unless current.empty?
+            parts
           end
-        rescue StandardError
-          {}
-        end
 
-        # Coerce a token from a Ruby hash literal into its scalar value.
-        # Strings keep their quotes-stripped content; symbols retain their
-        # leading colon; integers, floats, true, false, nil parse to the
-        # matching Ruby type. Anything else stays a string.
-        def parse_literal(token)
-          case token
-          when /\A".*"\z/  then token[1..-2]
-          when /\A'.*'\z/  then token[1..-2]
-          when /\A:/       then token[1..].to_sym
-          when "true"      then true
-          when "false"     then false
-          when "nil"       then nil
-          when /\A-?\d+\z/ then token.to_i
-          when /\A-?\d+\.\d+\z/ then token.to_f
-          else token
+          # Coerce a token from a Ruby hash literal into its scalar value.
+          def parse_literal(token)
+            case token
+            when /\A".*"\z/  then token[1..-2]
+            when /\A'.*'\z/  then token[1..-2]
+            when /\A:/       then token[1..].to_sym
+            when "true"      then true
+            when "false"     then false
+            when "nil"       then nil
+            when /\A-?\d+\z/ then token.to_i
+            when /\A-?\d+\.\d+\z/ then token.to_f
+            else token
+            end
           end
         end
+
       end
     end
   end
