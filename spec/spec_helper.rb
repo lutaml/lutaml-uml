@@ -4,6 +4,10 @@ require "bundler/setup"
 require "lutaml/uml"
 require "lutaml/uml_repository"
 
+# Pin JSON adapter to :standard — the yeptris native parser is broken on
+# Ruby 3.4 (no precompiled materializer, FFI fallback crashes).
+Lutaml::Model::AdapterResolver.set_adapter_type(:json, :standard)
+
 RSpec.configure do |config|
   config.disable_monkey_patching!
 
