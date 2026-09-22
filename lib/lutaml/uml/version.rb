@@ -2,6 +2,6 @@
 
 module Lutaml
   module Uml
-    VERSION = "0.5.3"
+    VERSION = "1.0.1"
   end
 end
