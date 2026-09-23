@@ -22,6 +22,7 @@ module Lutaml
 
       attribute :associations, Association, collection: true,
                                             default: -> { [] }
+      attribute :generalization, Generalization
 
       yaml do
         map "nested_classifier", to: :nested_classifier
