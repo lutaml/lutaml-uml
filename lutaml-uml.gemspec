@@ -34,6 +34,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 3.2.0"
 
-  spec.add_dependency "lutaml-model", "~> 0.8.0"
+  spec.add_dependency "lutaml-model", "~> 0.8.114"
   spec.add_dependency "rubyzip", "~> 3.7"
 end
