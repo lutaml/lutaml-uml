@@ -39,6 +39,7 @@ module Lutaml
                                             stereotypes
                                             inheritance_graph
                                             diagram_index
+                                            simple_name_to_qnames
                                           ])
 
         # Initialize runtime query services (not serialized to LUR)
@@ -69,6 +70,16 @@ module Lutaml
       # Lutaml::Uml::Enum, nil]
       def find_class(qualified_name, raise_on_error: false)
         ensure_index(:qualified_names)
+        super
+      end
+
+      # Resolve an attribute/type to its target class.
+      #
+      # Ensures the qualified_names and simple-name indexes are built first so
+      # resolution uses the O(1) map rather than scanning on every call.
+      def resolve_type(attr_or_type, from: nil)
+        ensure_index(:qualified_names)
+        ensure_index(:simple_name_to_qnames)
         super
       end
 
@@ -206,8 +217,11 @@ module Lutaml
         IndexKeys::PACKAGE_PATHS     => [->(doc, _idx) { IndexBuilder.build_package_paths(doc) }, []],
         IndexKeys::QUALIFIED_NAMES   => [->(doc, _idx) { IndexBuilder.build_qualified_names(doc) }, []],
         IndexKeys::STEREOTYPES       => [->(doc, _idx) { IndexBuilder.build_stereotypes(doc) }, []],
+        IndexKeys::SIMPLE_NAME_TO_QNAMES => [->(_doc, idx) { IndexBuilder.derive_simple_name_to_qnames(idx[:qualified_names]) },
+                                             [IndexKeys::QUALIFIED_NAMES]],
         IndexKeys::INHERITANCE_GRAPH => [->(doc, idx) { IndexBuilder.build_inheritance_graph(doc, idx) },
-                                         [IndexKeys::QUALIFIED_NAMES]],
+                                         [IndexKeys::QUALIFIED_NAMES,
+                                          IndexKeys::SIMPLE_NAME_TO_QNAMES]],
         IndexKeys::DIAGRAM_INDEX     => [->(doc, idx) { IndexBuilder.build_diagram_index(doc, idx) },
                                          [IndexKeys::PACKAGE_PATHS]],
       }.freeze

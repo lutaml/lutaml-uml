@@ -20,6 +20,7 @@ module Lutaml
       INHERITANCE_GRAPH = :inheritance_graph
       ASSOCIATIONS      = :associations
       DIAGRAM_INDEX     = :diagram_index
+      SIMPLE_NAME_TO_QNAMES = :simple_name_to_qnames
 
       # Auxiliary lookup maps (reverse indexes built alongside the
       # primary indexes above).
@@ -33,6 +34,7 @@ module Lutaml
         INHERITANCE_GRAPH,
         ASSOCIATIONS,
         DIAGRAM_INDEX,
+        SIMPLE_NAME_TO_QNAMES,
         CLASS_TO_QNAME,
         PACKAGE_TO_PATH,
       ].freeze
