@@ -10,6 +10,7 @@ module Lutaml
     autoload :IndexBuilder, "lutaml/uml_repository/index_builder"
     autoload :IndexBuilders, "lutaml/uml_repository/index_builders"
     autoload :IndexKeys, "lutaml/uml_repository/index_keys"
+    autoload :TypeResolver, "lutaml/uml_repository/type_resolver"
     autoload :StatisticsCalculator,
              "lutaml/uml_repository/statistics_calculator"
     autoload :PackageExporter, "lutaml/uml_repository/package_exporter"
