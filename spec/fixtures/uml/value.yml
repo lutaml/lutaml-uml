@@ -1,5 +1,6 @@
 ---
 name: This is a test
+initial: '42'
 id: '111'
 type: TestType
 definition: |

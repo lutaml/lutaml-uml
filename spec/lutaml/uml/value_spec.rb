@@ -16,6 +16,7 @@ RSpec.describe Lutaml::Uml::Value do
       <<~YAML
         ---
         name: This is a test
+        initial: '42'
         id: '111'
         type: TestType
         definition: |-
@@ -23,6 +24,11 @@ RSpec.describe Lutaml::Uml::Value do
           It spans multiple lines.
           It should be formatted correctly.
       YAML
+    end
+
+    it "round-trips the initial value" do
+      expect(test_model.initial).to eq("42")
+      expect(YAML.safe_load(output)["initial"]).to eq("42")
     end
 
     it "outputs stripped definition" do
