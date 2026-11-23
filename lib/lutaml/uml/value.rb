@@ -7,11 +7,13 @@ module Lutaml
 
       attribute :definition, :string
       attribute :name, :string
+      attribute :initial, :string
       attribute :id, :string
       attribute :type, :string
 
       yaml do
         map "name", to: :name
+        map "initial", to: :initial
         map "id", to: :id
         map "type", to: :type
 
