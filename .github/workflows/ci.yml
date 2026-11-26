@@ -41,3 +41,19 @@ jobs:
           bundler-cache: true
       - name: Run lutaml/uml_repository specs
         run: bundle exec rspec spec/lutaml/uml_repository/ --format progress
+
+  spec-schema:
+    name: spec / lutaml/schema on ${{ matrix.ruby }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["3.3", "3.4"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run lutaml/schema specs
+        run: bundle exec rspec spec/lutaml/schema/ --format progress
