@@ -91,4 +91,6 @@ module Lutaml
                "lutaml/uml/validation/document_structure_validator"
     end
   end
+
+  autoload :Schema, "lutaml/schema"
 end
